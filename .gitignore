@@ -1,0 +1,13 @@
+node_modules
+.next
+out
+.env*.local
+next-env.d.ts
+*.tsbuildinfo
+
+# Vendored copy of the impeccable skill (installed globally, 4.9 MB of tooling docs)
+.claude/skills/
+
+# Local-only design-tool state
+.impeccable/config.local.json
+.impeccable/hook.cache.json

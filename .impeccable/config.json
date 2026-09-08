@@ -1,0 +1,53 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "design-system-font-size",
+        "value": "12.5px",
+        "createdAt": "2026-09-02T19:10:39.617Z",
+        "reason": "Pre-existing micro-typography (RequestForm labels) established before DESIGN.md's named type ramp; literal fine-tuning is the site's established practice, not a defect introduced now"
+      },
+      {
+        "rule": "design-system-font-size",
+        "value": "14px",
+        "createdAt": "2026-09-02T19:10:39.688Z",
+        "reason": "Pre-existing micro-typography (RequestForm success-state link) established before DESIGN.md's named type ramp; literal fine-tuning is the site's established practice, not a defect introduced now"
+      },
+      {
+        "rule": "design-system-font-size",
+        "value": "13.5px",
+        "createdAt": "2026-09-02T19:10:39.755Z",
+        "reason": "Pre-existing micro-typography (RequestForm error text/consent copy/footnote) established before DESIGN.md's named type ramp; literal fine-tuning is the site's established practice, not a defect introduced now"
+      },
+      {
+        "rule": "design-system-font-size",
+        "value": "16.5px",
+        "createdAt": "2026-09-08T09:05:59.521Z",
+        "reason": "Pre-existing hero/lede body step already in use across the site; not introduced by this change."
+      },
+      {
+        "rule": "design-system-font-size",
+        "value": "19px",
+        "createdAt": "2026-09-08T09:08:02.305Z",
+        "reason": "Established numeral-marker step already used in Advantages and ContactForm; reused verbatim for the same role."
+      },
+      {
+        "rule": "design-system-font-size",
+        "value": "12px",
+        "createdAt": "2026-09-08T09:08:26.164Z",
+        "reason": "Pre-existing .eyebrow md-breakpoint step; DESIGN.md documents the eyebrow as 11-12px, sidecar records only the 11px base."
+      },
+      {
+        "rule": "codex-grid-background",
+        "value": "*",
+        "files": [
+          "src/app/globals.css"
+        ],
+        "createdAt": "2026-09-08T09:21:22.042Z",
+        "reason": "Sanctioned in DESIGN.md L156/L193: the 104px hairline field is the press registration grid, a motivated measurement surface restricted to Hero video background and Aurora (print-process surfaces only), never general ornament."
+      }
+    ]
+  }
+}

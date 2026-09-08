@@ -1,0 +1,115 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-09-02T00:00:00.000Z",
+  "title": "Design System: Про-Принт",
+  "extensions": {
+    "colorMeta": {
+      "registration-pink": { "role": "primary", "displayName": "Registration Pink", "canonical": "#e6007e", "tonalRamp": ["#33001c", "#520030", "#780043", "#a3005c", "#c4128e", "#e6007e", "#f272b8", "#fbc2e0"] },
+      "registration-pink-deep": { "role": "primary", "displayName": "Registration Pink Deep", "canonical": "#c4128e", "tonalRamp": ["#2b0a20", "#451233", "#651c48", "#8c2666", "#c4128e", "#d84fa8", "#e98bc6", "#f6c8e2"] },
+      "press-cyan": { "role": "secondary", "displayName": "Press Cyan", "canonical": "#4cb8e0", "tonalRamp": ["#0b2f3d", "#124a5f", "#1a6a86", "#2790b3", "#4cb8e0", "#7ecbe9", "#aedff1", "#daf1f8"] },
+      "press-yellow": { "role": "tertiary", "displayName": "Press Yellow", "canonical": "#f3d144", "tonalRamp": ["#3d3208", "#5f4e0d", "#8a7113", "#b7981c", "#f3d144", "#f6dc73", "#fae7a0", "#fdf3cf"] },
+      "ink": { "role": "neutral", "displayName": "Ink", "canonical": "#0d0e13", "tonalRamp": ["#000000", "#0d0e13", "#14161d", "#23262f", "#3c404b", "#62666e", "#8a8e96", "#c4c6cb"] },
+      "paper": { "role": "neutral", "displayName": "Paper", "canonical": "#ffffff", "tonalRamp": ["#d6d6d2", "#e7e7e4", "#f5f5f3", "#fafaf8", "#fdfcf6", "#ffffff", "#ffffff", "#ffffff"] }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "Заголовок Hero — самый крупный кегль на сайте." },
+      "eyebrow": { "displayName": "Eyebrow", "purpose": "Короткая маркирующая надпись над заголовком секции, всегда uppercase, цвет Registration Pink." },
+      "title": { "displayName": "Section / Card Heading", "purpose": "Заголовки секций и карточек." },
+      "body": { "displayName": "Body / Lede", "purpose": "Вводные абзацы и основной текст, до 62ch." }
+    },
+    "shadows": [
+      { "name": "button-edge", "value": "0 1px 0 rgba(13,14,19,0.9)", "purpose": "Тонкая линия-гравировка под тёмной кнопкой, не classic drop shadow." },
+      { "name": "hero-lift", "value": "0 30px 80px -40px rgba(13,14,19,0.28)", "purpose": "Мягкое выделение ключевого визуального блока Hero." }
+    ],
+    "motion": [
+      { "name": "ease-reveal", "value": "cubic-bezier(0.16, 1, 0.3, 1)", "purpose": "Стандартный easing для block-reveal анимаций Framer Motion." }
+    ],
+    "breakpoints": [
+      { "name": "xs", "value": "416px" },
+      { "name": "sm", "value": "640px" },
+      { "name": "md", "value": "768px" },
+      { "name": "lg", "value": "1024px" },
+      { "name": "xl", "value": "1280px" },
+      { "name": "shell-max-padding", "value": "1440px", "note": "Not a Tailwind breakpoint prefix — the .shell component's 4th responsive padding step (globals.css)." }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Тёмная CTA-кнопка — основное действие (заявка, расчёт).",
+      "html": "<a class=\"ds-btn-primary\" href=\"#\">Оставить заявку</a>",
+      "css": ".ds-btn-primary { display: inline-flex; align-items: center; gap: 10px; background: #0d0e13; color: #ffffff; padding: 16px 28px; font-family: Unbounded, sans-serif; font-weight: 700; font-size: 14px; letter-spacing: -0.005em; box-shadow: 0 1px 0 rgba(13,14,19,0.9); transition: background 0.3s; } .ds-btn-primary:hover { background: #22242c; } .ds-btn-primary:focus-visible { outline: 2px solid #e6007e; outline-offset: 3px; }"
+    },
+    {
+      "name": "Pink Button",
+      "kind": "button",
+      "refersTo": "button-pink",
+      "description": "Розовая кнопка — вторичный CMYK-акцентный CTA.",
+      "html": "<a class=\"ds-btn-pink\" href=\"#\">Рассчитать плёнку</a>",
+      "css": ".ds-btn-pink { display: inline-flex; align-items: center; gap: 10px; background: #c4128e; color: #ffffff; padding: 14px 28px; font-family: Unbounded, sans-serif; font-weight: 700; font-size: 14px; transition: background 0.3s; } .ds-btn-pink:hover { background: #e6007e; } .ds-btn-pink:focus-visible { outline: 2px solid #e6007e; outline-offset: 3px; }"
+    },
+    {
+      "name": "Outline Button",
+      "kind": "button",
+      "refersTo": "button-outline",
+      "description": "Третичное действие — тонкая обводка, прозрачный фон.",
+      "html": "<a class=\"ds-btn-outline\" href=\"#\">Подробнее</a>",
+      "css": ".ds-btn-outline { display: inline-flex; align-items: center; gap: 10px; background: transparent; color: #0d0e13; border: 1px solid #d6d6d2; padding: 14px 28px; font-family: Unbounded, sans-serif; font-weight: 700; font-size: 14px; transition: border-color 0.3s, background 0.3s; } .ds-btn-outline:hover { border-color: #0d0e13; background: #fafaf8; }"
+    },
+    {
+      "name": "Card",
+      "kind": "card",
+      "refersTo": "card-default",
+      "description": "Базовая карточка (capabilities, production, faq) — острые углы, hairline-граница, без тени.",
+      "html": "<div class=\"ds-card\"><p class=\"ds-eyebrow\">Возможность</p><h3 class=\"ds-card-title\">Полноцветная печать CMYK</h3><p class=\"ds-card-body\">До 10 красок на десятикрасочной флексомашине.</p></div>",
+      "css": ".ds-card { position: relative; background: #ffffff; border: 1px solid #e7e7e4; padding: 32px; overflow: hidden; } .ds-eyebrow { font-family: Unbounded, sans-serif; font-weight: 700; font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; color: #e6007e; } .ds-card-title { font-family: Unbounded, sans-serif; font-weight: 700; font-size: 20px; letter-spacing: -0.02em; line-height: 1.16; color: #0d0e13; margin-top: 14px; } .ds-card-body { font-family: Inter, sans-serif; font-size: 15px; line-height: 1.62; color: #62666e; margin-top: 10px; }"
+    },
+    {
+      "name": "Nav Link",
+      "kind": "nav",
+      "refersTo": "nav-link",
+      "description": "Пункт горизонтальной навигации в шапке.",
+      "html": "<a class=\"ds-nav-link\" href=\"#\">Возможности</a>",
+      "css": ".ds-nav-link { font-family: Inter, sans-serif; font-weight: 500; font-size: 14px; color: #0d0e13; text-decoration: none; transition: color 0.2s; } .ds-nav-link:hover, .ds-nav-link:focus-visible { color: #e6007e; }"
+    },
+    {
+      "name": "Text Input",
+      "kind": "input",
+      "refersTo": "input-default",
+      "description": "Поле формы заявки — острые углы, hairline-граница, фокус в Registration Pink.",
+      "html": "<input class=\"ds-input\" type=\"text\" placeholder=\"Ваше имя\" />",
+      "css": ".ds-input { width: 100%; background: #fafaf8; border: 1px solid #e7e7e4; padding: 14px 16px; font-family: Inter, sans-serif; font-size: 15px; color: #0d0e13; } .ds-input::placeholder { color: #8a8e96; } .ds-input:focus-visible { outline: 2px solid #e6007e; outline-offset: 2px; border-color: #e6007e; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "Метка приводки (The Registration Mark)",
+    "overview": "Про-Принт печатает CMYK-цветом на скоростной десятикрасочной флексомашине, и совмещение красок — метки приводки, тонкие линии, точные пересечения — это в буквальном смысле то, от чего зависит качество их тиража. Сайт берёт эту точность как визуальный язык: острые прямые углы почти везде, тонкие hairline-границы, точное вертикальное выравнивание типографики, и единственная мягкость, которую система себе позволяет, — это разлитые, размытые CMYK-пятна (розовое, голубое, жёлтое) на фоне, читаемые как раскладка красок на проявленном оттиске. Система нарочно бедна на украшения: почти никаких теней, почти никаких скруглений, никакого случайного орнамента.",
+    "keyCharacteristics": [
+      "Острые прямые углы по умолчанию — сохраняются только для декоративных цветовых пятен и точек-разделителей.",
+      "Один плотный тёмный нейтральный (ink) на белой бумаге; CMYK-акценты используются точечно, а не по площади.",
+      "Display-гарнитура (Unbounded, вес 700–800) несёт всю выразительность; тело текста (Inter) остаётся тихим.",
+      "Почти плоская система: глубина передаётся размытыми цветовыми пятнами, а не тенями.",
+      "Плотная, предсказуемая сетка `.shell` с отзывчивыми полями (20 → 32 → 56 → 72px)."
+    ],
+    "rules": [
+      { "name": "The Ink-Or-Accent Rule", "body": "Текст либо ink (основной), либо один из трёх CMYK-акцентов — не бывает произвольных серых оттенков текста вне muted/muted-soft.", "section": "colors" },
+      { "name": "The Point, Not Fill Rule", "body": "CMYK-акценты красят точки, обводки, подчёркивания и размытые фоновые пятна — не сплошные крупные площади интерфейса.", "section": "colors" },
+      { "name": "The One Display Voice Rule", "body": "Все заголовки используют одну гарнитуру (Unbounded) на весах 700–800.", "section": "typography" },
+      { "name": "The Flat-By-Default Rule", "body": "Поверхности плоские в состоянии покоя; единственная форма глубины — размытые цветовые CMYK-пятна на фоне, а не box-shadow.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do держать углы острыми (0px) для всего функционального UI.",
+      "Do использовать CMYK-акценты точечно, а не сплошной заливкой.",
+      "Do держать всю выразительность заголовков в Unbounded 700–800.",
+      "Do передавать глубину размытыми CMYK-пятнами, а не тенями."
+    ],
+    "donts": [
+      "Don't добавлять rounded-md/lg/xl к функциональным элементам.",
+      "Don't заливать крупные площади сплошным CMYK-цветом.",
+      "Don't добавлять classic drop-shadow на карточки/кнопки в состоянии покоя.",
+      "Don't переносить .rule-grid на поверхности, не связанные с процессом печати."
+    ]
+  }
+}
