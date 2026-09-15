@@ -4,7 +4,6 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { motion, useReducedMotion, type Variants } from "framer-motion";
 import { hero } from "@/lib/content";
 import { CursorIcon } from "../ui/Icons";
-import HeroTray from "./HeroTray";
 import type { Probe } from "./orbScene";
 
 /** Пипетка работает там, где есть настоящий курсор и шар стоит в своей колонке. */
@@ -100,15 +99,6 @@ export default function HeroOrb({
   const pinRef = useRef<SVGCircleElement>(null);
   const swatchRefs = useRef<(HTMLSpanElement | null)[]>([]);
   const labRefs = useRef<(HTMLElement | null)[]>([]);
-  const bandRef = useRef<SVGPathElement>(null);
-
-  // Увели пипетку — печать на лотке возвращается к макету (sea). lastRgb
-  // сбрасываем, чтобы при следующем наведении цвет записался заново.
-  useEffect(() => {
-    if (active) return;
-    lastRgb.current = "";
-    if (bandRef.current) bandRef.current.style.fill = "";
-  }, [active]);
 
   const toggle = useCallback((on: boolean) => {
     window.clearTimeout(leaveTimer.current);
@@ -167,7 +157,6 @@ export default function HeroOrb({
           lastRgb.current = rgb;
           if (dotFillRef.current) dotFillRef.current.style.backgroundColor = rgb;
           for (const s of swatchRefs.current) if (s) s.style.backgroundColor = rgb;
-          if (bandRef.current) bandRef.current.style.fill = rgb;
           toLab(p.rgb).forEach((v, i) => {
             const el = labRefs.current[i];
             if (el) el.textContent = num(v);
@@ -281,26 +270,16 @@ export default function HeroOrb({
         className={`absolute inset-0 transition-opacity duration-700 ease-out ${ready ? "opacity-100" : "opacity-0"}`}
       />
 
-      {/* Лоток с печатью на плёнке стоит на полу перед шаром: краска и
-          то, на что она ложится. Пипетка перекрашивает его верхнюю полосу. */}
-      {probe ? (
-        <HeroTray
-          bandRef={bandRef}
-          active={active}
-          className="pointer-events-none absolute left-[-17%] top-[71%] hidden w-[44%] lg:block"
-        />
-      ) : null}
-
       {/* Подпись под шаром — только там, где пипетка действительно работает
           (lg, настоящий курсор, без «уменьшения движения»). Пока идёт замер,
           она притухает: внимание уже на карточке. */}
       {probe && !still ? (
         <div
-          className={`pointer-events-none absolute left-1/2 top-[96%] hidden w-max -translate-x-1/2 text-center transition-opacity duration-300 ease-out lg:[@media(hover:hover)_and_(pointer:fine)]:block ${
+          className={`pointer-events-none absolute right-[-4%] top-[95%] hidden w-[15.5rem] text-right transition-opacity duration-300 ease-out lg:[@media(hover:hover)_and_(pointer:fine)]:block ${
             active ? "opacity-35" : "opacity-100"
           }`}
         >
-          <p className="flex items-center justify-center gap-2 font-display text-[14.5px] font-semibold leading-none text-ink">
+          <p className="flex items-center justify-end gap-2 font-display text-[14.5px] font-semibold leading-none text-ink">
             <CursorIcon className="h-[17px] w-[17px] shrink-0" strokeWidth={1.6} />
             {hero.probe.hint}
           </p>

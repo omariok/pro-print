@@ -10,6 +10,7 @@ import {
   Vector3,
   WebGLRenderer,
 } from "three";
+import { createFilm } from "./orbFilm";
 
 /*
  * Живой шар Hero: глянцевая сфера с полосой печатных красок, как на исходном
@@ -19,7 +20,12 @@ import {
  * полоса CMYK-красок (пурпур слева, жёлтый в центре, голубой справа), сверху
  * светлый купол, снизу краска уходит в тёмный глянец, по краю радужная плёнка.
  * Курсор продавливает поверхность (ямка с пружинной задержкой и короткая
- * волна) и перемешивает краски вокруг себя. Каждый кадр — один draw call.
+ * волна) и перемешивает краски вокруг себя.
+ *
+ * С --orb-film: 1 под шаром едет плёнка с этикетками (orbFilm.ts) — шар
+ * работает печатным цилиндром. Холст тогда выходит за квадрат сцены на
+ * --orb-bleed-l / -r / -b (доли её ширины), а камера смещает кадр так, что
+ * сфера остаётся ровно на своём месте.
  *
  * Модуль грузится динамическим import() из HeroOrb, поэтому three.js не
  * попадает в первый бандл страницы.
@@ -240,8 +246,10 @@ const INKS: [number, number][] = [
 ];
 
 const CAMERA_Z = 5;
+/** Тангенс половины угла обзора на квадрат сцены (объектив 28°). */
+const TAN_HALF = Math.tan((14 * Math.PI) / 180);
 /** Полувысота кадра в плоскости шара: переводит скорость курсора из NDC в мировые единицы. */
-const HALF_VIEW = CAMERA_Z * Math.tan((14 * Math.PI) / 180);
+const HALF_VIEW = CAMERA_Z * TAN_HALF;
 
 /** Цвет в sRGB 0–1: шейдер пишет в экран напрямую, без конвертации цветового пространства. */
 function srgb(hex: number) {
@@ -252,7 +260,7 @@ function srgb(hex: number) {
 export type Probe = {
   /** Курсор над сферой. */
   active: boolean;
-  /** Положение курсора относительно холста, CSS px. */
+  /** Положение курсора относительно квадрата сцены, CSS px. */
   x: number;
   y: number;
   /** Цвет пикселя под курсором, sRGB 0–255; null, пока замера не было. */
@@ -281,7 +289,9 @@ export function createOrb(host: HTMLElement, { still, onReady, onProbe }: Option
   renderer.setClearColor(0x000000, 0);
 
   const canvas = renderer.domElement;
-  canvas.style.cssText = "position:absolute;inset:0;width:100%;height:100%;display:block";
+  // Холст может выходить за сцену (плёнка) и лечь поверх текста — клики
+  // сквозь него проходят; курсор ловят слушатели на window.
+  canvas.style.cssText = "position:absolute;left:0;top:0;width:100%;height:100%;display:block;pointer-events:none";
   host.appendChild(canvas);
 
   const scene = new Scene();
@@ -311,26 +321,65 @@ export function createOrb(host: HTMLElement, { still, onReady, onProbe }: Option
   const mesh = new Mesh(geometry, material);
   scene.add(mesh);
 
+  const film = createFilm(CAMERA_Z);
+  film.group.visible = false;
+  scene.add(film.group);
+
   const render = () => renderer.render(scene, camera);
+
+  // Секция Hero обрезает всё, что ниже неё: холст дальше её края не тянем,
+  // иначе плёнка упрётся в срез, а не растворится.
+  const clip = host.closest("section");
 
   const resize = () => {
     const w = host.clientWidth;
     const h = host.clientHeight;
     if (!w || !h) return;
-    renderer.setSize(w, h, false);
-    camera.aspect = w / h;
-    camera.updateProjectionMatrix();
-    // Раскладку полосы задаёт вёрстка (--orb-band-x / --orb-band-k): она
+    // Раскладку полосы и плёнку задаёт вёрстка через CSS-переменные: она
     // знает, какая часть шара видна на этой ширине. Смена брейкпоинта меняет
     // и размер сцены, так что ResizeObserver её не пропустит.
     const css = getComputedStyle(host);
-    const bandX = parseFloat(css.getPropertyValue("--orb-band-x"));
-    const bandK = parseFloat(css.getPropertyValue("--orb-band-k"));
-    uniforms.uBand.value.set(Number.isFinite(bandX) ? bandX : 0, Number.isFinite(bandK) ? bandK : 1);
+    const read = (name: string, fallback: number) => {
+      const v = parseFloat(css.getPropertyValue(name));
+      return Number.isFinite(v) ? v : fallback;
+    };
+    uniforms.uBand.value.set(read("--orb-band-x", 0), read("--orb-band-k", 1));
+
+    const filmOn = read("--orb-film", 0) > 0;
+    film.group.visible = filmOn;
+    const bl = filmOn ? read("--orb-bleed-l", 0) : 0;
+    const br = filmOn ? read("--orb-bleed-r", 0) : 0;
+    let bb = filmOn ? read("--orb-bleed-b", 0) : 0;
+    if (bb > 0 && clip) {
+      const below = clip.getBoundingClientRect().bottom - host.getBoundingClientRect().bottom;
+      bb = Math.max(0, Math.min(bb, below / h));
+    }
+
+    const W = w * (1 + bl + br);
+    const H = h * (1 + bb);
+    canvas.style.left = `${-bl * 100}%`;
+    canvas.style.width = `${(1 + bl + br) * 100}%`;
+    canvas.style.height = `${(1 + bb) * 100}%`;
+    renderer.setSize(W, H, false);
+
+    // Кадр строим вокруг центра сферы и вырезаем из него холст: шар стоит
+    // там же и того же размера, что без плёнки, — поля просто добавляются.
+    const cx = w * bl + w / 2;
+    const cy = h / 2;
+    const halfW = Math.max(cx, W - cx);
+    const halfH = Math.max(cy, H - cy);
+    camera.fov = (2 * Math.atan((TAN_HALF * 2 * halfH) / h) * 180) / Math.PI;
+    camera.aspect = halfW / halfH;
+    camera.setViewOffset(2 * halfW, 2 * halfH, halfW - cx, halfH - cy, W, H);
+
+    // Плёнка растворяется у левого и нижнего края холста.
+    const pr = renderer.getPixelRatio();
+    film.setFade(Math.max(bl, 0.05) * w * pr, Math.max(bb, 0.05) * h * pr);
     if (still) render();
   };
   const ro = new ResizeObserver(resize);
   ro.observe(host);
+  if (clip) ro.observe(clip);
   resize();
 
   if (still) {
@@ -341,6 +390,7 @@ export function createOrb(host: HTMLElement, { still, onReady, onProbe }: Option
         ro.disconnect();
         geometry.dispose();
         material.dispose();
+        film.dispose();
         renderer.dispose();
         canvas.remove();
       },
@@ -387,7 +437,10 @@ export function createOrb(host: HTMLElement, { still, onReady, onProbe }: Option
   const hitPoint = uniforms.uHitW.value;
   const drag = uniforms.uDrag.value;
   const dragTarget = new Vector2();
-  const prevNdc = new Vector2();
+  // Курсор в NDC квадрата сцены: от него считаются скорость и поворот шара,
+  // сколько бы холст ни выходил за сцену ради плёнки.
+  const local = new Vector2();
+  const prevLocal = new Vector2();
 
   let press = 0;
   let pressVel = 0;
@@ -396,22 +449,27 @@ export function createOrb(host: HTMLElement, { still, onReady, onProbe }: Option
   let tiltX = 0;
   let tiltY = 0;
   let onSphere = false;
+  const probe: Probe = { active: false, x: 0, y: 0, rgb: null };
   let rect = canvas.getBoundingClientRect();
+  let hostRect = host.getBoundingClientRect();
 
   const step = (dt: number) => {
     uniforms.uTime.value += dt;
 
     rect = canvas.getBoundingClientRect();
+    hostRect = host.getBoundingClientRect();
+    // Луч пускаем в NDC холста — смещение кадра уже в матрице камеры.
     ndc.set(((clientX - rect.left) / rect.width) * 2 - 1, -(((clientY - rect.top) / rect.height) * 2 - 1));
+    local.set(((clientX - hostRect.left) / hostRect.width) * 2 - 1, -(((clientY - hostRect.top) / hostRect.height) * 2 - 1));
     // Скорость курсора в плоскости шара, мировых единиц в секунду.
-    const vx = dt > 0 ? ((ndc.x - prevNdc.x) / dt) * HALF_VIEW : 0;
-    const vy = dt > 0 ? ((ndc.y - prevNdc.y) / dt) * HALF_VIEW : 0;
-    prevNdc.copy(ndc);
+    const vx = dt > 0 ? ((local.x - prevLocal.x) / dt) * HALF_VIEW : 0;
+    const vy = dt > 0 ? ((local.y - prevLocal.y) / dt) * HALF_VIEW : 0;
+    prevLocal.copy(local);
 
     // Шар медленно вращается и чуть поворачивается к курсору.
     spin += dt * 0.09;
-    const tx = pointerActive ? Math.max(-1.5, Math.min(1.5, -ndc.y)) * 0.16 : 0;
-    const ty = pointerActive ? Math.max(-1.5, Math.min(1.5, ndc.x)) * 0.22 : 0;
+    const tx = pointerActive ? Math.max(-1.5, Math.min(1.5, -local.y)) * 0.16 : 0;
+    const ty = pointerActive ? Math.max(-1.5, Math.min(1.5, local.x)) * 0.22 : 0;
     const ease = 1 - Math.exp(-dt * 3);
     tiltX += (tx - tiltX) * ease;
     tiltY += (ty - tiltY) * ease;
@@ -450,6 +508,10 @@ export function createOrb(host: HTMLElement, { still, onReady, onProbe }: Option
     stir += (stirTarget - stir) * (1 - Math.exp(-dt * (stirTarget > stir ? 4 : 1.1)));
     uniforms.uStir.value = stir;
     drag.lerp(dragTarget, 1 - Math.exp(-dt * 5));
+
+    // Лента идёт всегда, а когда курсор мешает краску — быстрее; этикетка,
+    // которая сейчас выходит из-под шара, печатается цветом пипетки.
+    if (film.group.visible) film.step(dt, stir, probe.active ? probe.rgb : null);
   };
 
   /* ---------- пипетка ---------- */
@@ -458,7 +520,6 @@ export function createOrb(host: HTMLElement, { still, onReady, onProbe }: Option
   // render(): буфер ещё не отдан композитору, preserveDrawingBuffer не нужен.
   const gl = renderer.getContext();
   const pixel = new Uint8Array(4);
-  const probe: Probe = { active: false, x: 0, y: 0, rgb: null };
   let lastSample = -Infinity;
 
   const measure = (t: number) => {
@@ -467,13 +528,13 @@ export function createOrb(host: HTMLElement, { still, onReady, onProbe }: Option
     if (!onProbe || (!hovering && !probe.active)) return;
     const entered = hovering && !probe.active;
     probe.active = hovering;
-    probe.x = clientX - rect.left;
-    probe.y = clientY - rect.top;
+    probe.x = clientX - hostRect.left;
+    probe.y = clientY - hostRect.top;
     if (hovering && (entered || t - lastSample > SAMPLE_MS)) {
       lastSample = t;
       const k = canvas.width / rect.width;
-      const px = Math.min(canvas.width - 1, Math.max(0, Math.floor(probe.x * k)));
-      const py = Math.min(canvas.height - 1, Math.max(0, canvas.height - 1 - Math.floor(probe.y * k)));
+      const px = Math.min(canvas.width - 1, Math.max(0, Math.floor((clientX - rect.left) * k)));
+      const py = Math.min(canvas.height - 1, Math.max(0, canvas.height - 1 - Math.floor((clientY - rect.top) * k)));
       gl.readPixels(px, py, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, pixel);
       probe.rgb = [pixel[0], pixel[1], pixel[2]];
     }
@@ -541,6 +602,7 @@ export function createOrb(host: HTMLElement, { still, onReady, onProbe }: Option
       document.documentElement.removeEventListener("mouseleave", onLeave);
       geometry.dispose();
       material.dispose();
+      film.dispose();
       renderer.dispose();
       canvas.remove();
     },

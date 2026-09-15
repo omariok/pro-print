@@ -232,7 +232,7 @@ export default function Hero() {
               иначе там остаётся один пурпур с оранжевым. Ниже lg под Hero
               идут преимущества, поэтому тёмный низ шара растворяется в бумаге
               чуть ниже центра, а не срезается краем секции. */}
-          <HeroOrb probe className="w-[150vw] [--orb-band-k:1.45] [--orb-band-x:-0.55] [mask-image:linear-gradient(to_bottom,#000_50%,transparent_63%)] sm:w-[82vw] sm:[mask-image:linear-gradient(to_bottom,#000_40%,rgba(0,0,0,0.55)_52%,transparent_64%)] lg:w-[var(--orb-w)] lg:[--orb-band-k:1] lg:[--orb-band-x:0] lg:[mask-image:none]" />
+          <HeroOrb probe className="w-[150vw] [--orb-band-k:1.45] [--orb-band-x:-0.55] [mask-image:linear-gradient(to_bottom,#000_50%,transparent_63%)] sm:w-[82vw] sm:[mask-image:linear-gradient(to_bottom,#000_40%,rgba(0,0,0,0.55)_52%,transparent_64%)] lg:w-[var(--orb-w)] lg:[--orb-band-k:1] lg:[--orb-band-x:0] lg:[--orb-bleed-b:0.3] lg:[--orb-bleed-l:0.12] lg:[--orb-bleed-r:0.14] lg:[--orb-film:1] lg:[mask-image:none]" />
         </motion.div>
       </div>
 
