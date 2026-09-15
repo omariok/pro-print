@@ -2,7 +2,7 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import { ArrowIcon } from "./Icons";
 
-type Variant = "dark" | "pink" | "link" | "outline";
+type Variant = "dark" | "accent" | "link" | "outline";
 
 type Props = {
   href: string;
@@ -14,12 +14,12 @@ type Props = {
 
 const styles: Record<Variant, string> = {
   dark:
-    "bg-ink text-white hover:bg-[#22242c] px-6 py-3.5 sm:px-7 sm:py-4 shadow-[0_1px_0_rgba(13,14,19,0.9)]",
-  pink:
-    "bg-cmyk-pink-deep text-white hover:bg-cmyk-pink px-6 py-3.5 sm:px-7 sm:py-4",
+    "rounded-pill bg-ink text-paper hover:bg-ink-hover active:scale-[0.97] px-6 py-3.5 sm:px-7 sm:py-4",
+  accent:
+    "rounded-pill bg-accent text-ink-deep hover:bg-accent-hover active:scale-[0.97] px-6 py-3.5 sm:px-7 sm:py-4",
   outline:
-    "border border-line-strong text-ink hover:border-ink hover:bg-paper-soft px-6 py-3.5 sm:px-7 sm:py-4",
-  link: "text-cmyk-pink hover:text-cmyk-pink-deep",
+    "rounded-pill border border-line-strong text-ink hover:border-ink hover:bg-paper-soft active:scale-[0.97] px-6 py-3.5 sm:px-7 sm:py-4",
+  link: "text-[var(--accent-text)] hover:text-ink",
 };
 
 export default function Button({
@@ -32,11 +32,11 @@ export default function Button({
   return (
     <Link
       href={href}
-      className={`group inline-flex items-center justify-center gap-2.5 font-display text-[14px] font-bold tracking-[-0.005em] transition-colors duration-300 sm:text-[15px] ${styles[variant]} ${className}`}
+      className={`group inline-flex items-center justify-center gap-2.5 font-display text-[14px] font-bold tracking-[-0.005em] press sm:text-[15px] ${styles[variant]} ${className}`}
     >
       {children}
       {arrow ? (
-        <ArrowIcon className="h-[18px] w-[18px] transition-transform duration-300 group-hover:translate-x-1" />
+        <ArrowIcon className="h-[18px] w-[18px] transition-transform duration-200 group-hover:translate-x-1" />
       ) : null}
     </Link>
   );

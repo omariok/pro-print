@@ -40,11 +40,7 @@ export default function PrivacyPage() {
     <section className="bg-paper pb-20 pt-16 sm:pb-24 sm:pt-20 lg:pt-24">
       <div className="shell">
         <Reveal>
-          <p className="eyebrow">Правовая информация</p>
-        </Reveal>
-
-        <Reveal delay={0.06}>
-          <h1 className="mt-5 max-w-[18ch] font-display text-[clamp(28px,4.4vw,50px)] font-extrabold leading-[1.06] tracking-[-0.03em] text-ink sm:mt-6">
+          <h1 className="max-w-[18ch] font-display text-[clamp(28px,4.4vw,50px)] font-extrabold leading-[1.06] tracking-[-0.03em] text-ink">
             Политика обработки персональных данных
           </h1>
         </Reveal>

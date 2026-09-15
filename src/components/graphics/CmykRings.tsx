@@ -38,7 +38,7 @@ export default function CmykRings({ className = "", rings = 15 }: Props) {
             cy={CY}
             r={r}
             fill="none"
-            stroke="#0d0e13"
+            stroke="#233038"
             strokeOpacity={0.13 + (i / radii.length) * 0.07}
             strokeWidth={1.1}
           />
@@ -48,19 +48,19 @@ export default function CmykRings({ className = "", rings = 15 }: Props) {
       <path
         d={arc(radii[radii.length - 1] + 14, 196, 74)}
         fill="none"
-        stroke="var(--color-cmyk-pink)"
+        stroke="var(--color-accent)"
         strokeWidth={3.2}
         strokeLinecap="round"
       />
       <path
         d={arc(radii[radii.length - 1] + 14, 4, -60)}
         fill="none"
-        stroke="var(--color-cmyk-yellow)"
+        stroke="var(--color-sand)"
         strokeWidth={3.2}
         strokeLinecap="round"
       />
 
-      <circle cx={CX} cy={CY} r={17} fill="var(--color-cmyk-cyan)" />
+      <circle cx={CX} cy={CY} r={17} fill="var(--color-sea)" />
     </svg>
   );
 }

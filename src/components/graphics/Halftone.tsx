@@ -1,12 +1,12 @@
 const COLORS = [
-  "#4cb8e0",
-  "#e6007e",
-  "#f3d144",
-  "#2b2d33",
-  "#9aa0a8",
-  "#f8b6d6",
-  "#bde3f4",
-  "#faeab0",
+  "#12698c",
+  "#ff5b04",
+  "#f4d47c",
+  "#233038",
+  "#9aa6ab",
+  "#ffc2a1",
+  "#b3d3e0",
+  "#faeac0",
 ];
 
 /** Deterministic pseudo-random so server and client render identically. */

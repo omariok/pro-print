@@ -6,16 +6,15 @@ export default function Pvc() {
   return (
     <section
       id="pvc"
-      className="relative overflow-hidden bg-gradient-to-b from-paper to-paper-soft py-20 sm:py-24 lg:py-28"
+      className="relative overflow-hidden bg-gradient-to-b from-paper to-paper-soft py-16 sm:py-20 lg:py-24"
     >
       <div
         aria-hidden
-        className="pointer-events-none absolute -right-32 top-24 h-[420px] w-[420px] rounded-full bg-cmyk-cyan/10 blur-[130px]"
+        className="pointer-events-none absolute -right-32 top-24 h-[420px] w-[420px] rounded-full bg-sea/10 blur-[130px]"
       />
 
       <div className="shell relative">
         <SectionHead
-          eyebrow={pvc.eyebrow}
           title={pvc.title}
           lede={pvc.lede}
           titleClassName="max-w-[18ch]"
@@ -24,8 +23,7 @@ export default function Pvc() {
         {/* Применения: широкие полосы, без карточек — чтобы не повторять сетку «Продукции». */}
         <div className="mt-14 lg:mt-16">
           <Reveal>
-            {/* Тот же кегль, что у eyebrow, но нейтральным цветом: это подзаголовок
-                внутри секции, а не вторая метка секции. */}
+            {/* Мелкая разрядка нейтральным цветом: подзаголовок внутри секции. */}
             <h3 className="font-display text-[11px] font-bold uppercase leading-none tracking-[0.22em] text-muted">
               {pvc.usesTitle}
             </h3>
@@ -35,7 +33,7 @@ export default function Pvc() {
             {pvc.uses.map((use, i) => (
               <Reveal as="li" key={use.title} delay={0.05 * i}>
                 <div className="flex h-full items-start gap-4 border-b border-line py-6 sm:py-7">
-                  <span className="mt-[5px] font-display text-[11px] font-bold tracking-[0.06em] text-cmyk-pink">
+                  <span className="mt-[5px] font-display text-[11px] font-bold tracking-[0.06em] text-[var(--accent-text)]">
                     {String(i + 1).padStart(2, "0")}
                   </span>
                   <div>
@@ -57,7 +55,7 @@ export default function Pvc() {
               <h3 className="h-section max-w-[12ch] text-ink">{pvc.advTitle}</h3>
             </Reveal>
             <Reveal delay={0.08}>
-              <p className="mt-6 max-w-[42ch] border-l-2 border-cmyk-pink pl-5 text-[14.5px] leading-[1.62] text-muted">
+              <p className="mt-6 max-w-[42ch] border-l-2 border-accent pl-5 text-[14.5px] leading-[1.62] text-muted">
                 {pvc.note}
               </p>
             </Reveal>

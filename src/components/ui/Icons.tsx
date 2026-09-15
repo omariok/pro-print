@@ -10,6 +10,34 @@ const base = {
   strokeLinejoin: "round" as const,
 };
 
+/** Огранённый камень — яркость и стойкость печати. */
+export function DiamondIcon(props: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" {...base} {...props}>
+      <path d="M6.8 4h10.4l4 5.2L12 20.4 2.8 9.2 6.8 4Z" />
+      <path d="M2.8 9.2h18.4M9.4 4 8 9.2l4 11.2 4-11.2L14.6 4" />
+    </svg>
+  );
+}
+
+export function ShieldIcon(props: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" {...base} {...props}>
+      <path d="M12 3 4.8 5.6v5.8c0 4.4 3 8.2 7.2 9.6 4.2-1.4 7.2-5.2 7.2-9.6V5.6L12 3Z" />
+      <path d="m8.9 12 2.2 2.2 4-4.2" />
+    </svg>
+  );
+}
+
+export function LeafIcon(props: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" {...base} {...props}>
+      <path d="M5.4 18.6C4 12 7.6 5.4 19.6 4.4c.4 11.4-5.6 15.6-12.2 14.8" />
+      <path d="M4 20c3.4-4.6 6.8-7.6 11-9.8" />
+    </svg>
+  );
+}
+
 export function PhoneIcon(props: IconProps) {
   return (
     <svg viewBox="0 0 24 24" {...base} {...props}>

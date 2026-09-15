@@ -4,11 +4,11 @@ import SectionHead from "../ui/SectionHead";
 
 export function ProductionGrid() {
   return (
-    <div className="grid gap-px border border-line bg-line md:grid-cols-3">
+    <div className="grid gap-px overflow-hidden rounded-panel bg-ink/10 ring-1 ring-ink/10 md:grid-cols-3">
       {production.cards.map((card) => (
         <article
           key={card.title}
-          className="bg-paper-soft p-7 transition-colors duration-300 hover:bg-white sm:p-8 lg:p-10"
+          className="bg-card p-7 transition-colors duration-200 hover:bg-paper sm:p-8 lg:p-10"
         >
           <h3 className="h-card text-ink">{card.title}</h3>
           <p className="mt-4 max-w-[52ch] text-[15px] leading-[1.6] text-muted">{card.text}</p>
@@ -22,11 +22,10 @@ export default function Production() {
   return (
     <section
       id="production"
-      className="bg-gradient-to-b from-paper-soft to-paper py-20 sm:py-24 lg:py-28"
+      className="bg-paper-grey py-16 sm:py-20 lg:py-24"
     >
       <div className="shell">
         <SectionHead
-          eyebrow={production.eyebrow}
           title={production.title}
           lede={production.lede}
           titleClassName="max-w-[17ch]"

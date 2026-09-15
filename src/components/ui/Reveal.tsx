@@ -1,17 +1,36 @@
 "use client";
 
-import { motion, type Variants } from "framer-motion";
-import type { ReactNode } from "react";
+import { useEffect, useRef, type ReactNode } from "react";
 
-const variants: Variants = {
-  hidden: { opacity: 0, y: 26, filter: "blur(6px)" },
-  shown: {
-    opacity: 1,
-    y: 0,
-    filter: "blur(0px)",
-    transition: { duration: 0.72, ease: [0.16, 1, 0.3, 1] },
-  },
-};
+/**
+ * Раскрытие блока при въезде в экран — обёртка стоит почти на каждой секции.
+ *
+ * Сам переход живёт в CSS (`[data-reveal]` в globals.css), а JS только
+ * переключает атрибут: на главной таких блоков около полусотни, и держать
+ * полсотни анимаций библиотеки — значит платить за них при гидратации и на
+ * каждом кадре прокрутки. Композитору достаточно opacity и transform.
+ *
+ * Длительность намеренно короткая: за одну прокрутку эту анимацию видно два-три
+ * десятка раз, а на такой частоте она обязана быть незаметной, а не красивой.
+ */
+
+/** Один наблюдатель на страницу вместо одного на каждый блок. */
+let observer: IntersectionObserver | null = null;
+
+function getObserver() {
+  observer ??= new IntersectionObserver(
+    (entries) => {
+      for (const entry of entries) {
+        if (!entry.isIntersecting) continue;
+        (entry.target as HTMLElement).dataset.reveal = "shown";
+        observer?.unobserve(entry.target);
+      }
+    },
+    // Блок проявляется, отступив от кромки экрана, а не ровно на ней.
+    { rootMargin: "-80px 0px -80px 0px" },
+  );
+  return observer;
+}
 
 type Props = {
   children: ReactNode;
@@ -21,16 +40,32 @@ type Props = {
 };
 
 export default function Reveal({ children, delay = 0, className, as = "div" }: Props) {
-  const Tag = motion[as] as typeof motion.div;
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const node = ref.current;
+    if (!node) return;
+
+    // Без IntersectionObserver показываем сразу: пустой экран хуже, чем
+    // блок, появившийся без анимации.
+    if (typeof IntersectionObserver === "undefined") {
+      node.dataset.reveal = "shown";
+      return;
+    }
+
+    const io = getObserver();
+    io.observe(node);
+    return () => io.unobserve(node);
+  }, []);
+
+  const Tag = as as "div";
 
   return (
     <Tag
+      ref={ref}
+      data-reveal=""
       className={className}
-      variants={variants}
-      initial="hidden"
-      whileInView="shown"
-      viewport={{ once: true, margin: "-80px 0px -80px 0px" }}
-      transition={{ delay }}
+      style={delay ? { transitionDelay: `${delay}s` } : undefined}
     >
       {children}
     </Tag>

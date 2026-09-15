@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form";
 import { AnimatePresence, motion } from "framer-motion";
 import { site } from "@/lib/content";
 import { CheckIcon } from "./Icons";
+import RegisterMark from "./RegisterMark";
 
 type Values = {
   name: string;
@@ -22,10 +23,11 @@ type Values = {
 const label =
   "block font-display text-[10.5px] font-bold uppercase tracking-[0.14em] text-ink/72";
 const field =
-  "mt-2.5 w-full border bg-white px-4 py-3.5 text-[15px] text-ink placeholder:text-muted-soft/85 transition-colors duration-200 focus:outline-none focus:ring-0";
+  "mt-2.5 w-full rounded-tile border bg-card px-4 py-3.5 text-[15px] text-ink placeholder:text-muted-soft transition-colors duration-200 focus:outline-none focus:ring-0";
 const ok = "border-line-strong focus:border-ink";
-const bad = "border-cmyk-pink focus:border-cmyk-pink";
-const errorText = "mt-1.5 block text-[12.5px] text-cmyk-pink";
+const bad = "border-accent focus:border-accent";
+const errorText = "mt-1.5 block text-[12.5px] text-[var(--accent-text)]";
+const optional = "ml-1.5 font-medium normal-case tracking-[0.04em] text-muted-soft";
 
 export default function RequestForm({ className = "" }: { className?: string }) {
   const [sent, setSent] = useState(false);
@@ -61,32 +63,31 @@ export default function RequestForm({ className = "" }: { className?: string }) 
   };
 
   return (
-    <div className={`relative border border-line bg-white p-6 sm:p-8 lg:p-10 ${className}`}>
+    <div className={`relative rounded-panel border border-line bg-card p-6 sm:p-8 lg:p-10 ${className}`}>
       <AnimatePresence>
         {sent ? (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-5 bg-white px-8 text-center"
+            className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-5 rounded-panel bg-card px-8 text-center"
           >
-            <span className="flex h-14 w-14 items-center justify-center rounded-full bg-cmyk-pink/10">
-              <CheckIcon className="h-7 w-7 text-cmyk-pink" />
-            </span>
+            <RegisterMark />
             <div>
-              <p className="font-display text-[22px] font-extrabold tracking-[-0.02em] text-ink">
+              <p className="font-display text-[23px] font-extrabold tracking-[-0.024em] text-ink">
                 Заявка отправлена
               </p>
               <p className="mx-auto mt-3 max-w-[38ch] text-[15px] leading-[1.6] text-muted">
-                Менеджер отдела продаж перезвонит в рабочее время и уточнит параметры тиража.
+                Менеджер отдела продаж перезвонит в рабочее время ({site.schedule}) и уточнит
+                параметры тиража. Если нужно раньше — звоните сами: {site.phone}.
               </p>
             </div>
             <button
               type="button"
               onClick={() => setSent(false)}
-              className="font-display text-[14px] font-bold text-cmyk-pink underline underline-offset-4 transition-colors hover:text-ink"
+              className="font-display text-[14px] font-bold text-[var(--accent-text)] underline underline-offset-4 transition-colors hover:text-ink"
             >
-              Отправить ещё одну
+              Отправить ещё одну заявку
             </button>
           </motion.div>
         ) : null}
@@ -96,7 +97,7 @@ export default function RequestForm({ className = "" }: { className?: string }) 
         <div className="grid gap-5 sm:grid-cols-2 sm:gap-x-6">
           <div>
             <label className={label} htmlFor="rf-name">
-              Имя *
+              Имя
             </label>
             <input
               id="rf-name"
@@ -107,7 +108,7 @@ export default function RequestForm({ className = "" }: { className?: string }) 
               className={`${field} ${errors.name ? bad : ok}`}
               {...register("name", {
                 required: "Укажите имя",
-                minLength: { value: 2, message: "Слишком короткое имя" },
+                minLength: { value: 2, message: "Имя должно быть не короче двух символов" },
               })}
             />
             {errors.name ? (
@@ -119,7 +120,7 @@ export default function RequestForm({ className = "" }: { className?: string }) 
 
           <div>
             <label className={label} htmlFor="rf-company">
-              Компания *
+              Компания
             </label>
             <input
               id="rf-company"
@@ -139,13 +140,13 @@ export default function RequestForm({ className = "" }: { className?: string }) 
 
           <div>
             <label className={label} htmlFor="rf-phone">
-              Телефон *
+              Телефон
             </label>
             <input
               id="rf-phone"
               type="tel"
               inputMode="tel"
-              placeholder="+7 ..."
+              placeholder="+7 900 000-00-00"
               aria-invalid={Boolean(errors.phone)}
               aria-describedby={errors.phone ? "rf-phone-error" : undefined}
               className={`${field} ${errors.phone ? bad : ok}`}
@@ -153,7 +154,7 @@ export default function RequestForm({ className = "" }: { className?: string }) 
                 required: "Укажите телефон",
                 pattern: {
                   value: /^\+?[0-9\s()-]{10,20}$/,
-                  message: "Проверьте номер телефона",
+                  message: "Номер нужен в формате +7 900 000-00-00",
                 },
               })}
             />
@@ -166,7 +167,7 @@ export default function RequestForm({ className = "" }: { className?: string }) 
 
           <div>
             <label className={label} htmlFor="rf-email">
-              E-mail *
+              E-mail
             </label>
             <input
               id="rf-email"
@@ -179,7 +180,7 @@ export default function RequestForm({ className = "" }: { className?: string }) 
                 required: "Укажите e-mail",
                 pattern: {
                   value: /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/,
-                  message: "Проверьте адрес почты",
+                  message: "Адрес должен быть вида name@company.ru",
                 },
               })}
             />
@@ -192,7 +193,7 @@ export default function RequestForm({ className = "" }: { className?: string }) 
 
           <div>
             <label className={label} htmlFor="rf-volume">
-              Объём и параметры
+              Объём и параметры <span className={optional}>необязательно</span>
             </label>
             <input
               id="rf-volume"
@@ -205,7 +206,7 @@ export default function RequestForm({ className = "" }: { className?: string }) 
 
           <div>
             <label className={label} htmlFor="rf-machine">
-              Упаковочная машина
+              Упаковочная машина <span className={optional}>необязательно</span>
             </label>
             <input
               id="rf-machine"
@@ -218,7 +219,7 @@ export default function RequestForm({ className = "" }: { className?: string }) 
 
           <div className="sm:col-span-2">
             <label className={label} htmlFor="rf-artwork">
-              Ссылка на макет
+              Ссылка на макет <span className={optional}>необязательно</span>
             </label>
             <input
               id="rf-artwork"
@@ -231,7 +232,7 @@ export default function RequestForm({ className = "" }: { className?: string }) 
 
           <div className="sm:col-span-2">
             <label className={label} htmlFor="rf-comment">
-              Комментарий
+              Комментарий <span className={optional}>необязательно</span>
             </label>
             <textarea
               id="rf-comment"
@@ -249,18 +250,18 @@ export default function RequestForm({ className = "" }: { className?: string }) 
             className="peer sr-only"
             aria-invalid={Boolean(errors.consent)}
             aria-describedby={errors.consent ? "rf-consent-error" : undefined}
-            {...register("consent", { required: "Требуется согласие" })}
+            {...register("consent", { required: "Без согласия мы не можем отправить заявку" })}
           />
           <span
-            className={`mt-[2px] flex h-[18px] w-[18px] shrink-0 items-center justify-center border transition-colors duration-200 peer-checked:border-cmyk-pink peer-checked:bg-cmyk-pink peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-cmyk-pink ${
-              errors.consent ? "border-cmyk-pink" : "border-line-strong"
+            className={`mt-[2px] flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-[6px] border transition-colors duration-200 peer-checked:border-accent peer-checked:bg-accent peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-accent peer-checked:[&_svg]:opacity-100 ${
+              errors.consent ? "border-accent" : "border-line-strong"
             }`}
           >
-            <CheckIcon className="h-3 w-3 text-white opacity-0 transition-opacity duration-200 peer-checked:opacity-100" />
+            <CheckIcon className="h-3 w-3 text-ink-deep opacity-0 transition-opacity duration-200" />
           </span>
           <span className="text-[13.5px] leading-[1.5] text-muted">
             Согласен на обработку персональных данных в соответствии с 152-ФЗ и{" "}
-            <Link href="/privacy" className="text-cmyk-pink underline underline-offset-2">
+            <Link href="/privacy" className="text-[var(--accent-text)] underline underline-offset-2">
               политикой обработки персональных данных
             </Link>
             .
@@ -272,10 +273,15 @@ export default function RequestForm({ className = "" }: { className?: string }) 
           </span>
         ) : null}
 
+        <p className="mt-6 text-[13.5px] leading-[1.55] text-muted">
+          Что дальше: менеджер перезвонит в рабочее время ({site.schedule}), уточнит тираж,
+          материал и красочность. Макет на этом шаге не нужен — расчёт делаем по параметрам.
+        </p>
+
         <button
           type="submit"
           disabled={isSubmitting}
-          className="mt-7 w-full bg-cmyk-pink-deep py-4 font-display text-[15px] font-bold text-white transition-colors duration-300 hover:bg-cmyk-pink disabled:cursor-wait disabled:opacity-70"
+          className="mt-4 w-full rounded-pill bg-accent py-4 font-display text-[15px] font-bold text-ink-deep press hover:bg-accent-hover active:scale-[0.97] disabled:cursor-wait disabled:opacity-70"
         >
           {isSubmitting ? "Отправляем…" : "Отправить заявку"}
         </button>
@@ -284,7 +290,7 @@ export default function RequestForm({ className = "" }: { className?: string }) 
           Или отправьте макет и параметры напрямую на{" "}
           <a
             href={`mailto:${site.email}`}
-            className="text-ink underline decoration-line-strong underline-offset-2 transition-colors hover:text-cmyk-pink"
+            className="text-ink underline decoration-line-strong underline-offset-2 transition-colors hover:text-[var(--accent-text)]"
           >
             {site.email}
           </a>

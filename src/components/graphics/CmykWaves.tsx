@@ -13,10 +13,10 @@ function wave(amplitude: number) {
 }
 
 const STROKES = [
-  { color: "var(--color-cmyk-cyan)", y: 120, amp: 46, width: 13, duration: "26s" },
-  { color: "var(--color-cmyk-pink)", y: 210, amp: 42, width: 13, duration: "31s" },
-  { color: "var(--color-cmyk-yellow)", y: 296, amp: 38, width: 13, duration: "36s" },
-  { color: "#2b2d33", y: 380, amp: 34, width: 13, duration: "41s" },
+  { color: "var(--color-sea)", y: 120, amp: 46, width: 13, duration: "26s" },
+  { color: "var(--color-accent)", y: 210, amp: 42, width: 13, duration: "31s" },
+  { color: "var(--color-sand)", y: 296, amp: 38, width: 13, duration: "36s" },
+  { color: "var(--color-ink)", y: 380, amp: 34, width: 13, duration: "41s" },
 ];
 
 /** The four CMYK ribbons that run across the "printed roll" visual. */

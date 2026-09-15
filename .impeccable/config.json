@@ -47,6 +47,20 @@
         ],
         "createdAt": "2026-09-08T09:21:22.042Z",
         "reason": "Sanctioned in DESIGN.md L156/L193: the 104px hairline field is the press registration grid, a motivated measurement surface restricted to Hero video background and Aurora (print-process surfaces only), never general ornament."
+      },
+      {
+        "rule": "design-system-font",
+        "value": "${family}",
+        "createdAt": "2026-09-12T05:30:27.927Z"
+      },
+      {
+        "rule": "design-system-color",
+        "value": "*",
+        "files": [
+          "src/components/graphics/HeroOrb.tsx"
+        ],
+        "createdAt": "2026-09-15T10:06:45.843Z",
+        "reason": "User-requested CMYK process-ink palette from the original hero video (DESIGN.md, Hero orb); the CSS fallback mirrors the shader inks in orbScene.ts, not site UI colour"
       }
     ]
   }

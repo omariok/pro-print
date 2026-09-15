@@ -12,12 +12,12 @@ type Props = {
 
 export function SpecTable({ rows = metrics.rows }: { rows?: [string, string][] }) {
   return (
-    <dl className="border-t border-white/12">
+    <dl className="border-t border-ink/14">
       {rows.map(([label, value], i) => (
         <Reveal key={label} delay={Math.min(i * 0.035, 0.28)}>
-          <div className="flex flex-col gap-1.5 border-b border-white/12 py-4 sm:flex-row sm:items-baseline sm:justify-between sm:gap-8 sm:py-[18px]">
-            <dt className="text-[14.5px] leading-[1.4] text-white/58">{label}</dt>
-            <dd className="font-display text-[15px] font-bold leading-[1.35] tracking-[-0.015em] text-white sm:text-right sm:text-[16px]">
+          <div className="flex flex-col gap-1.5 border-b border-ink/10 py-4 sm:flex-row sm:items-baseline sm:justify-between sm:gap-8 sm:py-[18px]">
+            <dt className="text-[14.5px] leading-[1.4] text-muted">{label}</dt>
+            <dd className="font-display text-[15.5px] font-bold leading-[1.35] tracking-[-0.015em] text-ink sm:text-right sm:text-[17px]">
               {value}
             </dd>
           </div>
@@ -31,29 +31,27 @@ export default function Metrics({ variant = "full", title, lede, rows }: Props) 
   return (
     <section
       id="specs"
-      className="relative overflow-hidden bg-ink py-20 text-white sm:py-24 lg:py-28"
+      className="relative overflow-hidden bg-cream py-16 sm:py-20 lg:py-24"
     >
-      <div className="pointer-events-none absolute -left-40 top-0 h-[460px] w-[460px] rounded-full bg-cmyk-pink/8 blur-[130px]" />
-      <div className="pointer-events-none absolute -right-40 bottom-0 h-[420px] w-[420px] rounded-full bg-cmyk-cyan/8 blur-[130px]" />
+      <div aria-hidden className="pointer-events-none absolute -left-40 top-0 h-[460px] w-[460px] rounded-full bg-accent/10 blur-[130px]" />
+      <div aria-hidden className="pointer-events-none absolute -right-40 bottom-0 h-[420px] w-[420px] rounded-full bg-sand/45 blur-[130px]" />
 
       <div className="shell relative grid gap-12 lg:grid-cols-[0.82fr_1.18fr] lg:gap-16 xl:gap-24">
         <div>
           {variant === "full" ? (
             <SectionHead
-              eyebrow={metrics.eyebrow}
               title={metrics.title}
               lede={metrics.lede}
-              tone="light"
               titleClassName="max-w-[14ch]"
             />
           ) : (
             <>
               <Reveal>
-                <h2 className="h-section max-w-[14ch] text-white">{title}</h2>
+                <h2 className="h-section max-w-[14ch] text-ink">{title}</h2>
               </Reveal>
               {lede ? (
                 <Reveal delay={0.06}>
-                  <p className="lede mt-5 max-w-[46ch] text-white/62">{lede}</p>
+                  <p className="lede mt-5 max-w-[46ch] text-muted">{lede}</p>
                 </Reveal>
               ) : null}
             </>

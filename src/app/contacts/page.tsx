@@ -24,22 +24,18 @@ export default function ContactsPage() {
       {/* Заголовочный блок */}
       <section className="relative overflow-hidden bg-cream pb-14 pt-16 sm:pb-16 sm:pt-20 lg:pb-20 lg:pt-24">
         <div aria-hidden className="pointer-events-none absolute inset-0">
-          <div className="absolute -right-28 -top-24 h-[420px] w-[420px] rounded-full bg-cmyk-pink/8 blur-[130px]" />
-          <div className="absolute -left-28 bottom-0 h-[360px] w-[360px] rounded-full bg-cmyk-yellow/14 blur-[120px]" />
+          <div className="absolute -right-28 -top-24 h-[420px] w-[420px] rounded-full bg-accent/8 blur-[130px]" />
+          <div className="absolute -left-28 bottom-0 h-[360px] w-[360px] rounded-full bg-sand/14 blur-[120px]" />
         </div>
 
         <div className="shell relative">
           <Reveal>
-            <p className="eyebrow">{contacts.eyebrow}</p>
-          </Reveal>
-
-          <Reveal delay={0.06}>
-            <h1 className="mt-5 max-w-[16ch] font-display text-[clamp(30px,5.2vw,60px)] font-extrabold leading-[1.04] tracking-[-0.03em] text-ink sm:mt-6">
+            <h1 className="max-w-[16ch] font-display text-[clamp(30px,5.2vw,60px)] font-extrabold leading-[1.04] tracking-[-0.03em] text-ink">
               {contacts.title}
             </h1>
           </Reveal>
 
-          <Reveal delay={0.12}>
+          <Reveal delay={0.06}>
             <p className="lede mt-6 max-w-[54ch]">{contacts.lede}</p>
           </Reveal>
         </div>
@@ -55,7 +51,7 @@ export default function ContactsPage() {
               return (
                 <Reveal as="li" key={item.label} delay={0.05 * i}>
                   <div className="flex items-start gap-4 border-b border-line py-6 sm:gap-5 sm:py-7">
-                    <Icon className="mt-1 h-[20px] w-[20px] shrink-0 text-cmyk-pink" />
+                    <Icon className="mt-1 h-[20px] w-[20px] shrink-0 text-accent" />
                     <div>
                       <p className="font-display text-[10.5px] font-bold uppercase tracking-[0.16em] text-muted-soft">
                         {item.label}
@@ -63,7 +59,7 @@ export default function ContactsPage() {
                       {item.href ? (
                         <a
                           href={item.href}
-                          className="mt-2 block font-display text-[18px] font-extrabold tracking-[-0.02em] text-ink transition-colors duration-200 hover:text-cmyk-pink sm:text-[21px]"
+                          className="contact-value -mb-1 mt-1 block py-1 text-ink transition-colors duration-200 hover:text-[var(--accent-text)]"
                         >
                           {item.value}
                         </a>
@@ -80,19 +76,19 @@ export default function ContactsPage() {
           </ul>
 
           <Reveal delay={0.12}>
-            <div className="border border-line bg-paper-soft p-7 sm:p-9">
-              <h2 className="font-display text-[20px] font-extrabold tracking-[-0.025em] text-ink sm:text-[24px]">
+            <div className="rounded-panel border border-ink/10 bg-paper-grey p-7 sm:p-9">
+              <h2 className="h-card text-ink">
                 {contacts.requisitesTitle}
               </h2>
 
-              <dl className="mt-7 border-t border-line">
+              <dl className="mt-7 border-t border-ink/14">
                 {contacts.requisites.map(([label, value]) => (
                   <div
                     key={label}
-                    className="flex flex-col gap-1.5 border-b border-line py-4 sm:flex-row sm:items-baseline sm:justify-between sm:gap-8"
+                    className="flex flex-col gap-1.5 border-b border-ink/10 py-4 sm:flex-row sm:items-baseline sm:justify-between sm:gap-8"
                   >
                     <dt className="text-[14px] leading-[1.4] text-muted-soft">{label}</dt>
-                    <dd className="max-w-[34ch] text-[14.5px] leading-[1.45] text-ink-soft sm:text-right">
+                    <dd className="max-w-[34ch] text-[14.5px] leading-[1.45] tabular-nums text-ink-soft sm:text-right">
                       {value}
                     </dd>
                   </div>
@@ -102,7 +98,7 @@ export default function ContactsPage() {
               <ul className="mt-7 space-y-3">
                 {contact.points.map((point) => (
                   <li key={point} className="flex items-start gap-3">
-                    <CheckIcon className="mt-[3px] h-[16px] w-[16px] shrink-0 text-cmyk-pink" />
+                    <CheckIcon className="mt-[3px] h-[16px] w-[16px] shrink-0 text-accent" />
                     <span className="text-[14.5px] leading-[1.5] text-muted">{point}</span>
                   </li>
                 ))}
@@ -118,21 +114,17 @@ export default function ContactsPage() {
         className="relative overflow-hidden bg-paper-grey py-16 sm:py-20 lg:py-24"
       >
         <div aria-hidden className="pointer-events-none absolute inset-0">
-          <div className="absolute -left-24 top-0 h-[400px] w-[400px] rounded-full bg-cmyk-cyan/12 blur-[130px]" />
-          <div className="absolute -right-24 bottom-0 h-[400px] w-[400px] rounded-full bg-cmyk-pink/10 blur-[130px]" />
+          <div className="absolute -left-24 top-0 h-[400px] w-[400px] rounded-full bg-sea/12 blur-[130px]" />
+          <div className="absolute -right-24 bottom-0 h-[400px] w-[400px] rounded-full bg-accent/10 blur-[130px]" />
         </div>
 
         <div className="shell relative">
           <div className="mx-auto max-w-[860px] text-center">
             <Reveal>
-              <p className="eyebrow">{contact.eyebrow}</p>
+              <h2 className="h-section mx-auto max-w-[18ch] text-ink">{contact.title}</h2>
             </Reveal>
 
             <Reveal delay={0.06}>
-              <h2 className="h-section mx-auto mt-5 max-w-[18ch] text-ink">{contact.title}</h2>
-            </Reveal>
-
-            <Reveal delay={0.12}>
               <p className="lede mx-auto mt-5 max-w-[52ch]">{contact.lede}</p>
             </Reveal>
           </div>

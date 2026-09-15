@@ -1,20 +1,20 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, Unbounded } from "next/font/google";
+import { Manrope, Onest } from "next/font/google";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import "./globals.css";
 
-const unbounded = Unbounded({
+// Обе гарнитуры вариативные — массив weight указывать нельзя, иначе Next
+// подгрузит статические срезы и потеряет промежуточные начертания.
+const manrope = Manrope({
   subsets: ["latin", "cyrillic"],
-  weight: ["400", "500", "600", "700", "800"],
-  variable: "--font-unbounded",
+  variable: "--font-manrope",
   display: "swap",
 });
 
-const inter = Inter({
+const onest = Onest({
   subsets: ["latin", "cyrillic"],
-  weight: ["400", "500", "600", "700"],
-  variable: "--font-inter",
+  variable: "--font-onest",
   display: "swap",
 });
 
@@ -48,9 +48,13 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#ffffff",
+  themeColor: "#fdf6e3",
   width: "device-width",
   initialScale: 1,
+  // Раскладываем страницу под вырез: без этого в альбомной ориентации
+  // iPhone оставляет по бокам чёрные поля, а с ним поля забирает уже сама
+  // вёрстка — .shell и .shell-header учитывают safe-area-inset.
+  viewportFit: "cover",
 };
 
 export default function RootLayout({
@@ -59,16 +63,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="ru" className={`${unbounded.variable} ${inter.variable}`}>
-      <body className="min-h-screen bg-paper antialiased">
+    <html lang="ru" className={`${manrope.variable} ${onest.variable}`}>
+      <body className="min-h-dvh bg-paper antialiased">
         <a
           href="#main"
-          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:bg-ink focus:px-4 focus:py-2 focus:text-sm focus:text-white"
+          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-tile focus:bg-ink focus:px-5 focus:py-2.5 focus:text-sm focus:text-paper"
         >
           Перейти к содержимому
         </a>
         <Header />
-        <main id="main" className="pt-[68px] lg:pt-[76px]">
+        <main id="main" className="pt-[var(--header-h)]">
           {children}
         </main>
         <Footer />
