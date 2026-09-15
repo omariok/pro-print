@@ -51,13 +51,13 @@ function MaterialRotator() {
       {/* Полный перечень материалов — один раз, для скринридеров и роботов. */}
       <span className="sr-only">{hero.materialsPlain}</span>
 
-      {/* Кегль подобран так, чтобы самое длинное название («барьерной
-          многослойной плёнке») укладывалось в одну строку на планшете и
-          десктопе; на телефоне оно переносится, но высоту окна держат
-          «мерки», поэтому заголовок не прыгает. */}
+      {/* Третий ярус: мельче подзаголовка над ним. Кегль подобран так, чтобы
+          самое длинное название («барьерной многослойной плёнке») укладывалось
+          в одну строку на планшете и десктопе; на телефоне оно переносится,
+          но высоту окна держат «мерки», поэтому блок не прыгает. */}
       <span
         aria-hidden
-        className="mt-3 flex items-start gap-x-[0.34em] text-[clamp(21px,5.6vw,25px)] font-bold leading-[1.2] tracking-[-0.02em] text-ink/72 sm:mt-4 sm:text-[clamp(25px,3.4vw,33px)] lg:text-[clamp(22px,1.95vw,29px)]"
+        className="mt-3 flex items-start gap-x-[0.34em] text-[clamp(19px,5vw,22px)] font-bold leading-[1.2] tracking-[-0.02em] text-ink/72 sm:mt-4 sm:text-[clamp(22px,3vw,28px)] lg:text-[clamp(20px,1.7vw,26px)]"
       >
         <span className="shrink-0">{hero.materialsPrefix}</span>
 
@@ -158,30 +158,28 @@ export default function Hero() {
                 {text}
               </motion.span>
             ))}
-
-            {/* Анимация объектом, а не вариантом: иначе ротатор внутри
-                попадает в вариантное дерево заголовка. */}
-            <motion.span
-              initial={{ opacity: 0, y: 34 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{
-                delay: 0.06 + hero.titleLines.length * 0.07,
-                duration: 0.55,
-                ease: [0.16, 1, 0.3, 1],
-              }}
-              className="block"
-            >
-              <MaterialRotator />
-            </motion.span>
           </h1>
 
+          {/* Второй ярус после заголовка: ради этой мысли и печатают в 10
+              красок, поэтому она крупнее и тяжелее перечня материалов под ней. */}
+          <motion.p
+            initial={{ opacity: 0, y: 26 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2, duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
+            className="mt-5 max-w-[18ch] text-balance font-display text-[clamp(27px,7vw,34px)] font-extrabold leading-[1.1] tracking-[-0.03em] text-ink sm:mt-6 sm:max-w-[22ch] sm:text-[clamp(32px,4.4vw,42px)] lg:text-[clamp(30px,2.7vw,42px)]"
+          >
+            {hero.subtitle}
+          </motion.p>
+
+          {/* Анимация объектом, а не вариантом: иначе ротатор внутри
+              попадает в чужое вариантное дерево. */}
           <motion.p
             initial={{ opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.38, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-            className="h-card mt-6 max-w-[24ch] text-ink sm:mt-7 sm:text-[23px] lg:max-w-none"
+            transition={{ delay: 0.3, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+            className="font-display"
           >
-            {hero.subtitle}
+            <MaterialRotator />
           </motion.p>
 
           <motion.div
