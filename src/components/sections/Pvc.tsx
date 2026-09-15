@@ -10,7 +10,7 @@ export default function Pvc() {
     >
       <div
         aria-hidden
-        className="pointer-events-none absolute -right-32 top-24 h-[420px] w-[420px] rounded-full bg-sea/10 blur-[130px]"
+        className="glow pointer-events-none absolute -right-32 top-24 h-[420px] w-[420px] text-sea/10"
       />
 
       <div className="shell relative">

@@ -60,17 +60,20 @@ export default function VideoBackground({
   return (
     <div className={`absolute inset-0 overflow-hidden ${className}`} aria-hidden="true">
       {/* Ролик проявляется, когда готов первый кадр: фон секции подобран под его
-          бумагу, поэтому до загрузки на месте ролика та же ровная подложка. */}
+          бумагу, поэтому до загрузки на месте ролика та же ровная подложка.
+          preload="none" и без autoPlay: 4K-файл не качается параллельно с
+          первым экраном, загрузку запускает play() из наблюдателя выше, когда
+          секция въехала в экран. При reduced motion ролик не грузится вовсе —
+          остаётся постер. */}
       <video
         ref={ref}
-        className={`max-w-none transition-opacity duration-700 ease-out ${ready ? "opacity-100" : "opacity-0"} ${videoClassName}`}
+        className={`max-w-none transition-opacity duration-700 ease-out ${ready || (still && poster) ? "opacity-100" : "opacity-0"} ${videoClassName}`}
         src={src}
         poster={poster}
-        autoPlay={!still}
         muted
         loop
         playsInline
-        preload="auto"
+        preload="none"
         disablePictureInPicture
         onLoadedData={() => setReady(true)}
       />

@@ -73,7 +73,7 @@ export default function Capabilities() {
             </article>
 
             <article className="relative flex flex-col justify-center overflow-hidden bg-cream p-7 sm:col-span-2 sm:p-8 lg:col-span-3 lg:p-9">
-              <div aria-hidden className="pointer-events-none absolute -right-16 -top-16 h-56 w-56 rounded-full bg-accent/14 blur-3xl" />
+              <div aria-hidden className="glow pointer-events-none absolute -right-16 -top-16 h-56 w-56 text-accent/14" />
               <div className="relative flex flex-col gap-6 md:flex-row md:items-center md:justify-between md:gap-10">
                 <div>
                   <h3 className="h-card text-ink">{capabilities.callout.title}</h3>

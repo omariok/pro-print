@@ -36,7 +36,7 @@ export default function GlobalError({
               fontWeight: 700,
               letterSpacing: "0.22em",
               textTransform: "uppercase",
-              color: "#bd3f00",
+              color: "#b53c00",
             }}
           >
             Сбой сайта

@@ -24,8 +24,8 @@ export default function ContactsPage() {
       {/* Заголовочный блок */}
       <section className="relative overflow-hidden bg-cream pb-14 pt-16 sm:pb-16 sm:pt-20 lg:pb-20 lg:pt-24">
         <div aria-hidden className="pointer-events-none absolute inset-0">
-          <div className="absolute -right-28 -top-24 h-[420px] w-[420px] rounded-full bg-accent/8 blur-[130px]" />
-          <div className="absolute -left-28 bottom-0 h-[360px] w-[360px] rounded-full bg-sand/14 blur-[120px]" />
+          <div className="glow absolute -right-28 -top-24 h-[420px] w-[420px] text-accent/8" />
+          <div className="glow absolute -left-28 bottom-0 h-[360px] w-[360px] text-sand/14" />
         </div>
 
         <div className="shell relative">
@@ -59,7 +59,9 @@ export default function ContactsPage() {
                       {item.href ? (
                         <a
                           href={item.href}
-                          className="contact-value -mb-1 mt-1 block py-1 text-ink transition-colors duration-200 hover:text-[var(--accent-text)]"
+                          /* Поля 11px добирают строку до 44px; отрицательные
+                             отступы оставляют текст там же, где он был. */
+                          className="contact-value -mb-[11px] -mt-[3px] block py-[11px] text-ink transition-colors duration-200 hover:text-[var(--accent-text)]"
                         >
                           {item.value}
                         </a>
@@ -114,8 +116,8 @@ export default function ContactsPage() {
         className="relative overflow-hidden bg-paper-grey py-16 sm:py-20 lg:py-24"
       >
         <div aria-hidden className="pointer-events-none absolute inset-0">
-          <div className="absolute -left-24 top-0 h-[400px] w-[400px] rounded-full bg-sea/12 blur-[130px]" />
-          <div className="absolute -right-24 bottom-0 h-[400px] w-[400px] rounded-full bg-accent/10 blur-[130px]" />
+          <div className="glow absolute -left-24 top-0 h-[400px] w-[400px] text-sea/12" />
+          <div className="glow absolute -right-24 bottom-0 h-[400px] w-[400px] text-accent/10" />
         </div>
 
         <div className="shell relative">

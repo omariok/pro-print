@@ -33,8 +33,8 @@ export default function Metrics({ variant = "full", title, lede, rows }: Props) 
       id="specs"
       className="relative overflow-hidden bg-cream py-16 sm:py-20 lg:py-24"
     >
-      <div aria-hidden className="pointer-events-none absolute -left-40 top-0 h-[460px] w-[460px] rounded-full bg-accent/10 blur-[130px]" />
-      <div aria-hidden className="pointer-events-none absolute -right-40 bottom-0 h-[420px] w-[420px] rounded-full bg-sand/45 blur-[130px]" />
+      <div aria-hidden className="glow pointer-events-none absolute -left-40 top-0 h-[460px] w-[460px] text-accent/10" />
+      <div aria-hidden className="glow pointer-events-none absolute -right-40 bottom-0 h-[420px] w-[420px] text-sand/45" />
 
       <div className="shell relative grid gap-12 lg:grid-cols-[0.82fr_1.18fr] lg:gap-16 xl:gap-24">
         <div>

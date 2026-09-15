@@ -9,8 +9,8 @@ export default function Footer() {
     /* Скруглённая «шапка» подвала наезжает на предыдущую секцию: иначе в
        вырезах углов просвечивал бы белый фон body, а не сама секция. */
     <footer className="relative z-10 -mt-9 overflow-hidden rounded-t-slab bg-cream">
-      <div aria-hidden className="pointer-events-none absolute -left-40 -top-40 h-[420px] w-[420px] rounded-full bg-accent/10 blur-[120px]" />
-      <div aria-hidden className="pointer-events-none absolute -right-32 bottom-0 h-[360px] w-[360px] rounded-full bg-sea/10 blur-[120px]" />
+      <div aria-hidden className="glow pointer-events-none absolute -left-40 -top-40 h-[420px] w-[420px] text-accent/10" />
+      <div aria-hidden className="glow pointer-events-none absolute -right-32 bottom-0 h-[360px] w-[360px] text-sea/10" />
 
       <div className="shell relative">
         <div className="grid gap-12 py-16 lg:grid-cols-[1.45fr_1fr] lg:gap-24 lg:py-20 xl:py-24">
@@ -25,11 +25,13 @@ export default function Footer() {
             <p className="font-display text-[11px] font-bold uppercase tracking-[0.22em] text-muted-soft">
               Контакты
             </p>
-            <ul className="mt-6 space-y-4 text-[15px] leading-[1.6]">
+            {/* Ссылки добраны полями до 44px, шаг списка — 20px: зоны нажатия
+                телефона и почты сходятся встык, не перекрываясь. */}
+            <ul className="mt-6 space-y-5 text-[15px] leading-[1.6]">
               <li>
                 <a
                   href={site.phoneHref}
-                  className="-my-1 inline-block py-1 font-display font-bold tracking-[-0.01em] text-ink transition-colors duration-200 hover:text-[var(--accent-text)]"
+                  className="-my-2.5 inline-block py-2.5 font-display font-bold tracking-[-0.01em] text-ink transition-colors duration-200 hover:text-[var(--accent-text)]"
                 >
                   {site.phone}
                 </a>
@@ -37,7 +39,7 @@ export default function Footer() {
               <li>
                 <a
                   href={`mailto:${site.email}`}
-                  className="-my-1 inline-block py-1 text-ink transition-colors duration-200 hover:text-[var(--accent-text)]"
+                  className="-my-2.5 inline-block py-2.5 text-ink transition-colors duration-200 hover:text-[var(--accent-text)]"
                 >
                   {site.email}
                 </a>
@@ -55,7 +57,7 @@ export default function Footer() {
             </p>
             <Link
               href={footer.legal.href}
-              className="-my-1 inline-block py-1 text-muted underline decoration-ink/20 underline-offset-4 transition-colors duration-200 hover:text-[var(--accent-text)] hover:decoration-[var(--accent-text)]"
+              className="-my-3 inline-block py-3 text-muted underline decoration-ink/20 underline-offset-4 transition-colors duration-200 hover:text-[var(--accent-text)] hover:decoration-[var(--accent-text)]"
             >
               {footer.legal.label}
             </Link>

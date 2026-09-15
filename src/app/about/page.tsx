@@ -18,8 +18,8 @@ export default function AboutPage() {
       {/* Заголовочный блок */}
       <section className="relative overflow-hidden bg-cream pb-16 pt-16 sm:pb-20 sm:pt-20 lg:pb-24 lg:pt-24">
         <div aria-hidden className="pointer-events-none absolute inset-0">
-          <div className="absolute -right-28 -top-24 h-[440px] w-[440px] rounded-full bg-accent/8 blur-[130px]" />
-          <div className="absolute -left-32 bottom-0 h-[380px] w-[380px] rounded-full bg-sea/12 blur-[120px]" />
+          <div className="glow absolute -right-28 -top-24 h-[440px] w-[440px] text-accent/8" />
+          <div className="glow absolute -left-32 bottom-0 h-[380px] w-[380px] text-sea/12" />
         </div>
 
         <div className="shell relative">

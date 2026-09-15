@@ -129,8 +129,8 @@ export default function Hero() {
       <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 top-[var(--header-h)] -z-10 hidden lg:block">
         <div className="shell h-full pb-16 pt-10">
           <div className="relative h-full">
-            <div className="absolute right-[calc(var(--orb-w)*-0.28)] top-1/2 aspect-square w-[calc(var(--orb-w)*1.56)] -translate-y-[56%] rounded-full bg-[radial-gradient(circle_at_62%_38%,#fffefa,#fdfbf4_58%,#faf7ee)] shadow-[0_40px_90px_-30px_rgba(43,18,4,0.12),inset_0_0_0_1px_rgba(43,18,4,0.035)]" />
-            <div className="absolute right-[calc(var(--orb-w)*-0.9)] top-[calc(50%+var(--orb-w)*0.2)] h-[calc(var(--orb-w)*1.1)] w-[calc(var(--orb-w)*2.8)] rounded-[50%] bg-[linear-gradient(180deg,#fffdf6,rgba(249,247,238,0)_70%)] shadow-[0_-1px_0_rgba(43,18,4,0.05),0_-24px_60px_-40px_rgba(43,18,4,0.1)]" />
+            <div className="absolute right-[calc(var(--orb-w)*-0.28)] top-1/2 aspect-square w-[calc(var(--orb-w)*1.56)] -translate-y-[56%] rounded-full bg-[radial-gradient(circle_at_62%_38%,var(--color-hero-halo),var(--color-hero-halo-mid)_58%,var(--color-hero-halo-edge))] shadow-halo" />
+            <div className="absolute right-[calc(var(--orb-w)*-0.9)] top-[calc(50%+var(--orb-w)*0.2)] h-[calc(var(--orb-w)*1.1)] w-[calc(var(--orb-w)*2.8)] rounded-[50%] bg-[linear-gradient(180deg,var(--color-hero-floor),transparent_70%)] shadow-horizon" />
           </div>
         </div>
       </div>
@@ -202,8 +202,10 @@ export default function Hero() {
             <a
               href={site.phoneHref}
               /* Ниже lg телефон лежит поверх шара, прямо на пурпурной части
-                 полосы, — там ему нужна матовая подложка, как у шапки. */
-              className="rounded-pill bg-paper-hero/75 px-5 py-3 font-display text-[14.5px] font-bold text-ink backdrop-blur-md transition-colors duration-200 hover:text-[var(--accent-text)] sm:text-[15px] lg:-my-1 lg:rounded-none lg:bg-transparent lg:px-0 lg:py-1 lg:underline lg:decoration-line-strong lg:decoration-2 lg:underline-offset-[6px] lg:backdrop-blur-none lg:hover:decoration-[var(--accent-text)]"
+                 полосы, — там ему нужна плотная подложка. Без backdrop-blur:
+                 размытие над живым холстом пересчитывалось бы каждый кадр
+                 анимации шара, а на телефоне это самый дорогой слой страницы. */
+              className="rounded-pill bg-paper-hero/92 px-5 py-3 font-display text-[14.5px] font-bold text-ink transition-colors duration-200 hover:text-[var(--accent-text)] sm:text-[15px] lg:-my-1 lg:rounded-none lg:bg-transparent lg:px-0 lg:py-1 lg:underline lg:decoration-line-strong lg:decoration-2 lg:underline-offset-[6px] lg:hover:decoration-[var(--accent-text)]"
             >
               {site.phone}
             </a>

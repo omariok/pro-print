@@ -37,6 +37,13 @@
   --color-paper-grey: #e8edee;
   /* Бумага Hero — чуть светлее и холоднее paper: на ней ровнее читается стекло шара. */
   --color-paper-hero: #f9f7ee;
+  /* Студийный задник Hero от lg: круг за шаром светлеет к центру (свет
+     справа сверху), пол — светлая полоса у горизонта. Все тона на полтона
+     светлее paper-hero, иначе круг сливается с фоном. */
+  --color-hero-halo: #fffefa;
+  --color-hero-halo-mid: #fdfbf4;
+  --color-hero-halo-edge: #faf7ee;
+  --color-hero-floor: #fffdf6;
   --color-card: #fffcf4;
   --color-cream: #fbefcf;
   /* Две «акцентные» подложки на месте бывших графитовых секций: холодная
@@ -47,21 +54,41 @@
 
   --color-line: #dfe3df;
   --color-line-strong: #c5ced1;
+  /* Граница полей формы и чекбокса. У контрола обводка — единственное, что
+     отделяет его от карточки (заливки почти совпадают), поэтому ей нужно
+     3:1 по WCAG 1.4.11: line-strong даёт 1.56, этот тон — 3.2 на card. */
+  --color-line-input: #848f96;
 
   --color-muted: #56636b;
   --color-muted-soft: #5e6b73;
 
   /* Оранжевый (Pantone Orange #FF5B04) — заливки, иконки, линейки.
      Как цвет текста он не проходит 4.5:1 на кости, поэтому у него есть
-     текстовая версия глубже. */
+     текстовая версия глубже. Её тон подобран по самой холодной подложке:
+     4.8:1 на mist, от 4.9 на остальных — один цвет проходит везде. */
   --color-accent: #ff5b04;
   --color-accent-hover: #ff7433;
-  --color-accent-deep: #bd3f00;
+  --color-accent-deep: #b53c00;
   /* Крупные оранжевые цифры (≥18.66px bold): чистый #ff5b04 даёт 2.9:1, этот — 3.7:1 на слоновой кости. */
   --color-accent-strong: #e04e00;
   --color-sea: #12698c;
   --color-sand: #f4d47c;
   --color-silver: #d3dbdd;
+  /* Подложки заглушек в «Примерах»: светлые морской и оранжевый (третья —
+     песочный sand). На дымке секции они читаются как цветные оттиски. */
+  --color-wash-sea: #8fc3d8;
+  --color-wash-peach: #ffa877;
+
+  /* Тёплая тень студийного света. Тени задника Hero, шара и карточки
+     пипетки коричневые, как от лампы на бумаге, а не графитовые. */
+  --color-umber: #2b1204;
+  --shadow-halo:
+    0 40px 90px -30px color-mix(in oklab, var(--color-umber) 12%, transparent),
+    inset 0 0 0 1px color-mix(in oklab, var(--color-umber) 3.5%, transparent);
+  --shadow-horizon:
+    0 -1px 0 color-mix(in oklab, var(--color-umber) 5%, transparent),
+    0 -24px 60px -40px color-mix(in oklab, var(--color-umber) 10%, transparent);
+  --shadow-probe: 0 28px 60px -30px color-mix(in oklab, var(--color-umber) 35%, transparent);
 
   /* Триадные краски знака: C, M, Y — те же краски, что в полосе шара Hero
      (производственные цвета с оттиска), K — графит. Только для знака и
@@ -100,10 +127,14 @@
     :root { --header-h: 76px; }
   }
 
+  /* scrollbar-gutter: место под полосу прокрутки держится всегда. Иначе
+     мобильное меню (до 1280px) замыкает прокрутку, классический скроллбар
+     Windows исчезает, и страница дёргается вбок на его ширину. */
   html {
     -webkit-text-size-adjust: 100%;
     scroll-behavior: smooth;
     scroll-padding-top: calc(var(--header-h) + 20px);
+    scrollbar-gutter: stable;
   }
 
   body {
@@ -201,20 +232,6 @@
     }
   }
 
-  .eyebrow {
-    font-family: var(--font-display);
-    font-weight: 700;
-    font-size: 11px;
-    line-height: 1;
-    letter-spacing: 0.22em;
-    text-transform: uppercase;
-    color: var(--accent-text);
-  }
-
-  @media (min-width: 768px) {
-    .eyebrow { font-size: 12px; }
-  }
-
   /* Manrope уже плотный, поэтому трекинг у крупных кеглей затянут сильнее,
      чем было у широкого Unbounded, а сами кегли слегка подняты — иначе
      заголовки в новой гарнитуре теряют вес. */
@@ -280,6 +297,27 @@
   &::-webkit-scrollbar { display: none; }
 }
 
+/* Мягкое цветное свечение вместо пятна с filter: blur(). Размытие на
+   120–140px браузер держит отдельным слоем и растеризует заново при
+   каждой перерисовке рядом, а градиент рисуется за один проход.
+   Профиль снят с прежних пятен — круг, размытый примерно на 0,28 своего
+   диаметра: поэтому слой вдвое больше рамки (центр и геометрия у мест
+   вызова прежние), а в центре 80%, не 100%. Цвет и сила задаются через
+   text-*: `glow text-sea/12`. Родитель обязан обрезать выход за край. */
+@utility glow {
+  background-image: radial-gradient(
+    closest-side,
+    color-mix(in oklab, currentColor 80%, transparent),
+    color-mix(in oklab, currentColor 72%, transparent) 20%,
+    color-mix(in oklab, currentColor 57%, transparent) 35%,
+    color-mix(in oklab, currentColor 38%, transparent) 50%,
+    color-mix(in oklab, currentColor 21%, transparent) 65%,
+    color-mix(in oklab, currentColor 10%, transparent) 80%,
+    transparent
+  );
+  scale: 2;
+}
+
 /* Раскрытие блоков при въезде в экран (компонент Reveal). Переход живёт
    здесь, а не в библиотеке анимаций: таких блоков на главной около полусотни,
    и каждый кадр прокрутки они считались бы в главном потоке. Здесь же
@@ -297,6 +335,15 @@
 [data-reveal="shown"] {
   opacity: 1;
   transform: translate3d(0, 0, 0);
+}
+
+/* Страховка: скрытое состояние снимает только скрипт, и без него страница
+   осталась бы пустой. Без JS правило приходит из <noscript> в layout, а
+   если JS есть, но бандл не догрузился или гидратация упала — атрибут
+   ставит инлайн-скрипт там же, не дождавшись Reveal за 4 секунды. */
+html[data-reveal-fallback] [data-reveal] {
+  opacity: 1;
+  transform: none;
 }
 
 /* При reduced-motion остаётся проявление без движения — не пустой экран.

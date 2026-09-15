@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { AnimatePresence, motion } from "framer-motion";
 import { site } from "@/lib/content";
@@ -24,18 +24,22 @@ const label =
   "block font-display text-[10.5px] font-bold uppercase tracking-[0.14em] text-ink/72";
 const field =
   "mt-2.5 w-full rounded-tile border bg-card px-4 py-3.5 text-[15px] text-ink placeholder:text-muted-soft transition-colors duration-200 focus:outline-none focus:ring-0";
-const ok = "border-line-strong focus:border-ink";
+const ok = "border-line-input focus:border-ink";
 const bad = "border-accent focus:border-accent";
 const errorText = "mt-1.5 block text-[12.5px] text-[var(--accent-text)]";
 const optional = "ml-1.5 font-medium normal-case tracking-[0.04em] text-muted-soft";
 
 export default function RequestForm({ className = "" }: { className?: string }) {
   const [sent, setSent] = useState(false);
+  const [failed, setFailed] = useState(false);
+  const successRef = useRef<HTMLParagraphElement>(null);
+  const wasSent = useRef(false);
 
   const {
     register,
     handleSubmit,
     reset,
+    setFocus,
     formState: { errors, isSubmitting },
   } = useForm<Values>({
     mode: "onBlur",
@@ -52,14 +56,30 @@ export default function RequestForm({ className = "" }: { className?: string }) 
     },
   });
 
+  // Экран успеха перекрывает форму, и фокус остался бы на кнопке под ним:
+  // переносим его на заголовок, чтобы клавиатура и скринридер оказались там
+  // же, где глаза. После «Отправить ещё одну» — обратно в первое поле.
+  useEffect(() => {
+    if (sent) successRef.current?.focus();
+    else if (wasSent.current) setFocus("name");
+    wasSent.current = sent;
+  }, [sent, setFocus]);
+
   const onSubmit = async (values: Values) => {
-    // Бэкенда нет: имитируем отправку и показываем состояние успеха.
-    await new Promise((resolve) => setTimeout(resolve, 700));
-    if (process.env.NODE_ENV === "development") {
-      console.info("Заявка:", values);
+    setFailed(false);
+    try {
+      // Бэкенда нет: имитируем отправку и показываем состояние успеха.
+      // Когда появится /api/request, здесь будет fetch — и его ошибка
+      // (сеть, ответ не 2xx) уйдёт в catch, а не в экран «отправлено».
+      await new Promise((resolve) => setTimeout(resolve, 700));
+      if (process.env.NODE_ENV === "development") {
+        console.info("Заявка:", values);
+      }
+      reset();
+      setSent(true);
+    } catch {
+      setFailed(true);
     }
-    reset();
-    setSent(true);
   };
 
   return (
@@ -70,11 +90,16 @@ export default function RequestForm({ className = "" }: { className?: string }) 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
+            role="status"
             className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-5 rounded-panel bg-card px-8 text-center"
           >
             <RegisterMark />
             <div>
-              <p className="font-display text-[23px] font-extrabold tracking-[-0.024em] text-ink">
+              <p
+                ref={successRef}
+                tabIndex={-1}
+                className="font-display text-[23px] font-extrabold tracking-[-0.024em] text-ink outline-none"
+              >
                 Заявка отправлена
               </p>
               <p className="mx-auto mt-3 max-w-[38ch] text-[15px] leading-[1.6] text-muted">
@@ -93,7 +118,10 @@ export default function RequestForm({ className = "" }: { className?: string }) 
         ) : null}
       </AnimatePresence>
 
-      <form onSubmit={handleSubmit(onSubmit)} noValidate>
+      {/* noValidate: проверку ведёт react-hook-form, поэтому обязательность
+          сообщается скринридеру через aria-required, а ошибки — role="alert".
+          Под экраном успеха форма inert: иначе Tab уводил бы в невидимые поля. */}
+      <form onSubmit={handleSubmit(onSubmit)} noValidate inert={sent}>
         <div className="grid gap-5 sm:grid-cols-2 sm:gap-x-6">
           <div>
             <label className={label} htmlFor="rf-name">
@@ -101,6 +129,8 @@ export default function RequestForm({ className = "" }: { className?: string }) 
             </label>
             <input
               id="rf-name"
+              autoComplete="name"
+              aria-required="true"
               type="text"
               placeholder="Как к вам обращаться"
               aria-invalid={Boolean(errors.name)}
@@ -112,7 +142,7 @@ export default function RequestForm({ className = "" }: { className?: string }) 
               })}
             />
             {errors.name ? (
-              <span id="rf-name-error" className={errorText}>
+              <span id="rf-name-error" role="alert" className={errorText}>
                 {errors.name.message}
               </span>
             ) : null}
@@ -124,6 +154,8 @@ export default function RequestForm({ className = "" }: { className?: string }) 
             </label>
             <input
               id="rf-company"
+              autoComplete="organization"
+              aria-required="true"
               type="text"
               placeholder="Название предприятия"
               aria-invalid={Boolean(errors.company)}
@@ -132,7 +164,7 @@ export default function RequestForm({ className = "" }: { className?: string }) 
               {...register("company", { required: "Укажите компанию" })}
             />
             {errors.company ? (
-              <span id="rf-company-error" className={errorText}>
+              <span id="rf-company-error" role="alert" className={errorText}>
                 {errors.company.message}
               </span>
             ) : null}
@@ -144,6 +176,8 @@ export default function RequestForm({ className = "" }: { className?: string }) 
             </label>
             <input
               id="rf-phone"
+              autoComplete="tel"
+              aria-required="true"
               type="tel"
               inputMode="tel"
               placeholder="+7 900 000-00-00"
@@ -159,7 +193,7 @@ export default function RequestForm({ className = "" }: { className?: string }) 
               })}
             />
             {errors.phone ? (
-              <span id="rf-phone-error" className={errorText}>
+              <span id="rf-phone-error" role="alert" className={errorText}>
                 {errors.phone.message}
               </span>
             ) : null}
@@ -171,6 +205,8 @@ export default function RequestForm({ className = "" }: { className?: string }) 
             </label>
             <input
               id="rf-email"
+              autoComplete="email"
+              aria-required="true"
               type="email"
               placeholder="name@company.ru"
               aria-invalid={Boolean(errors.email)}
@@ -185,7 +221,7 @@ export default function RequestForm({ className = "" }: { className?: string }) 
               })}
             />
             {errors.email ? (
-              <span id="rf-email-error" className={errorText}>
+              <span id="rf-email-error" role="alert" className={errorText}>
                 {errors.email.message}
               </span>
             ) : null}
@@ -248,13 +284,14 @@ export default function RequestForm({ className = "" }: { className?: string }) 
           <input
             type="checkbox"
             className="peer sr-only"
+            aria-required="true"
             aria-invalid={Boolean(errors.consent)}
             aria-describedby={errors.consent ? "rf-consent-error" : undefined}
             {...register("consent", { required: "Без согласия мы не можем отправить заявку" })}
           />
           <span
             className={`mt-[2px] flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-[6px] border transition-colors duration-200 peer-checked:border-accent peer-checked:bg-accent peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-accent peer-checked:[&_svg]:opacity-100 ${
-              errors.consent ? "border-accent" : "border-line-strong"
+              errors.consent ? "border-accent" : "border-line-input"
             }`}
           >
             <CheckIcon className="h-3 w-3 text-ink-deep opacity-0 transition-opacity duration-200" />
@@ -268,7 +305,7 @@ export default function RequestForm({ className = "" }: { className?: string }) 
           </span>
         </label>
         {errors.consent ? (
-          <span id="rf-consent-error" className={errorText}>
+          <span id="rf-consent-error" role="alert" className={errorText}>
             {errors.consent.message}
           </span>
         ) : null}
@@ -285,6 +322,17 @@ export default function RequestForm({ className = "" }: { className?: string }) 
         >
           {isSubmitting ? "Отправляем…" : "Отправить заявку"}
         </button>
+
+        {failed ? (
+          <p role="alert" className="mt-4 text-[13.5px] leading-[1.5] text-[var(--accent-text)]">
+            Не удалось отправить заявку — введённое сохранилось, попробуйте ещё раз. Или
+            позвоните:{" "}
+            <a href={site.phoneHref} className="font-semibold underline underline-offset-2">
+              {site.phone}
+            </a>
+            .
+          </p>
+        ) : null}
 
         <p className="mt-4 text-[13.5px] leading-[1.5] text-muted">
           Или отправьте макет и параметры напрямую на{" "}

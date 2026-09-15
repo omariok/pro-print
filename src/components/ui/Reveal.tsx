@@ -46,6 +46,10 @@ export default function Reveal({ children, delay = 0, className, as = "div" }: P
     const node = ref.current;
     if (!node) return;
 
+    // Сигнал страховочному скрипту из layout: Reveal работает, открывать
+    // блоки принудительно не нужно.
+    document.documentElement.setAttribute("data-reveal-ready", "");
+
     // Без IntersectionObserver показываем сразу: пустой экран хуже, чем
     // блок, появившийся без анимации.
     if (typeof IntersectionObserver === "undefined") {

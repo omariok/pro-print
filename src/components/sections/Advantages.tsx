@@ -8,7 +8,7 @@ export default function Advantages() {
       id="why"
       className="relative overflow-hidden bg-gradient-to-b from-paper via-paper-soft to-paper-grey py-16 sm:py-20 lg:py-24"
     >
-      <div className="pointer-events-none absolute -left-32 top-1/3 h-[380px] w-[380px] rounded-full bg-sea/6 blur-[110px]" />
+      <div aria-hidden className="glow pointer-events-none absolute -left-32 top-1/3 h-[380px] w-[380px] text-sea/6" />
 
       <div className="shell relative">
         <SectionHead

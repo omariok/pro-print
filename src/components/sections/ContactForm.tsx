@@ -10,10 +10,10 @@ export default function ContactForm() {
       id="request"
       className="relative overflow-hidden bg-paper-grey py-16 sm:py-20 lg:py-24"
     >
-      {/* Декоративная подложка: мягкие CMYK-пятна, без растровых картинок */}
+      {/* Декоративная подложка: мягкое свечение градиентом, без растровых картинок */}
       <div aria-hidden className="pointer-events-none absolute inset-0">
-        <div className="absolute -left-24 top-10 h-[420px] w-[420px] rounded-full bg-accent/10 blur-[130px]" />
-        <div className="absolute -right-32 bottom-0 h-[460px] w-[460px] rounded-full bg-sea/14 blur-[140px]" />
+        <div className="glow absolute -left-24 top-10 h-[420px] w-[420px] text-accent/10" />
+        <div className="glow absolute -right-32 bottom-0 h-[460px] w-[460px] text-sea/14" />
       </div>
 
       <div className="shell relative">
@@ -39,22 +39,24 @@ export default function ContactForm() {
             </Reveal>
 
             <Reveal delay={0.24}>
-              <div className="mt-9 space-y-3">
+              {/* Телефон и почта добраны полями до 44px; шаг 22px — зоны
+                  нажатия встык, без перекрытия. */}
+              <div className="mt-9 space-y-[22px]">
                 <a
                   href={site.phoneHref}
-                  className="contact-value group -my-1 flex items-center gap-3 py-1 text-ink transition-colors duration-200 hover:text-[var(--accent-text)]"
+                  className="contact-value group -my-[11px] flex items-center gap-3 py-[11px] text-ink transition-colors duration-200 hover:text-[var(--accent-text)]"
                 >
                   <PhoneIcon className="h-[18px] w-[18px] text-accent" />
                   {site.phone}
                 </a>
                 <a
                   href={`mailto:${site.email}`}
-                  className="-my-1 flex items-center gap-3 py-1 text-[15px] text-muted transition-colors duration-200 hover:text-[var(--accent-text)]"
+                  className="-my-[11px] flex items-center gap-3 py-[11px] text-[15px] text-muted transition-colors duration-200 hover:text-[var(--accent-text)]"
                 >
                   <MailIcon className="h-[18px] w-[18px] text-accent" />
                   {site.email}
                 </a>
-                <p className="pt-1 text-[14px] leading-[1.55] text-muted-soft">
+                <p className="text-[14px] leading-[1.55] text-muted-soft">
                   {site.schedule}. Реквизиты и адреса —{" "}
                   <Link
                     href="/contacts"

@@ -1,11 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useId, useState } from "react";
 import { faq } from "@/lib/content";
 import SectionHead from "../ui/SectionHead";
 
 export default function Faq() {
   const [open, setOpen] = useState<number | null>(0);
+  // Связка кнопка → панель через aria-controls, как в Fold.
+  const baseId = useId();
 
   return (
     <section
@@ -21,6 +23,7 @@ export default function Faq() {
         <div className="mt-12 border-t border-line sm:mt-14 lg:mt-16">
           {faq.items.map((item, i) => {
             const isOpen = open === i;
+            const panelId = `${baseId}-a${i}`;
 
             return (
               <div key={item.q} className="border-b border-line">
@@ -29,6 +32,7 @@ export default function Faq() {
                     type="button"
                     onClick={() => setOpen(isOpen ? null : i)}
                     aria-expanded={isOpen}
+                    aria-controls={panelId}
                     className="group flex w-full items-start justify-between gap-6 py-5 text-left sm:py-[22px]"
                   >
                     <span
@@ -57,6 +61,7 @@ export default function Faq() {
                     Закрытие быстрее открытия: ответ уже прочитан, смотреть ту
                     же анимацию второй раз никто не хочет. */}
                 <div
+                  id={panelId}
                   aria-hidden={!isOpen}
                   className={`grid overflow-hidden transition-[grid-template-rows,opacity] ease-[cubic-bezier(0.16,1,0.3,1)] ${
                     isOpen

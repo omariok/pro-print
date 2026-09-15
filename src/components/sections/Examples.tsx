@@ -13,7 +13,7 @@ type Item = (typeof examples.items)[number];
  * тёплые панели читаются как цветные оттиски, а не как бледные заглушки.
  */
 const wash =
-  "bg-[radial-gradient(80%_75%_at_6%_2%,#8fc3d8_0%,transparent_58%),radial-gradient(75%_70%_at_96%_6%,#f4d47c_0%,transparent_56%),radial-gradient(95%_90%_at_76%_100%,#ffa877_0%,transparent_60%)] bg-card";
+  "bg-[radial-gradient(80%_75%_at_6%_2%,var(--color-wash-sea)_0%,transparent_58%),radial-gradient(75%_70%_at_96%_6%,var(--color-sand)_0%,transparent_56%),radial-gradient(95%_90%_at_76%_100%,var(--color-wash-peach)_0%,transparent_60%)] bg-card";
 
 const graphics: Record<string, React.ReactNode> = {
   roll: <CmykWaves className="absolute inset-0 h-full w-full" />,
@@ -21,14 +21,15 @@ const graphics: Record<string, React.ReactNode> = {
   raster: <Halftone className="h-[80%] w-auto" />,
 };
 
-function Slot({ item, priority }: { item: Item; priority?: boolean }) {
+// Секция ниже первого экрана: снимки грузятся лениво, без priority —
+// иначе они отнимали бы канал у шрифтов и шара Hero.
+function Slot({ item }: { item: Item }) {
   if (item.src) {
     return (
       <Image
         src={item.src}
         alt={item.alt}
         fill
-        priority={priority}
         sizes="(min-width: 1024px) 55vw, 100vw"
         className="object-cover"
       />
@@ -41,7 +42,7 @@ function Slot({ item, priority }: { item: Item; priority?: boolean }) {
       <div aria-hidden className="absolute inset-0 flex items-center justify-center">
         {graphics[item.key]}
       </div>
-      <span className="absolute bottom-4 left-4 rounded-chip border border-ink/12 bg-card/85 px-3.5 py-1.5 text-[11px] font-bold uppercase leading-none tracking-[0.14em] text-ink/70 backdrop-blur-[2px]">
+      <span className="absolute bottom-4 left-4 rounded-chip border border-ink/12 bg-card/90 px-3.5 py-1.5 text-[11px] font-bold uppercase leading-none tracking-[0.14em] text-ink/70">
         {examples.pending}
       </span>
     </>
@@ -58,11 +59,11 @@ export default function Examples() {
     >
       <div
         aria-hidden
-        className="pointer-events-none absolute -left-40 top-10 h-[460px] w-[460px] rounded-full bg-sea/12 blur-[140px]"
+        className="glow pointer-events-none absolute -left-40 top-10 h-[460px] w-[460px] text-sea/12"
       />
       <div
         aria-hidden
-        className="pointer-events-none absolute -right-40 bottom-0 h-[460px] w-[460px] rounded-full bg-accent/10 blur-[140px]"
+        className="glow pointer-events-none absolute -right-40 bottom-0 h-[460px] w-[460px] text-accent/10"
       />
 
       <div className="shell relative">
@@ -76,7 +77,7 @@ export default function Examples() {
           <Reveal delay={0.06}>
             <figure>
               <div className="relative aspect-[16/11] overflow-hidden rounded-card border border-ink/10">
-                <Slot item={lead} priority />
+                <Slot item={lead} />
               </div>
               <figcaption className="mt-3.5 text-[13.5px] leading-[1.5] text-muted">
                 {lead.caption}

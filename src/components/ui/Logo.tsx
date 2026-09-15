@@ -13,7 +13,8 @@ export default function Logo({ variant = "stacked", compact = false, className =
     <Link
       href="/"
       aria-label="Про-Принт — на главную"
-      className={`group flex items-center gap-3 ${compact ? "xl:gap-2.5" : ""} ${className}`}
+      /* Знак 36px, а палец — от 44: зона нажатия шире рисунка на 6px с каждой стороны. */
+      className={`group relative flex items-center gap-3 after:absolute after:-inset-1.5 after:content-[''] ${compact ? "xl:gap-2.5" : ""} ${className}`}
     >
       {/* Контрольная плашка CMYK: C, M, Y, K в порядке чтения. */}
       <svg viewBox="0 0 44 44" className={`h-9 w-9 shrink-0 sm:h-10 sm:w-10 ${compact ? "xl:h-[34px] xl:w-[34px]" : ""}`} aria-hidden="true">

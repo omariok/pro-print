@@ -250,8 +250,8 @@ export default function HeroOrb({
 
       {/* Контактная тень — часть объекта: без неё шар висит в воздухе.
           Широкий мягкий полутон и плотное ядро прямо под точкой касания. */}
-      <div className="absolute left-1/2 top-[88.5%] h-[10%] w-[74%] -translate-x-1/2 rounded-[50%] bg-[radial-gradient(closest-side,rgba(43,18,4,0.3),rgba(43,18,4,0.11)_55%,transparent)] blur-[7px]" />
-      <div className="absolute left-1/2 top-[90.2%] h-[3.6%] w-[44%] -translate-x-1/2 rounded-[50%] bg-[radial-gradient(closest-side,rgba(43,18,4,0.42),rgba(43,18,4,0.12)_60%,transparent)] blur-[3px]" />
+      <div className="absolute left-1/2 top-[88.5%] h-[10%] w-[74%] -translate-x-1/2 rounded-[50%] bg-[radial-gradient(closest-side,color-mix(in_oklab,var(--color-umber)_30%,transparent),color-mix(in_oklab,var(--color-umber)_11%,transparent)_55%,transparent)] blur-[7px]" />
+      <div className="absolute left-1/2 top-[90.2%] h-[3.6%] w-[44%] -translate-x-1/2 rounded-[50%] bg-[radial-gradient(closest-side,color-mix(in_oklab,var(--color-umber)_42%,transparent),color-mix(in_oklab,var(--color-umber)_12%,transparent)_60%,transparent)] blur-[3px]" />
 
       {/* Та же раскладка, что в шейдере: светлый купол, полоса красок
           пурпур → жёлтый → голубой, тёмный глянцевый низ. */}
@@ -329,7 +329,7 @@ export default function HeroOrb({
             variants={card}
             initial="off"
             animate={active ? "on" : "off"}
-            className="absolute right-[-4%] top-[3%] w-[clamp(216px,38%,262px)] rounded-card bg-card/85 p-5 shadow-[0_28px_60px_-30px_rgba(43,18,4,0.35)] ring-1 ring-ink/10 backdrop-blur-xl xl:p-6"
+            className="absolute right-[-4%] top-[3%] w-[clamp(216px,38%,262px)] rounded-card bg-card/85 p-5 shadow-probe ring-1 ring-ink/10 lg:backdrop-blur-xl xl:p-6"
           >
             <motion.p
               ref={valueRef}
@@ -389,7 +389,7 @@ export default function HeroOrb({
             />
             <span
               ref={dotFillRef}
-              className={`absolute -left-[11px] -top-[11px] block h-[22px] w-[22px] rounded-full border-2 border-white bg-paper-grey shadow-[0_0_0_1px_rgba(35,48,56,0.35),0_6px_16px_-4px_rgba(43,18,4,0.45)] transition-[opacity,scale] duration-150 ease-out ${
+              className={`absolute -left-[11px] -top-[11px] block h-[22px] w-[22px] rounded-full border-2 border-white bg-paper-grey shadow-[0_0_0_1px_color-mix(in_oklab,var(--color-ink)_35%,transparent),0_6px_16px_-4px_color-mix(in_oklab,var(--color-umber)_45%,transparent)] transition-[opacity,scale] duration-150 ease-out ${
                 active ? "scale-100 opacity-100" : "scale-50 opacity-0"
               }`}
             />

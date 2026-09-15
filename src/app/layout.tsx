@@ -63,7 +63,24 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="ru" className={`${manrope.variable} ${onest.variable}`}>
+    // suppressHydrationWarning: страховочный скрипт ниже может поставить
+    // атрибут на <html> раньше гидратации, и React не должен на это ругаться.
+    <html lang="ru" className={`${manrope.variable} ${onest.variable}`} suppressHydrationWarning>
+      <head>
+        {/* Блоки Reveal скрыты в CSS до срабатывания скрипта. Без JS их
+            показывает <noscript>; если бандл не выполнился или гидратация
+            упала, через 4 секунды их откроет инлайн-скрипт (Reveal ставит
+            data-reveal-ready, как только заработал). */}
+        <noscript>
+          <style>{"[data-reveal]{opacity:1!important;transform:none!important}"}</style>
+        </noscript>
+        <script
+          dangerouslySetInnerHTML={{
+            __html:
+              'setTimeout(function(){var d=document.documentElement;if(!d.hasAttribute("data-reveal-ready"))d.setAttribute("data-reveal-fallback","")},4000)',
+          }}
+        />
+      </head>
       <body className="min-h-dvh bg-paper antialiased">
         <a
           href="#main"
