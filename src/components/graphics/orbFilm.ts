@@ -28,7 +28,8 @@ import {
 
 /** Плёнка лежит на полу чуть ниже точки касания — шар её прижимает. */
 const FLOOR_Y = -1.004;
-const WIDTH = 0.56;
+/** Лента заметно шире этикетки: по бокам видно чистую прозрачную плёнку. */
+const WIDTH = 0.84;
 /** Шаг этикеток вдоль ленты и размер самой этикетки, мировые единицы. */
 const PERIOD = 0.84;
 const LABEL_W = 0.42;
@@ -38,8 +39,11 @@ const SLOTS = 8;
 /** Скорость ленты в покое и прибавка, когда курсор перемешивает краску. */
 const SPEED = 0.045;
 const DRIVE = 0.32;
-const ROLL_R = 0.2;
-const ROLL_LEN = WIDTH + 0.06;
+const ROLL_R = 0.21;
+const ROLL_LEN = WIDTH + 0.04;
+/** Гильза и отверстие в долях радиуса рулона: намотка толстая, гильза узкая. */
+const CORE_R = 0.36;
+const HOLE_R = 0.27;
 
 /** Путь ленты по полу (x, z): от рулона под точку касания и вперёд влево. */
 const PATH: [number, number][] = [
@@ -92,6 +96,7 @@ const FILM_FRAGMENT = /* glsl */ `
   uniform vec3 uSand;
   uniform vec3 uAccent;
   uniform vec3 uShade;
+  uniform vec3 uTint;
   uniform vec2 uFade;
 
   varying vec2 vUv;
@@ -115,18 +120,20 @@ const FILM_FRAGMENT = /* glsl */ `
     vec3 V = normalize(cameraPosition - vPosW);
     float fres = pow(1.0 - clamp(V.y, 0.0, 1.0), 3.0);
 
-    // Сама плёнка почти прозрачна: на бумаге её выдают холодный оттенок,
-    // тонкая тёмная кромка с бликом рядом и неподвижное отражение софтбокса,
-    // по которому она едет.
+    // Сама плёнка прозрачна: бумага видна сквозь неё почти без изменений.
+    // Выдают её только тонкая тёмная кромка с бликом рядом и неподвижные
+    // отражения софтбокса — узкая полоса и широкий мягкий отсвет, — по
+    // которым лента едет.
     float e = min(vUv.x, 1.0 - vUv.x) * WIDTH;
     float px = fwidth(e);
     float rim = 1.0 - smoothstep(0.0, px * 1.3, e);
     float lip = (1.0 - smoothstep(px * 1.3, px * 3.2, e)) * (1.0 - rim);
-    float glint = smoothstep(0.24, 0.0, abs(vPosW.x * 0.8 + vPosW.z * 0.55 - 0.33));
-    vec3 col = mix(uLine, uCard, 0.35);
-    col = mix(col, vec3(1.0), max(glint * 0.8, lip));
-    col = mix(col, uInk, rim * 0.55);
-    float a = 0.13 + fres * 0.14 + glint * 0.2 + lip * 0.5 + rim * 0.42;
+    float band = vPosW.x * 0.8 + vPosW.z * 0.55;
+    float glint = smoothstep(0.16, 0.0, abs(band - 0.33));
+    float sheen = smoothstep(0.8, 0.0, abs(band - 0.1));
+    vec3 col = mix(uTint, vec3(1.0), max(glint, lip));
+    col = mix(col, uInk, rim * 0.6);
+    float a = 0.035 + fres * 0.07 + sheen * 0.05 + glint * 0.26 + lip * 0.42 + rim * 0.34;
 
     // Координаты этикетки: x — слева направо, y — от дальнего края к ближнему.
     float v = vUv.y - uScroll;
@@ -150,7 +157,7 @@ const FILM_FRAGMENT = /* glsl */ `
 
     float A = la + a * (1.0 - la);
     vec3 C = (lc * la + col * a * (1.0 - la)) / max(A, 1e-4);
-    C = mix(C, vec3(1.0), glint * 0.3);
+    C = mix(C, vec3(1.0), glint * 0.35);
 
     // У точки касания плёнка в тени шара.
     float sh = exp(-dot(vPosW.xz, vPosW.xz) * 7.0);
@@ -181,9 +188,8 @@ const ROLL_VERTEX = /* glsl */ `
 `;
 
 const ROLL_FRAGMENT = /* glsl */ `
-  uniform vec3 uCard;
-  uniform vec3 uGrey;
-  uniform vec3 uSilver;
+  uniform vec3 uGlass;
+  uniform vec3 uDeep;
   uniform vec3 uKraft;
   uniform vec3 uCore;
 
@@ -196,25 +202,36 @@ const ROLL_FRAGMENT = /* glsl */ `
     vec3 N = normalize(vNormalW);
     vec3 V = normalize(cameraPosition - vPosW);
     vec3 L = normalize(vec3(-0.55, 0.75, 0.65));
+    vec3 H = normalize(L + V);
     float lam = dot(N, L) * 0.5 + 0.5;
     vec3 col;
+    float a;
     if (abs(vObjN.y) > 0.5) {
-      // Торец: витки плёнки, картонная гильза и отверстие.
+      // Торец: сотни витков прозрачной плёнки в торец дают стеклянный
+      // серо-зелёный тон с тонкими кольцами; узкая картонная гильза, отверстие.
       float r = length(vObj.xz) / ${f(ROLL_R)};
-      col = mix(uSilver, uCard, 0.55 + 0.25 * sin(r * 90.0));
-      col = mix(col, uKraft, step(r, 0.46));
-      col = mix(col, uCore, step(r, 0.33));
-      col *= 0.82 + 0.18 * lam;
+      float rings = 0.5 + 0.5 * sin(r * 170.0);
+      col = mix(uDeep, uGlass, 0.3 + 0.25 * rings + 0.35 * smoothstep(0.55, 1.0, r));
+      col = mix(col, vec3(1.0), smoothstep(0.93, 1.0, r) * 0.6);
+      col *= 0.86 + 0.14 * lam;
+      a = 0.9;
+      float core = step(r, ${f(CORE_R)});
+      col = mix(col, uKraft, core);
+      col = mix(col, uCore, step(r, ${f(HOLE_R)}));
+      a = mix(a, 1.0, core);
     } else {
-      // Намотка: глянцевый светлый цилиндр, светлеет к силуэту.
+      // Намотка: гладкий холодный глянец, сквозь который чуть видно пол;
+      // вдоль рулона — резкий блик софтбокса, к силуэту плотнее.
       float fres = pow(1.0 - clamp(dot(N, V), 0.0, 1.0), 2.0);
-      float spec = pow(max(dot(N, normalize(L + V)), 0.0), 50.0);
-      col = mix(uGrey, uCard, lam);
-      col = mix(col, uCard, fres * 0.5);
-      col += spec * 0.45;
-      col = mix(col, uSilver, smoothstep(${f(ROLL_LEN / 2 - 0.02)}, ${f(ROLL_LEN / 2)}, abs(vObj.y)) * 0.6);
+      float spec = pow(max(dot(N, H), 0.0), 90.0);
+      float sheen = pow(max(dot(N, H), 0.0), 7.0);
+      col = mix(uDeep, uGlass, lam);
+      col = mix(col, vec3(1.0), clamp(spec * 0.95 + sheen * 0.22, 0.0, 1.0));
+      // Кромки витков у торцов ловят свет.
+      col = mix(col, vec3(1.0), smoothstep(${f(ROLL_LEN / 2 - 0.018)}, ${f(ROLL_LEN / 2)}, abs(vObj.y)) * 0.55);
+      a = 0.66 + fres * 0.3 + spec * 0.3;
     }
-    gl_FragColor = vec4(clamp(col, 0.0, 1.0), 1.0);
+    gl_FragColor = vec4(clamp(col, 0.0, 1.0), clamp(a, 0.0, 1.0));
   }
 `;
 
@@ -305,6 +322,7 @@ export function createFilm(cameraZ: number) {
     uSand: { value: srgb(0xf4d47c) },
     uAccent: { value: srgb(0xff5b04) },
     uShade: { value: srgb(0x2b1204) },
+    uTint: { value: srgb(0xb4c6ca) },
     uFade: { value: [1, 1] as [number, number] },
   };
   const filmMaterial = new ShaderMaterial({
@@ -326,14 +344,16 @@ export function createFilm(cameraZ: number) {
     vertexShader: ROLL_VERTEX,
     fragmentShader: ROLL_FRAGMENT,
     uniforms: {
-      uCard: { value: srgb(0xfffcf4) },
-      uGrey: { value: srgb(0xc5ced1) },
-      uSilver: { value: srgb(0xd3dbdd) },
+      uGlass: { value: srgb(0xe6eeee) },
+      uDeep: { value: srgb(0x9cb1b2) },
       uKraft: { value: srgb(0xc79a5b) },
       uCore: { value: srgb(0x2b1204) },
     },
+    transparent: true,
   });
   const roll = new Mesh(rollGeometry, rollMaterial);
+  // Полупрозрачный рулон рисуется после ленты и своей тени.
+  roll.renderOrder = 3;
   roll.quaternion.setFromUnitVectors(new Vector3(0, 1, 0), axis);
   roll.position.set(start.x, FLOOR_Y + ROLL_R, start.z);
 
