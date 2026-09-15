@@ -145,16 +145,6 @@ export default function Hero() {
           сцены шара, но не на саму сферу. */}
       <div className="shell relative grid grid-cols-[minmax(0,1fr)] content-start gap-y-4 pb-14 pt-10 sm:pb-20 lg:min-h-[calc(100svh-var(--header-h))] sm:pt-14 lg:grid-cols-[minmax(0,1fr)_auto] lg:content-center lg:items-center lg:gap-x-[clamp(16px,2.5vw,40px)] lg:pb-16 lg:pt-10">
         <div className="max-w-[720px] lg:max-w-[min(640px,48vw)]">
-          <motion.p
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-            className="mb-5 flex items-center gap-3 whitespace-nowrap font-display text-[11px] font-bold uppercase leading-none tracking-[0.16em] text-muted sm:mb-6 sm:gap-4 sm:tracking-[0.22em] md:text-[12px]"
-          >
-            {hero.eyebrow}
-            <span aria-hidden className="h-px w-8 shrink-0 bg-line-strong sm:w-14" />
-          </motion.p>
-
           <h1 className="display text-[clamp(42px,10.2vw,64px)] tracking-[-0.028em] text-ink sm:text-[clamp(54px,7.6vw,80px)] lg:text-[clamp(58px,5.9vw,104px)]">
             {hero.titleLines.map((text, i) => (
               <motion.span
@@ -242,7 +232,7 @@ export default function Hero() {
               иначе там остаётся один пурпур с оранжевым. Ниже lg под Hero
               идут преимущества, поэтому тёмный низ шара растворяется в бумаге
               чуть ниже центра, а не срезается краем секции. */}
-          <HeroOrb className="w-[150vw] [--orb-band-k:1.45] [--orb-band-x:-0.55] [mask-image:linear-gradient(to_bottom,#000_50%,transparent_63%)] sm:w-[82vw] sm:[mask-image:linear-gradient(to_bottom,#000_40%,rgba(0,0,0,0.55)_52%,transparent_64%)] lg:w-[var(--orb-w)] lg:[--orb-band-k:1] lg:[--orb-band-x:0] lg:[mask-image:none]" />
+          <HeroOrb probe className="w-[150vw] [--orb-band-k:1.45] [--orb-band-x:-0.55] [mask-image:linear-gradient(to_bottom,#000_50%,transparent_63%)] sm:w-[82vw] sm:[mask-image:linear-gradient(to_bottom,#000_40%,rgba(0,0,0,0.55)_52%,transparent_64%)] lg:w-[var(--orb-w)] lg:[--orb-band-k:1] lg:[--orb-band-x:0] lg:[mask-image:none]" />
         </motion.div>
       </div>
 

@@ -110,6 +110,15 @@ export function DownloadIcon(props: IconProps) {
   );
 }
 
+/** Стрелка курсора — подсказка «наведите». */
+export function CursorIcon(props: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" {...base} {...props}>
+      <path d="M5 4.6 19.4 10.4l-6.2 2.1-2.4 6.3L5 4.6Z" />
+    </svg>
+  );
+}
+
 export function MenuIcon(props: IconProps) {
   return (
     <svg viewBox="0 0 24 24" {...base} strokeWidth={1.9} {...props}>

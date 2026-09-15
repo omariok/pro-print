@@ -248,13 +248,29 @@ function srgb(hex: number) {
   return new Vector3(((hex >> 16) & 255) / 255, ((hex >> 8) & 255) / 255, (hex & 255) / 255);
 }
 
+/** Замер «пипеткой»: где курсор стоит на сфере и какой цвет под ним. */
+export type Probe = {
+  /** Курсор над сферой. */
+  active: boolean;
+  /** Положение курсора относительно холста, CSS px. */
+  x: number;
+  y: number;
+  /** Цвет пикселя под курсором, sRGB 0–255; null, пока замера не было. */
+  rgb: [number, number, number] | null;
+};
+
 type Options = {
   /** prefers-reduced-motion: один статичный кадр, без анимации и реакции на курсор. */
   still: boolean;
   onReady: () => void;
+  /** Вызывается каждый кадр, пока курсор над сферой, и один раз, когда он уходит. */
+  onProbe?: (probe: Probe) => void;
 };
 
-export function createOrb(host: HTMLElement, { still, onReady }: Options) {
+/** Как часто снимать цвет под курсором: readPixels останавливает конвейер GPU. */
+const SAMPLE_MS = 70;
+
+export function createOrb(host: HTMLElement, { still, onReady, onProbe }: Options) {
   let renderer: WebGLRenderer;
   try {
     renderer = new WebGLRenderer({ antialias: true, alpha: true, powerPreference: "high-performance" });
@@ -339,10 +355,12 @@ export function createOrb(host: HTMLElement, { still, onReady }: Options) {
   let clientX = 0;
   let clientY = 0;
   let pointerActive = false;
+  let mouse = false;
 
   const onPointer = (e: PointerEvent) => {
     clientX = e.clientX;
     clientY = e.clientY;
+    mouse = e.pointerType === "mouse";
     // Мышь давит, пока она над страницей; палец — только пока касается экрана.
     pointerActive = e.pointerType === "mouse" || e.type === "pointerdown" || e.buttons > 0;
   };
@@ -377,11 +395,13 @@ export function createOrb(host: HTMLElement, { still, onReady }: Options) {
   let spin = 0;
   let tiltX = 0;
   let tiltY = 0;
+  let onSphere = false;
+  let rect = canvas.getBoundingClientRect();
 
   const step = (dt: number) => {
     uniforms.uTime.value += dt;
 
-    const rect = canvas.getBoundingClientRect();
+    rect = canvas.getBoundingClientRect();
     ndc.set(((clientX - rect.left) / rect.width) * 2 - 1, -(((clientY - rect.top) / rect.height) * 2 - 1));
     // Скорость курсора в плоскости шара, мировых единиц в секунду.
     const vx = dt > 0 ? ((ndc.x - prevNdc.x) / dt) * HALF_VIEW : 0;
@@ -401,9 +421,11 @@ export function createOrb(host: HTMLElement, { still, onReady }: Options) {
     let target = 0;
     let stirTarget = 0;
     dragTarget.set(0, 0);
+    onSphere = false;
     if (pointerActive) {
       raycaster.setFromCamera(ndc, camera);
       if (raycaster.ray.intersectSphere(bounds, hitWorld)) {
+        onSphere = true;
         hitPointTarget.copy(hitWorld);
         hitTarget.copy(mesh.worldToLocal(hitWorld)).normalize();
         target = 1;
@@ -430,6 +452,34 @@ export function createOrb(host: HTMLElement, { still, onReady }: Options) {
     drag.lerp(dragTarget, 1 - Math.exp(-dt * 5));
   };
 
+  /* ---------- пипетка ---------- */
+
+  // Цвет читаем из только что нарисованного кадра, в той же задаче, что и
+  // render(): буфер ещё не отдан композитору, preserveDrawingBuffer не нужен.
+  const gl = renderer.getContext();
+  const pixel = new Uint8Array(4);
+  const probe: Probe = { active: false, x: 0, y: 0, rgb: null };
+  let lastSample = -Infinity;
+
+  const measure = (t: number) => {
+    // Пипетка — это курсор: палец, который водит по шару, её не вызывает.
+    const hovering = onSphere && mouse;
+    if (!onProbe || (!hovering && !probe.active)) return;
+    const entered = hovering && !probe.active;
+    probe.active = hovering;
+    probe.x = clientX - rect.left;
+    probe.y = clientY - rect.top;
+    if (hovering && (entered || t - lastSample > SAMPLE_MS)) {
+      lastSample = t;
+      const k = canvas.width / rect.width;
+      const px = Math.min(canvas.width - 1, Math.max(0, Math.floor(probe.x * k)));
+      const py = Math.min(canvas.height - 1, Math.max(0, canvas.height - 1 - Math.floor(probe.y * k)));
+      gl.readPixels(px, py, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, pixel);
+      probe.rgb = [pixel[0], pixel[1], pixel[2]];
+    }
+    onProbe(probe);
+  };
+
   /* ---------- цикл ---------- */
 
   let raf = 0;
@@ -444,6 +494,7 @@ export function createOrb(host: HTMLElement, { still, onReady }: Options) {
     last = t;
     step(dt);
     render();
+    measure(t);
     if (!ready) {
       ready = true;
       onReady();
@@ -458,6 +509,11 @@ export function createOrb(host: HTMLElement, { still, onReady }: Options) {
   const stop = () => {
     running = false;
     cancelAnimationFrame(raf);
+    // Цикл встал (шар ушёл с экрана, вкладка в фоне) — пипетку убираем.
+    if (probe.active) {
+      probe.active = false;
+      onProbe?.(probe);
+    }
   };
 
   // За пределами экрана и во фоновой вкладке GPU не тратится.
