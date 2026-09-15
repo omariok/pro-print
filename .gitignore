@@ -11,3 +11,7 @@ next-env.d.ts
 # Local-only design-tool state
 .impeccable/config.local.json
 .impeccable/hook.cache.json
+
+# Local agent tooling state
+.freebuff/
+skills-lock.json
