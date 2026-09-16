@@ -1,6 +1,8 @@
 "use client";
 
-import { site } from "@/lib/content";
+import { contactInfo } from "@/lib/content/contact-info";
+import { errorTexts } from "@/lib/content/errors";
+import { localeFromPath, localeMeta } from "@/lib/i18n";
 
 /**
  * Последняя граница: сюда попадают падения самого корневого layout, поэтому
@@ -14,8 +16,13 @@ export default function GlobalError({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
+  // Корневой layout упал, params недоступны — язык берём из адреса. Этот
+  // экран рисуется только в браузере, так что window здесь уже есть.
+  const lang = localeFromPath(typeof window === "undefined" ? "/" : window.location.pathname);
+  const t = errorTexts[lang];
+
   return (
-    <html lang="ru">
+    <html lang={localeMeta[lang].htmlLang}>
       <body
         style={{
           margin: 0,
@@ -39,7 +46,7 @@ export default function GlobalError({
               color: "#b53c00",
             }}
           >
-            Сбой сайта
+            {t.siteLabel}
           </p>
 
           <h1
@@ -51,12 +58,11 @@ export default function GlobalError({
               letterSpacing: "-0.03em",
             }}
           >
-            Сайт не загрузился
+            {t.siteTitle}
           </h1>
 
           <p style={{ margin: "16px 0 0", fontSize: "16px", lineHeight: 1.62, color: "#56636b" }}>
-            Ошибка на нашей стороне. Попробуйте загрузить страницу ещё раз, а если нужен расчёт
-            прямо сейчас — позвоните, заявку примем вручную.
+            {t.siteLede}
           </p>
 
           <div style={{ display: "flex", flexWrap: "wrap", gap: "12px", marginTop: "28px" }}>
@@ -76,10 +82,10 @@ export default function GlobalError({
                 fontFamily: "inherit",
               }}
             >
-              Загрузить ещё раз
+              {t.retry}
             </button>
             <a
-              href={site.phoneHref}
+              href={contactInfo.phoneHref}
               style={{
                 display: "inline-flex",
                 alignItems: "center",
@@ -92,13 +98,13 @@ export default function GlobalError({
                 textDecoration: "none",
               }}
             >
-              {site.phone}
+              {contactInfo.phone}
             </a>
           </div>
 
           {error.digest ? (
             <p style={{ margin: "28px 0 0", fontSize: "12px", color: "#5e6b73" }}>
-              Код обращения: {error.digest}
+              {t.digest} {error.digest}
             </p>
           ) : null}
         </main>

@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { motion, useReducedMotion, type Variants } from "framer-motion";
-import { hero } from "@/lib/content";
+import type { Content } from "@/lib/content";
 import { CursorIcon } from "../ui/Icons";
 import type { Probe } from "./orbScene";
 
@@ -77,9 +77,12 @@ const num = (v: number) => {
 export default function HeroOrb({
   className = "",
   probe = false,
+  probeText,
 }: {
   className?: string;
   probe?: boolean;
+  /** Подписи пипетки на языке страницы; нужны, только если включён probe. */
+  probeText?: Content["hero"]["probe"];
 }) {
   const hostRef = useRef<HTMLDivElement>(null);
   const [ready, setReady] = useState(false);
@@ -281,9 +284,9 @@ export default function HeroOrb({
         >
           <p className="flex items-center justify-end gap-2 font-display text-[14.5px] font-semibold leading-none text-ink">
             <CursorIcon className="h-[17px] w-[17px] shrink-0" strokeWidth={1.6} />
-            {hero.probe.hint}
+            {probeText?.hint}
           </p>
-          <p className="mt-2 text-[14px] leading-[1.4] text-muted">{hero.probe.hintText}</p>
+          <p className="mt-2 text-[14px] leading-[1.4] text-muted">{probeText?.hintText}</p>
         </div>
       ) : null}
 
@@ -336,10 +339,10 @@ export default function HeroOrb({
               variants={item}
               className="whitespace-nowrap font-display text-[clamp(34px,3vw,44px)] font-extrabold leading-none tracking-[-0.03em] text-ink"
             >
-              {hero.probe.value}
+              {probeText?.value}
             </motion.p>
             <motion.p variants={item} className="mt-3 text-[15px] leading-[1.4] text-ink-soft">
-              {hero.probe.text}
+              {probeText?.text}
             </motion.p>
 
             <motion.div variants={item} className="mt-5 border-t border-ink/10 pt-4">
@@ -357,8 +360,8 @@ export default function HeroOrb({
                 ))}
               </div>
               <div className="mt-2 flex justify-between text-[11.5px] leading-none text-muted">
-                <span>{hero.probe.proof}</span>
-                <span>{hero.probe.print}</span>
+                <span>{probeText?.proof}</span>
+                <span>{probeText?.print}</span>
               </div>
 
               <p className="mt-4 flex justify-between font-display text-[12px] leading-none text-muted">

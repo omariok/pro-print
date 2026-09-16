@@ -17,28 +17,35 @@ npm run dev
 
 ```
 src/
+  middleware.ts         русский без префикса (/about → /ru/about внутри), /en и /zh как есть
   app/
-    layout.tsx          шрифты (Manrope + Onest), метаданные, Header/Footer, запасной показ Reveal без JS
-    page.tsx            главная: Hero → Capabilities → Pvc → Examples → Advantages → Metrics
+    [lang]/             все страницы под языковым сегментом (ru, en, zh)
+      layout.tsx        шрифты (Manrope + Onest), метаданные и hreflang, Header/Footer, запасной показ Reveal без JS
+      page.tsx          главная: Hero → Capabilities → Pvc → Examples → Advantages → Metrics
                         → Production → Process → Documents → Faq → ContactForm
-    about/page.tsx      «О компании»
-    contacts/page.tsx   «Контакты» + форма заявки
-    privacy/page.tsx    политика обработки ПДн (152-ФЗ)
-    error.tsx, global-error.tsx, not-found.tsx
-    globals.css         дизайн-система: токены @theme, .shell, .h-section, анимации
+      about/page.tsx    «О компании»
+      contacts/page.tsx «Контакты» + форма заявки
+      privacy/page.tsx  политика обработки ПДн (152-ФЗ)
+      [...rest]/        любой несуществующий адрес → not-found.tsx на нужном языке
+      error.tsx, not-found.tsx, opengraph-image.tsx
+    global-error.tsx
+    globals.css         дизайн-система: токены @theme, .shell, .h-section, анимации, правила для китайского
   components/
-    layout/             Header (плавающая плашка, scroll-spy, мобильная шторка), Footer
+    layout/             Header (плавающая плашка, scroll-spy, мобильная шторка), LanguageSwitcher, Footer
     sections/           секции страниц
     ui/                 Button, Fold, Logo, Icons, RegisterMark, Reveal, SectionHead,
                         RequestForm, VideoBackground
     graphics/           HeroOrb + orbScene (three.js), CmykRings, CmykWaves, Halftone, TrayMock, Aurora
-  lib/content.ts        весь текст сайта в одном файле
+  lib/
+    i18n.ts             список языков, ссылки с префиксом языка, hreflang
+    content/            весь текст сайта: ru.ts (основной, задаёт форму), en.ts, zh.ts;
+                        errors.ts — экраны сбоя, contact-info.ts — телефон и почта
 public/docs/            ТУ, протокол испытаний, декларация ЕАЭС (PDF)
 ```
 
 ## Фотографии в «Примерах»
 
-У карточек `examples.items` в `content.ts` поле `src` пока пустое — вместо фото рисуется векторная графика. Чтобы поставить снимок, положите файл в `public/` и впишите путь в `src`.
+У карточек `examples.items` в `src/lib/content/*.ts` поле `src` пока пустое — вместо фото рисуется векторная графика. Чтобы поставить снимок, положите файл в `public/` и впишите путь в `src` во всех трёх языках.
 
 ## Видео-подложка
 

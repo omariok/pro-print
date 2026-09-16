@@ -1,24 +1,38 @@
 import type { Metadata } from "next";
-import { contact, contacts, site } from "@/lib/content";
+import { notFound } from "next/navigation";
+import { contactInfo, getContent } from "@/lib/content";
+import { alternatesFor, isLocale } from "@/lib/i18n";
 import Reveal from "@/components/ui/Reveal";
 import RequestForm from "@/components/ui/RequestForm";
 import { CheckIcon, ClockIcon, MailIcon, PhoneIcon, PinIcon } from "@/components/ui/Icons";
 
-export const metadata: Metadata = {
-  title: "Контакты",
-  description:
-    "Телефон, почта и адреса производства ООО «Про-Принт». Оставьте заявку на расчёт печати на пищевых стретч-плёнках.",
-};
+type Props = { params: Promise<{ lang: string }> };
 
-const details = [
-  { icon: PhoneIcon, label: "Телефон", value: site.phone, href: site.phoneHref },
-  { icon: MailIcon, label: "E-mail", value: site.email, href: `mailto:${site.email}` },
-  { icon: PinIcon, label: "Производство", value: site.production },
-  { icon: PinIcon, label: "Офис", value: site.office },
-  { icon: ClockIcon, label: "Режим работы", value: site.schedule },
-];
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { lang } = await params;
+  if (!isLocale(lang)) return {};
+  const { contacts } = getContent(lang);
+  return {
+    title: contacts.metaTitle,
+    description: contacts.metaDescription,
+    alternates: alternatesFor(lang, "/contacts"),
+  };
+}
 
-export default function ContactsPage() {
+export default async function ContactsPage({ params }: Props) {
+  const { lang } = await params;
+  if (!isLocale(lang)) notFound();
+  const { contact, contacts, site, form } = getContent(lang);
+  const { labels } = contacts;
+
+  const details = [
+    { icon: PhoneIcon, label: labels.phone, value: contactInfo.phone, href: contactInfo.phoneHref },
+    { icon: MailIcon, label: labels.email, value: contactInfo.email, href: `mailto:${contactInfo.email}` },
+    { icon: PinIcon, label: labels.production, value: site.production },
+    { icon: PinIcon, label: labels.office, value: site.office },
+    { icon: ClockIcon, label: labels.schedule, value: site.schedule },
+  ];
+
   return (
     <>
       {/* Заголовочный блок */}
@@ -133,7 +147,7 @@ export default function ContactsPage() {
 
           <Reveal delay={0.16}>
             <div className="mx-auto mt-10 max-w-[860px] sm:mt-12">
-              <RequestForm />
+              <RequestForm lang={lang} t={form} site={site} />
             </div>
           </Reveal>
         </div>

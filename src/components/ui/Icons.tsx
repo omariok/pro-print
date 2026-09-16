@@ -134,3 +134,22 @@ export function CloseIcon(props: IconProps) {
     </svg>
   );
 }
+
+/** Глобус — переключатель языка: узнаётся без знания русского. */
+export function GlobeIcon(props: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" {...base} {...props}>
+      <circle cx="12" cy="12" r="8.6" />
+      <path d="M3.4 12h17.2" />
+      <path d="M12 3.4c2.3 2.4 3.4 5.3 3.4 8.6s-1.1 6.2-3.4 8.6c-2.3-2.4-3.4-5.3-3.4-8.6S9.7 5.8 12 3.4Z" />
+    </svg>
+  );
+}
+
+export function ChevronDownIcon(props: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" {...base} {...props}>
+      <path d="m6.5 9.5 5.5 5.5 5.5-5.5" />
+    </svg>
+  );
+}

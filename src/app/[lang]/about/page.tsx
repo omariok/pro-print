@@ -1,18 +1,31 @@
 import type { Metadata } from "next";
-import { about, metrics } from "@/lib/content";
+import { notFound } from "next/navigation";
+import { getContent } from "@/lib/content";
+import { alternatesFor, isLocale, localizeHref } from "@/lib/i18n";
 import Reveal from "@/components/ui/Reveal";
 import Button from "@/components/ui/Button";
 import CmykRings from "@/components/graphics/CmykRings";
 import Metrics from "@/components/sections/Metrics";
 import { ProductionGrid } from "@/components/sections/Production";
 
-export const metadata: Metadata = {
-  title: "О компании",
-  description:
-    "ООО «Про-Принт» — флексографская печать на пищевых плёнках от 8 мкм: стретч, ПВХ, POF, полиэтилен и барьерные. Производственная база, география поставок и ключевые параметры.",
-};
+type Props = { params: Promise<{ lang: string }> };
 
-export default function AboutPage() {
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { lang } = await params;
+  if (!isLocale(lang)) return {};
+  const { about } = getContent(lang);
+  return {
+    title: about.metaTitle,
+    description: about.metaDescription,
+    alternates: alternatesFor(lang, "/about"),
+  };
+}
+
+export default async function AboutPage({ params }: Props) {
+  const { lang } = await params;
+  if (!isLocale(lang)) notFound();
+  const { about, metrics, production } = getContent(lang);
+
   return (
     <>
       {/* Заголовочный блок */}
@@ -81,7 +94,7 @@ export default function AboutPage() {
 
           <Reveal delay={0.1}>
             <div className="mt-10 sm:mt-12 lg:mt-14">
-              <ProductionGrid />
+              <ProductionGrid cards={production.cards} />
             </div>
           </Reveal>
         </div>
@@ -140,20 +153,15 @@ export default function AboutPage() {
       </section>
 
       {/* Ключевые параметры */}
-      <Metrics
-        variant="compact"
-        title={about.keyParamsTitle}
-        lede={metrics.lede}
-        rows={metrics.rows}
-      />
+      <Metrics variant="compact" title={about.keyParamsTitle} metrics={metrics} />
 
       <section className="bg-paper py-16 sm:py-20">
         <div className="shell flex flex-col items-start gap-6 border-t border-line pt-12 sm:flex-row sm:items-center sm:justify-between sm:pt-14">
           <p className="max-w-[42ch] font-display text-[19px] font-extrabold leading-[1.25] tracking-[-0.024em] text-ink sm:text-[23px]">
-            Пришлите параметры тиража — вернёмся с расчётом.
+            {about.ctaText}
           </p>
-          <Button href="/#request" arrow>
-            Рассчитать заказ
+          <Button href={localizeHref(lang, "/#request")} arrow>
+            {about.cta}
           </Button>
         </div>
       </section>

@@ -1,11 +1,15 @@
 import type { Metadata, Viewport } from "next";
+import { notFound } from "next/navigation";
 import { Manrope, Onest } from "next/font/google";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
-import "./globals.css";
+import { getContent } from "@/lib/content";
+import { alternatesFor, isLocale, localeMeta, locales } from "@/lib/i18n";
+import "../globals.css";
 
 // Обе гарнитуры вариативные — массив weight указывать нельзя, иначе Next
 // подгрузит статические срезы и потеряет промежуточные начертания.
+// Иероглифов в них нет: китайский текст берёт системный шрифт из стека в globals.css.
 const manrope = Manrope({
   subsets: ["latin", "cyrillic"],
   variable: "--font-manrope",
@@ -18,34 +22,36 @@ const onest = Onest({
   display: "swap",
 });
 
-export const metadata: Metadata = {
-  metadataBase: new URL("https://pro-print.pro"),
-  title: {
-    default: "Про-Принт — флексографская печать на пищевых плёнках",
-    template: "%s — Про-Принт",
-  },
-  description:
-    "Печать до 10 красок на пищевых плёнках от 8 мкм: стретч, ПВХ, POF, полиэтилен и барьерные многослойные. Собственная флексографская машина и производство полного цикла в Ленинградской области.",
-  keywords: [
-    "флексопечать",
-    "печать на плёнке",
-    "стретч-плёнка",
-    "пищевая плёнка",
-    "ПВХ-плёнка",
-    "POF",
-    "полиэтиленовая плёнка",
-    "барьерная плёнка",
-    "упаковка для лотков",
-  ],
-  openGraph: {
-    type: "website",
-    locale: "ru_RU",
-    siteName: "Про-Принт",
-    title: "Про-Принт — печать до 10 красок на пищевых плёнках",
-    description:
-      "Флексографская печать CMYK и пантонами на стретч, ПВХ, POF, полиэтиленовых и барьерных плёнках от 8 мкм. Производство в Ленинградской области.",
-  },
-};
+type Props = { params: Promise<{ lang: string }> };
+
+export function generateStaticParams() {
+  return locales.map((lang) => ({ lang }));
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { lang } = await params;
+  if (!isLocale(lang)) return {};
+  const { meta } = getContent(lang);
+
+  return {
+    metadataBase: new URL("https://pro-print.pro"),
+    title: {
+      default: meta.titleDefault,
+      template: meta.titleTemplate,
+    },
+    description: meta.description,
+    keywords: meta.keywords,
+    alternates: alternatesFor(lang, "/"),
+    openGraph: {
+      type: "website",
+      locale: localeMeta[lang].ogLocale,
+      alternateLocale: locales.filter((l) => l !== lang).map((l) => localeMeta[l].ogLocale),
+      siteName: meta.siteName,
+      title: meta.ogTitle,
+      description: meta.ogDescription,
+    },
+  };
+}
 
 export const viewport: Viewport = {
   themeColor: "#fdf6e3",
@@ -57,15 +63,25 @@ export const viewport: Viewport = {
   viewportFit: "cover",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
+  params,
 }: {
   children: React.ReactNode;
+  params: Promise<{ lang: string }>;
 }) {
+  const { lang } = await params;
+  if (!isLocale(lang)) notFound();
+  const t = getContent(lang);
+
   return (
     // suppressHydrationWarning: страховочный скрипт ниже может поставить
     // атрибут на <html> раньше гидратации, и React не должен на это ругаться.
-    <html lang="ru" className={`${manrope.variable} ${onest.variable}`} suppressHydrationWarning>
+    <html
+      lang={localeMeta[lang].htmlLang}
+      className={`${manrope.variable} ${onest.variable}`}
+      suppressHydrationWarning
+    >
       <head>
         {/* Блоки Reveal скрыты в CSS до срабатывания скрипта. Без JS их
             показывает <noscript>; если бандл не выполнился или гидратация
@@ -86,13 +102,13 @@ export default function RootLayout({
           href="#main"
           className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-tile focus:bg-ink focus:px-5 focus:py-2.5 focus:text-sm focus:text-paper"
         >
-          Перейти к содержимому
+          {t.meta.skipLink}
         </a>
-        <Header />
+        <Header lang={lang} nav={t.nav} t={t.header} />
         <main id="main" className="pt-[var(--header-h)]">
           {children}
         </main>
-        <Footer />
+        <Footer lang={lang} t={t} />
       </body>
     </html>
   );

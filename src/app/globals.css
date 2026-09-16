@@ -13,8 +13,10 @@
 }
 
 @theme {
-  --font-display: var(--font-manrope), "Manrope", ui-sans-serif, system-ui, sans-serif;
-  --font-sans: var(--font-onest), "Onest", ui-sans-serif, system-ui, sans-serif;
+  /* Иероглифов в Manrope и Onest нет: китайский текст добирает знаки из
+     системного шрифта — PingFang на Apple, YaHei на Windows, Noto на Android. */
+  --font-display: var(--font-manrope), "Manrope", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", "Noto Sans CJK SC", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-onest), "Onest", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", "Noto Sans CJK SC", ui-sans-serif, system-ui, sans-serif;
 
   /* Палитра бренда: оранжевый, морской синий, песочный, графит, слоновая
      кость, светлое серебро. Морской синий — это Midnight Green из исходной
@@ -387,3 +389,31 @@ html[data-reveal-fallback] [data-reveal] {
     transition-duration: 160ms !important;
   }
 }
+
+/* Китайская версия. Слой не указан намеренно: правила вне @layer сильнее
+   утилит Tailwind, а трекинг заголовков задан в том числе утилитами прямо в
+   разметке. Отрицательный трекинг латинских кеглей слепляет иероглифы, а
+   плотный интерлиньяж, рассчитанный на строчные буквы, сталкивает строки:
+   иероглиф занимает кегельную площадку целиком. */
+html:lang(zh) :is(.display, .h-section, .h-card, .contact-value, [class*="tracking-[-"]) {
+  letter-spacing: 0;
+}
+
+html:lang(zh) .display {
+  line-height: 1.14;
+}
+
+html:lang(zh) .h-section {
+  line-height: 1.2;
+}
+
+html:lang(zh) :is(.h-card, [class*="leading-[1.04]"], [class*="leading-[1.06]"]) {
+  line-height: 1.3;
+}
+
+/* Мелкие подписи капителью: у иероглифов нет регистра, широкая разрядка
+   рассыпает слово на отдельные знаки. */
+html:lang(zh) .uppercase {
+  letter-spacing: 0.06em;
+}
+

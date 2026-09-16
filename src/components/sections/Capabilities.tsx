@@ -1,11 +1,18 @@
 import Link from "next/link";
-import { capabilities } from "@/lib/content";
+import type { Content } from "@/lib/content";
+import { localizeHref, type Locale } from "@/lib/i18n";
 import Fold from "../ui/Fold";
 import Reveal from "../ui/Reveal";
 import SectionHead from "../ui/SectionHead";
 import { ArrowIcon, CheckIcon } from "../ui/Icons";
 
-export default function Capabilities() {
+export default function Capabilities({
+  lang,
+  capabilities,
+}: {
+  lang: Locale;
+  capabilities: Content["capabilities"];
+}) {
   return (
     <section
       id="products"
@@ -37,7 +44,7 @@ export default function Capabilities() {
                     ))}
                   </ul>
 
-                  {"note" in card && card.note ? (
+                  {card.note ? (
                     <p className="mt-6 border-l-2 border-accent pl-4 text-[13.5px] leading-[1.5] text-muted">
                       {card.note}
                     </p>
@@ -82,7 +89,7 @@ export default function Capabilities() {
                   </p>
                 </div>
                 <Link
-                  href="/#request"
+                  href={localizeHref(lang, "/#request")}
                   className="group -my-1 inline-flex shrink-0 items-center gap-2.5 py-1 font-display text-[14.5px] font-bold text-[var(--accent-text)] transition-colors duration-200 hover:text-ink"
                 >
                   {capabilities.callout.cta}

@@ -1,8 +1,8 @@
-import { pvc } from "@/lib/content";
+import type { Content } from "@/lib/content";
 import Reveal from "../ui/Reveal";
 import SectionHead from "../ui/SectionHead";
 
-export default function Pvc() {
+export default function Pvc({ pvc }: { pvc: Content["pvc"] }) {
   return (
     <section
       id="pvc"

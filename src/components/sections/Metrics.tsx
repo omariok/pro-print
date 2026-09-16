@@ -1,16 +1,15 @@
-import { metrics } from "@/lib/content";
+import type { Content } from "@/lib/content";
 import Reveal from "../ui/Reveal";
 import SectionHead from "../ui/SectionHead";
 
 type Props = {
+  metrics: Content["metrics"];
   /** The About page reuses the table under a plain heading. */
   variant?: "full" | "compact";
   title?: string;
-  lede?: React.ReactNode;
-  rows?: [string, string][];
 };
 
-export function SpecTable({ rows = metrics.rows }: { rows?: [string, string][] }) {
+export function SpecTable({ rows }: { rows: [string, string][] }) {
   return (
     <dl className="border-t border-ink/14">
       {rows.map(([label, value], i) => (
@@ -27,7 +26,7 @@ export function SpecTable({ rows = metrics.rows }: { rows?: [string, string][] }
   );
 }
 
-export default function Metrics({ variant = "full", title, lede, rows }: Props) {
+export default function Metrics({ metrics, variant = "full", title }: Props) {
   return (
     <section
       id="specs"
@@ -49,16 +48,14 @@ export default function Metrics({ variant = "full", title, lede, rows }: Props) 
               <Reveal>
                 <h2 className="h-section max-w-[14ch] text-ink">{title}</h2>
               </Reveal>
-              {lede ? (
-                <Reveal delay={0.06}>
-                  <p className="lede mt-5 max-w-[46ch] text-muted">{lede}</p>
-                </Reveal>
-              ) : null}
+              <Reveal delay={0.06}>
+                <p className="lede mt-5 max-w-[46ch] text-muted">{metrics.lede}</p>
+              </Reveal>
             </>
           )}
         </div>
 
-        <SpecTable rows={rows} />
+        <SpecTable rows={metrics.rows} />
       </div>
     </section>
   );

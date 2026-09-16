@@ -1,8 +1,8 @@
-import { process } from "@/lib/content";
+import type { Content } from "@/lib/content";
 import Reveal from "../ui/Reveal";
 import SectionHead from "../ui/SectionHead";
 
-export default function Process() {
+export default function Process({ process }: { process: Content["process"] }) {
   return (
     <section id="process" className="bg-paper py-16 sm:py-20 lg:py-24">
       <div className="shell">

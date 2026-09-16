@@ -1,9 +1,10 @@
-import { documents } from "@/lib/content";
+import type { Content } from "@/lib/content";
+import { fill } from "@/lib/i18n";
 import Reveal from "../ui/Reveal";
 import SectionHead from "../ui/SectionHead";
 import { DocIcon, DownloadIcon } from "../ui/Icons";
 
-export default function Documents() {
+export default function Documents({ documents }: { documents: Content["documents"] }) {
   return (
     <section id="documents" className="bg-paper py-16 sm:py-20 lg:py-24">
       <div className="shell">
@@ -42,7 +43,7 @@ export default function Documents() {
                 <a
                   href={item.file.href}
                   download
-                  aria-label={`Скачать «${item.title}» — ${item.file.size}`}
+                  aria-label={fill(documents.downloadAria, { title: item.title, size: item.file.size })}
                   className="group mt-7 flex flex-wrap items-center gap-x-2.5 gap-y-1.5 border-t border-ink/10 pt-5 font-display text-[13.5px] font-bold text-ink transition-colors duration-200 hover:text-[var(--accent-text)]"
                 >
                   <DownloadIcon className="h-[17px] w-[17px] shrink-0 transition-transform duration-200 group-hover:translate-y-0.5" />

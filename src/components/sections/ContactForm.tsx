@@ -1,10 +1,13 @@
 import Link from "next/link";
-import { contact, site } from "@/lib/content";
+import { contactInfo, type Content } from "@/lib/content";
+import { fill, localizeHref, type Locale } from "@/lib/i18n";
 import Reveal from "../ui/Reveal";
 import RequestForm from "../ui/RequestForm";
 import { CheckIcon, MailIcon, PhoneIcon } from "../ui/Icons";
 
-export default function ContactForm() {
+export default function ContactForm({ lang, t }: { lang: Locale; t: Content }) {
+  const { contact, site } = t;
+
   return (
     <section
       id="request"
@@ -43,35 +46,35 @@ export default function ContactForm() {
                   нажатия встык, без перекрытия. */}
               <div className="mt-9 space-y-[22px]">
                 <a
-                  href={site.phoneHref}
+                  href={contactInfo.phoneHref}
                   className="contact-value group -my-[11px] flex items-center gap-3 py-[11px] text-ink transition-colors duration-200 hover:text-[var(--accent-text)]"
                 >
                   <PhoneIcon className="h-[18px] w-[18px] text-accent" />
-                  {site.phone}
+                  {contactInfo.phone}
                 </a>
                 <a
-                  href={`mailto:${site.email}`}
+                  href={`mailto:${contactInfo.email}`}
                   className="-my-[11px] flex items-center gap-3 py-[11px] text-[15px] text-muted transition-colors duration-200 hover:text-[var(--accent-text)]"
                 >
                   <MailIcon className="h-[18px] w-[18px] text-accent" />
-                  {site.email}
+                  {contactInfo.email}
                 </a>
                 <p className="text-[14px] leading-[1.55] text-muted-soft">
-                  {site.schedule}. Реквизиты и адреса —{" "}
+                  {fill(contact.detailsBefore, { schedule: site.schedule })}
                   <Link
-                    href="/contacts"
+                    href={localizeHref(lang, "/contacts")}
                     className="text-ink underline decoration-line-strong underline-offset-2 transition-colors hover:text-[var(--accent-text)]"
                   >
-                    на странице контактов
+                    {contact.detailsLink}
                   </Link>
-                  .
+                  {contact.detailsAfter}
                 </p>
               </div>
             </Reveal>
           </div>
 
           <Reveal delay={0.1}>
-            <RequestForm />
+            <RequestForm lang={lang} t={t.form} site={site} />
           </Reveal>
         </div>
       </div>

@@ -4,26 +4,32 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useId, useRef, useState } from "react";
-import { nav, site } from "@/lib/content";
+import type { Content } from "@/lib/content";
+import { contactInfo } from "@/lib/content/contact-info";
+import { fill, localizeHref, type Locale } from "@/lib/i18n";
 import Logo from "../ui/Logo";
+import LanguageSwitcher from "./LanguageSwitcher";
 import { CloseIcon, MenuIcon, PhoneIcon } from "../ui/Icons";
 
-export default function Header() {
+type Props = { lang: Locale; nav: Content["nav"]; t: Content["header"] };
+
+export default function Header({ lang, nav, t }: Props) {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const [activeId, setActiveId] = useState<string | null>(null);
   const burgerRef = useRef<HTMLButtonElement>(null);
   const sheetId = useId();
   const pathname = usePathname();
+  const home = localizeHref(lang, "/");
 
   // Пункт меню подсвечен, если это открытая страница или — на главной —
   // секция, которую сейчас читают. Якорь отмечается aria-current="location",
   // страница — "page": скринридер называет их по-разному.
   const currentOf = (href: string) => {
     if (href.startsWith("/#")) {
-      return pathname === "/" && activeId === href.slice(2) ? ("location" as const) : undefined;
+      return pathname === home && activeId === href.slice(2) ? ("location" as const) : undefined;
     }
-    return pathname === href ? ("page" as const) : undefined;
+    return pathname === localizeHref(lang, href) ? ("page" as const) : undefined;
   };
 
   // Scroll-spy для главной. Следим за всеми секциями с id, а не только за
@@ -33,7 +39,7 @@ export default function Header() {
   // не подсвечено ничего.
   useEffect(() => {
     setActiveId(null);
-    if (pathname !== "/" || typeof IntersectionObserver === "undefined") return;
+    if (pathname !== home || typeof IntersectionObserver === "undefined") return;
     const sections = document.querySelectorAll<HTMLElement>("main section[id]");
     const io = new IntersectionObserver(
       (entries) => {
@@ -46,7 +52,7 @@ export default function Header() {
     );
     sections.forEach((section) => io.observe(section));
     return () => io.disconnect();
-  }, [pathname]);
+  }, [pathname, home]);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
@@ -137,7 +143,7 @@ export default function Header() {
               : "border-card/55 bg-card/88 shadow-[0_10px_30px_-18px_rgba(35,48,56,0.24),0_1px_0_rgba(255,255,255,0.75)_inset] lg:bg-card/50"
           }`}
         >
-          <Logo compact />
+          <Logo compact href={home} label={t.home} />
 
           {/* Меню строго в одну строку: пропорции кегля и просветов взяты из макета */}
           <nav className="hidden shrink-0 items-center gap-x-[3px] xl:ml-5 xl:flex">
@@ -146,7 +152,7 @@ export default function Header() {
               return (
                 <Link
                   key={item.href}
-                  href={item.href}
+                  href={localizeHref(lang, item.href)}
                   aria-current={current}
                   className={`relative whitespace-nowrap rounded-chip px-3 py-2 text-[13px] leading-none transition-colors duration-200 hover:bg-ink/[0.06] hover:text-ink ${
                     current ? "bg-ink/[0.06] text-ink" : "text-ink/85"
@@ -158,29 +164,31 @@ export default function Header() {
             })}
           </nav>
 
-          <div className="ml-auto flex shrink-0 items-center gap-3 sm:gap-5 xl:gap-4 xl:pl-3">
+          <div className="ml-auto flex shrink-0 items-center gap-3 sm:gap-5 xl:gap-2 xl:pl-3 2xl:gap-4">
             <a
-              href={site.phoneHref}
-              aria-label={`Позвонить: ${site.phone}`}
+              href={contactInfo.phoneHref}
+              aria-label={fill(t.call, { phone: contactInfo.phone })}
               className="relative hidden items-center gap-2 whitespace-nowrap text-[14.5px] font-medium leading-none text-ink transition-colors duration-200 after:absolute after:-inset-x-2 after:-inset-y-[13px] after:content-[''] hover:text-[var(--accent-text)] lg:inline-flex xl:text-[13.5px]"
             >
               <PhoneIcon className="h-[18px] w-[18px] shrink-0 text-accent" />
               {/* В узкой полосе 1280–1399 px оставляем только иконку, чтобы строка не ломалась */}
-              <span className="max-xl:inline hidden min-[1400px]:inline">{site.phone}</span>
+              <span className="max-xl:inline hidden min-[1400px]:inline">{contactInfo.phone}</span>
             </a>
 
+            <LanguageSwitcher lang={lang} label={t.language} />
+
             <Link
-              href="/#request"
+              href={localizeHref(lang, "/#request")}
               className="hidden h-11 shrink-0 whitespace-nowrap rounded-tile bg-ink px-6 font-display text-[14px] font-bold leading-none text-paper press hover:bg-ink-hover active:scale-[0.97] sm:inline-flex sm:items-center xl:text-[13px]"
             >
-              Рассчитать заказ
+              {t.cta}
             </Link>
 
             <button
               ref={burgerRef}
               type="button"
               onClick={() => setOpen((v) => !v)}
-              aria-label={open ? "Закрыть меню" : "Открыть меню"}
+              aria-label={open ? t.closeMenu : t.openMenu}
               aria-expanded={open}
               aria-controls={sheetId}
               className="inline-flex h-11 w-11 items-center justify-center rounded-tile text-ink transition-colors duration-200 hover:bg-ink/[0.06] xl:hidden"
@@ -218,7 +226,7 @@ export default function Header() {
                     transition={{ delay: 0.04 + i * 0.035, duration: 0.26 }}
                   >
                     <Link
-                      href={item.href}
+                      href={localizeHref(lang, item.href)}
                       onClick={() => setOpen(false)}
                       aria-current={currentOf(item.href)}
                       className={`block rounded-tile px-3 py-3 font-display text-[18px] font-bold tracking-[-0.024em] text-ink transition-colors duration-200 hover:bg-ink/[0.05] ${
@@ -233,24 +241,24 @@ export default function Header() {
 
               <div className="mt-5 space-y-1 border-t border-line pt-5">
                 <a
-                  href={site.phoneHref}
+                  href={contactInfo.phoneHref}
                   className="flex items-center gap-2.5 rounded-tile px-3 py-2.5 font-display text-[19px] font-extrabold tracking-[-0.024em] text-ink transition-colors duration-200 hover:bg-ink/[0.05]"
                 >
                   <PhoneIcon className="h-5 w-5 text-accent" />
-                  {site.phone}
+                  {contactInfo.phone}
                 </a>
                 <a
-                  href={`mailto:${site.email}`}
+                  href={`mailto:${contactInfo.email}`}
                   className="block rounded-tile px-3 py-3 text-[15px] text-muted transition-colors duration-200 hover:bg-ink/[0.05]"
                 >
-                  {site.email}
+                  {contactInfo.email}
                 </a>
                 <Link
-                  href="/#request"
+                  href={localizeHref(lang, "/#request")}
                   onClick={() => setOpen(false)}
                   className="mt-3 flex w-full items-center justify-center rounded-pill bg-ink px-6 py-4 font-display text-[15px] font-bold text-paper press hover:bg-ink-hover active:scale-[0.97]"
                 >
-                  Рассчитать заказ
+                  {t.cta}
                 </Link>
               </div>
             </motion.div>

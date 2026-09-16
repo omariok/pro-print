@@ -1,8 +1,8 @@
-import { advantages } from "@/lib/content";
+import type { Content } from "@/lib/content";
 import Reveal from "../ui/Reveal";
 import SectionHead from "../ui/SectionHead";
 
-export default function Advantages() {
+export default function Advantages({ advantages }: { advantages: Content["advantages"] }) {
   return (
     <section
       id="why"

@@ -1,10 +1,10 @@
 "use client";
 
 import { useId, useState } from "react";
-import { faq } from "@/lib/content";
+import type { Content } from "@/lib/content";
 import SectionHead from "../ui/SectionHead";
 
-export default function Faq() {
+export default function Faq({ faq }: { faq: Content["faq"] }) {
   const [open, setOpen] = useState<number | null>(0);
   // Связка кнопка → панель через aria-controls, как в Fold.
   const baseId = useId();

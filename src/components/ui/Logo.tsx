@@ -6,13 +6,23 @@ type Props = {
   /** Header variant: slightly tighter from xl so the nav row stays on one line. */
   compact?: boolean;
   className?: string;
+  /** Главная на текущем языке. */
+  href?: string;
+  /** aria-label ссылки: «Про-Принт — на главную» на языке страницы. */
+  label: string;
 };
 
-export default function Logo({ variant = "stacked", compact = false, className = "" }: Props) {
+export default function Logo({
+  variant = "stacked",
+  compact = false,
+  className = "",
+  href = "/",
+  label,
+}: Props) {
   return (
     <Link
-      href="/"
-      aria-label="Про-Принт — на главную"
+      href={href}
+      aria-label={label}
       /* Знак 36px, а палец — от 44: зона нажатия шире рисунка на 6px с каждой стороны. */
       className={`group relative flex items-center gap-3 after:absolute after:-inset-1.5 after:content-[''] ${compact ? "xl:gap-2.5" : ""} ${className}`}
     >

@@ -1,6 +1,6 @@
 # Про-Принт — правила для Claude
 
-Сайт производства пищевых плёнок: Next.js 15, React 19, TypeScript, Tailwind v4, framer-motion, three.js. Устройство проекта — в `README.md`, дизайн-система — в `DESIGN.md`, продукт и аудитория — в `PRODUCT.md`. Весь текст сайта — в `src/lib/content.ts`.
+Сайт производства пищевых плёнок: Next.js 15, React 19, TypeScript, Tailwind v4, framer-motion, three.js. Устройство проекта — в `README.md`, дизайн-система — в `DESIGN.md`, продукт и аудитория — в `PRODUCT.md`. Весь текст сайта — в `src/lib/content/`: `ru.ts` (основной), `en.ts`, `zh.ts`. Меняя текст, правьте все три языка.
 
 ## Общение и процесс
 

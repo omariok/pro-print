@@ -1,12 +1,13 @@
 import Image from "next/image";
-import { examples } from "@/lib/content";
+import type { Content } from "@/lib/content";
 import Reveal from "../ui/Reveal";
 import SectionHead from "../ui/SectionHead";
 import CmykWaves from "../graphics/CmykWaves";
 import Halftone from "../graphics/Halftone";
 import TrayMock from "../graphics/TrayMock";
 
-type Item = (typeof examples.items)[number];
+type ExamplesText = Content["examples"];
+type Item = ExamplesText["items"][number];
 
 /**
  * Светлая, но сильно насыщенная CMYK-подложка: на холодной дымке секции
@@ -23,7 +24,7 @@ const graphics: Record<string, React.ReactNode> = {
 
 // Секция ниже первого экрана: снимки грузятся лениво, без priority —
 // иначе они отнимали бы канал у шрифтов и шара Hero.
-function Slot({ item }: { item: Item }) {
+function Slot({ item, pending }: { item: Item; pending: string }) {
   if (item.src) {
     return (
       <Image
@@ -43,13 +44,13 @@ function Slot({ item }: { item: Item }) {
         {graphics[item.key]}
       </div>
       <span className="absolute bottom-4 left-4 rounded-chip border border-ink/12 bg-card/90 px-3.5 py-1.5 text-[11px] font-bold uppercase leading-none tracking-[0.14em] text-ink/70">
-        {examples.pending}
+        {pending}
       </span>
     </>
   );
 }
 
-export default function Examples() {
+export default function Examples({ examples }: { examples: ExamplesText }) {
   const [lead, ...rest] = examples.items;
 
   return (
@@ -77,7 +78,7 @@ export default function Examples() {
           <Reveal delay={0.06}>
             <figure>
               <div className="relative aspect-[16/11] overflow-hidden rounded-card border border-ink/10">
-                <Slot item={lead} />
+                <Slot item={lead} pending={examples.pending} />
               </div>
               <figcaption className="mt-3.5 text-[13.5px] leading-[1.5] text-muted">
                 {lead.caption}
@@ -90,7 +91,7 @@ export default function Examples() {
               <Reveal key={item.key} delay={0.14 + i * 0.08}>
                 <figure>
                   <div className="relative aspect-[16/10] overflow-hidden rounded-card border border-ink/10">
-                    <Slot item={item} />
+                    <Slot item={item} pending={examples.pending} />
                   </div>
                   <figcaption className="mt-3.5 text-[13.5px] leading-[1.5] text-muted">
                     {item.caption}

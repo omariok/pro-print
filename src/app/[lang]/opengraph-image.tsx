@@ -1,6 +1,11 @@
 import { ImageResponse } from "next/og";
+import { getContent } from "@/lib/content";
+import { defaultLocale, isLocale, locales } from "@/lib/i18n";
 
-export const alt = "Про-Принт — флексографская печать до 10 красок на пищевых плёнках";
+export function generateStaticParams() {
+  return locales.map((lang) => ({ lang }));
+}
+
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -11,10 +16,15 @@ export const contentType = "image/png";
  * приводку.
  */
 
-/** Шрифты тянем напрямую: satori не понимает woff2, поэтому просим legacy-CSS. */
-async function googleFont(family: string, weight: number) {
+/**
+ * Шрифты тянем напрямую: satori не понимает woff2, поэтому просим legacy-CSS.
+ * С `text` Google отдаёт срез только под эти знаки — так иероглифы Noto Sans SC
+ * весят килобайты, а не мегабайты.
+ */
+async function googleFont(family: string, weight: number, text?: string) {
+  const subset = text ? `&text=${encodeURIComponent(text)}` : "&subset=cyrillic";
   const css = await fetch(
-    `https://fonts.googleapis.com/css2?family=${family}:wght@${weight}&subset=cyrillic`,
+    `https://fonts.googleapis.com/css2?family=${family}:wght@${weight}${subset}`,
     {
       headers: {
         "User-Agent":
@@ -23,7 +33,7 @@ async function googleFont(family: string, weight: number) {
     },
   ).then((r) => r.text());
 
-  const url = css.match(/src: url\((.+?)\) format\('woff'\)/)?.[1];
+  const url = css.match(/src: url\((.+?)\) format\('(?:woff|truetype|opentype)'\)/)?.[1];
   if (!url) throw new Error(`${family} woff url not found`);
   return fetch(url).then((r) => r.arrayBuffer());
 }
@@ -37,7 +47,16 @@ const cells = [
 
 const strip = ["#0fb2dc", "#ff0078", "#fbc30f", "#233038"];
 
-export default async function OpengraphImage() {
+export async function generateImageMetadata({ params }: { params: { lang: string } }) {
+  const lang = isLocale(params.lang) ? params.lang : defaultLocale;
+  return [{ id: "card", alt: getContent(lang).meta.ogImageAlt, size, contentType }];
+}
+
+export default async function OpengraphImage({ params }: { params: Promise<{ lang: string }> }) {
+  const { lang: raw } = await params;
+  const lang = isLocale(raw) ? raw : defaultLocale;
+  const { meta } = getContent(lang);
+
   // Сборка карточки не должна валить билд из-за шрифтового CDN: без файлов
   // satori возьмёт свой фолбэк, картинка останется, потеряется только набор.
   let fonts;
@@ -50,6 +69,19 @@ export default async function OpengraphImage() {
       { name: "Onest", data: body, weight: 400 as const, style: "normal" as const },
       { name: "Manrope", data: display, weight: 800 as const, style: "normal" as const },
     ];
+    // В Manrope и Onest нет иероглифов: для китайской карточки добавляем
+    // Noto Sans SC — satori подставит его для недостающих знаков.
+    if (lang === "zh") {
+      const text = meta.ogImageTitle + meta.ogImageText;
+      const [cjkBody, cjkDisplay] = await Promise.all([
+        googleFont("Noto+Sans+SC", 400, text),
+        googleFont("Noto+Sans+SC", 800, text),
+      ]);
+      fonts.push(
+        { name: "Noto Sans SC", data: cjkBody, weight: 400 as const, style: "normal" as const },
+        { name: "Noto Sans SC", data: cjkDisplay, weight: 800 as const, style: "normal" as const },
+      );
+    }
   } catch {
     fonts = undefined;
   }
@@ -113,7 +145,7 @@ export default async function OpengraphImage() {
               maxWidth: 900,
             }}
           >
-            Печать до 10 красок на пищевых плёнках
+            {meta.ogImageTitle}
           </div>
           <div
             style={{
@@ -125,8 +157,7 @@ export default async function OpengraphImage() {
               maxWidth: 860,
             }}
           >
-            Стретч, ПВХ, POF, полиэтилен и барьерные многослойные — от 8 мкм. Собственное
-            производство в Ленинградской области.
+            {meta.ogImageText}
           </div>
         </div>
 
