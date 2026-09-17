@@ -493,6 +493,11 @@ export const en: Content = {
       "We also take care of the artwork: we adapt your file for flexo printing, create designs from scratch and make the printing plates.",
       "Our customers are poultry farms, agricultural holdings, mushroom growers and meat processors. These are companies that value not one-off attractive packaging, but a supplier that performs predictably month after month.",
     ],
+    photo: {
+      alt: "Pro-Print production site: a building with the PRO-PRINT sign, a gatehouse and flags at the entrance",
+      title: "Our own site",
+      text: "Press, quality control, warehouse and office in the Leningrad Region",
+    },
     baseTitle: "Production facilities",
     geographyTitle: "Where we supply",
     geography: [

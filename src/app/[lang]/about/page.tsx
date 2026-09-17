@@ -4,7 +4,7 @@ import { getContent } from "@/lib/content";
 import { alternatesFor, isLocale, localizeHref } from "@/lib/i18n";
 import Reveal from "@/components/ui/Reveal";
 import Button from "@/components/ui/Button";
-import CmykRings from "@/components/graphics/CmykRings";
+import Image from "next/image";
 import Metrics from "@/components/sections/Metrics";
 import { ProductionGrid } from "@/components/sections/Production";
 
@@ -68,18 +68,32 @@ export default async function AboutPage({ params }: Props) {
               </div>
             </div>
 
+            {/* Снимок площадки. Кадр широкий, а от lg рамка квадратная — по высоте
+                она близка к тексту слева — и смещена вправо, чтобы в неё вошёл
+                корпус с вывеской и оранжевыми полосами. Подпись — стеклянная плашка на самом фото,
+                как карточка пипетки на шаре в Hero. */}
             <Reveal delay={0.14}>
-              <div className="relative aspect-square overflow-hidden rounded-panel border border-ink/10 bg-paper-grey">
-                <div
-                  aria-hidden
-                  className="absolute inset-0"
-                  style={{
-                    backgroundImage:
-                      "radial-gradient(60% 60% at 30% 25%, rgba(255,91,4,0.09), transparent 70%), radial-gradient(55% 55% at 78% 76%, rgba(18,105,140,0.12), transparent 70%)",
-                  }}
-                />
-                <CmykRings className="absolute inset-0 h-full w-full" />
-              </div>
+              <figure className="relative">
+                <div className="relative aspect-[16/10] overflow-hidden rounded-panel border border-ink/10 bg-paper-grey sm:aspect-[16/9] lg:aspect-square">
+                  <Image
+                    src="/about/plant.webp"
+                    alt={about.photo.alt}
+                    fill
+                    sizes="(min-width: 1024px) 42vw, 100vw"
+                    className="object-cover object-[72%_50%] lg:object-[88%_50%]"
+                  />
+                </div>
+                {/* На телефоне плашка закрыла бы полкадра — там подпись стоит под снимком. */}
+                <figcaption className="mt-3.5 sm:absolute sm:bottom-5 sm:left-5 sm:mt-0 sm:max-w-[320px] sm:rounded-tile sm:bg-card/88 sm:px-5 sm:py-4 sm:shadow-[0_18px_40px_-22px_rgba(35,48,56,0.5)] sm:ring-1 sm:ring-ink/10 sm:backdrop-blur-md">
+                  <span className="flex items-center gap-2.5 font-display text-[15px] font-bold tracking-[-0.015em] text-ink">
+                    <span aria-hidden className="h-2 w-2 shrink-0 rounded-full bg-accent" />
+                    {about.photo.title}
+                  </span>
+                  <span className="mt-1.5 block pl-[18px] text-[13.5px] leading-[1.45] text-muted sm:pl-0">
+                    {about.photo.text}
+                  </span>
+                </figcaption>
+              </figure>
             </Reveal>
           </div>
         </div>
