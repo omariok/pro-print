@@ -503,7 +503,7 @@
       "muted": {
         "role": "neutral",
         "displayName": "Muted",
-        "canonical": "#56636b",
+        "canonical": "#3f4b53",
         "oklch": "oklch(49.2% 0.021 234.9)",
         "tonalRamp": [
           "#040d13",
@@ -519,7 +519,7 @@
       "muted-soft": {
         "role": "neutral",
         "displayName": "Muted Soft",
-        "canonical": "#5e6b73",
+        "canonical": "#4a565e",
         "oklch": "oklch(52.0% 0.020 234.8)",
         "tonalRamp": [
           "#040d12",

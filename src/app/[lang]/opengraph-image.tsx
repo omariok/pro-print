@@ -153,7 +153,7 @@ export default async function OpengraphImage({ params }: { params: Promise<{ lan
               marginTop: 28,
               fontSize: 27,
               lineHeight: 1.45,
-              color: "#56636b",
+              color: "#3f4b53",
               maxWidth: 860,
             }}
           >

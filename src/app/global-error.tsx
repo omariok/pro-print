@@ -61,7 +61,7 @@ export default function GlobalError({
             {t.siteTitle}
           </h1>
 
-          <p style={{ margin: "16px 0 0", fontSize: "16px", lineHeight: 1.62, color: "#56636b" }}>
+          <p style={{ margin: "16px 0 0", fontSize: "16px", lineHeight: 1.62, color: "#3f4b53" }}>
             {t.siteLede}
           </p>
 
@@ -103,7 +103,7 @@ export default function GlobalError({
           </div>
 
           {error.digest ? (
-            <p style={{ margin: "28px 0 0", fontSize: "12px", color: "#5e6b73" }}>
+            <p style={{ margin: "28px 0 0", fontSize: "12px", color: "#4a565e" }}>
               {t.digest} {error.digest}
             </p>
           ) : null}
