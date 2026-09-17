@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, m } from "framer-motion";
 import type { Content } from "@/lib/content";
 import { contactInfo } from "@/lib/content/contact-info";
 import { fill, localizeHref, type Locale } from "@/lib/i18n";
@@ -95,7 +95,7 @@ export default function RequestForm({ lang, t, site, className = "" }: Props) {
     <div className={`relative rounded-panel border border-line bg-card p-6 sm:p-8 lg:p-10 ${className}`}>
       <AnimatePresence>
         {sent ? (
-          <motion.div
+          <m.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -122,7 +122,7 @@ export default function RequestForm({ lang, t, site, className = "" }: Props) {
             >
               {t.again}
             </button>
-          </motion.div>
+          </m.div>
         ) : null}
       </AnimatePresence>
 

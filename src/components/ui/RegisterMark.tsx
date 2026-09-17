@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, useReducedMotion } from "framer-motion";
+import { m, useReducedMotion } from "framer-motion";
 
 /**
  * Знак «приводка сошлась»: четыре ячейки CMYK из логотипа въезжают со сдвига
@@ -25,7 +25,7 @@ export default function RegisterMark({ className = "" }: { className?: string })
   return (
     <span aria-hidden className={`relative block h-14 w-14 ${className}`}>
       {cells.map((c, i) => (
-        <motion.span
+        <m.span
           key={`${c.x}-${c.y}`}
           initial={{ opacity: 0, x: reduced ? 0 : c.from[0], y: reduced ? 0 : c.from[1] }}
           animate={{ opacity: 1, x: 0, y: 0 }}

@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getContent } from "@/lib/content";
-import { alternatesFor, isLocale, localizeHref } from "@/lib/i18n";
+import { pageMetadata } from "@/lib/metadata";
+import { isLocale, localizeHref } from "@/lib/i18n";
 import Reveal from "@/components/ui/Reveal";
 import Button from "@/components/ui/Button";
 import Image from "next/image";
@@ -14,11 +15,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { lang } = await params;
   if (!isLocale(lang)) return {};
   const { about } = getContent(lang);
-  return {
-    title: about.metaTitle,
-    description: about.metaDescription,
-    alternates: alternatesFor(lang, "/about"),
-  };
+  return pageMetadata(lang, "/about", { title: about.metaTitle, description: about.metaDescription });
 }
 
 export default async function AboutPage({ params }: Props) {

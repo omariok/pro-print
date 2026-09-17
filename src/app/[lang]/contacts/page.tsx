@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { contactInfo, getContent } from "@/lib/content";
-import { alternatesFor, isLocale } from "@/lib/i18n";
+import { pageMetadata } from "@/lib/metadata";
+import { isLocale } from "@/lib/i18n";
 import Reveal from "@/components/ui/Reveal";
 import RequestForm from "@/components/ui/RequestForm";
 import { CheckIcon, ClockIcon, MailIcon, PhoneIcon, PinIcon } from "@/components/ui/Icons";
@@ -12,11 +13,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { lang } = await params;
   if (!isLocale(lang)) return {};
   const { contacts } = getContent(lang);
-  return {
-    title: contacts.metaTitle,
-    description: contacts.metaDescription,
-    alternates: alternatesFor(lang, "/contacts"),
-  };
+  return pageMetadata(lang, "/contacts", { title: contacts.metaTitle, description: contacts.metaDescription });
 }
 
 export default async function ContactsPage({ params }: Props) {

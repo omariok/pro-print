@@ -115,6 +115,31 @@
   --radius-slab: 36px;
 
   --breakpoint-xs: 26rem;
+
+  /* Вход первого экрана (шапка, заголовок Hero, кнопки, шар). Раньше его
+     вела библиотека анимаций, и до гидратации всё это стояло в HTML с
+     opacity:0 — заголовок, главный элемент страницы, появлялся только после
+     загрузки и запуска всего JS, а без JS не появлялся вовсе. CSS-анимация
+     стартует с первой отрисовкой. fill-mode backwards: во время задержки
+     элемент уже в начальном кадре, а после конца анимация ничего не держит
+     на элементе (transform не оставляет контекст наложения). Сдвиг задаёт
+     --rise-from, задержку — animation-delay в разметке. */
+  --animate-rise: rise 0.55s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+  --animate-settle: settle 0.8s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+
+  @keyframes rise {
+    from {
+      opacity: 0;
+      transform: translate3d(0, var(--rise-from, 18px), 0);
+    }
+  }
+
+  @keyframes settle {
+    from {
+      opacity: 0;
+      transform: scale(0.94);
+    }
+  }
 }
 
 @layer base {
@@ -289,18 +314,6 @@
     color: var(--color-muted);
     text-wrap: pretty;
   }
-
-  .rule-grid {
-    background-image:
-      linear-gradient(to right, rgba(35, 48, 56, 0.06) 1px, transparent 1px),
-      linear-gradient(to bottom, rgba(35, 48, 56, 0.06) 1px, transparent 1px);
-    background-size: 104px 104px;
-  }
-}
-
-@utility no-scrollbar {
-  scrollbar-width: none;
-  &::-webkit-scrollbar { display: none; }
 }
 
 /* Мягкое цветное свечение вместо пятна с filter: blur(). Размытие на
@@ -359,24 +372,6 @@ html[data-reveal-fallback] [data-reveal] {
 @media (prefers-reduced-motion: reduce) {
   [data-reveal],
   [data-reveal="shown"] { transform: none; }
-}
-
-/* Только сдвиг, без scale: пятна размыты на 90–100px, и масштабирование
-   заставляет браузер перерастеризовывать размытие каждый кадр. Сдвиг же
-   композитор двигает готовой текстурой — амплитуда поднята, чтобы движение
-   осталось таким же заметным. */
-@keyframes drift {
-  0%, 100% { transform: translate3d(0, 0, 0); }
-  50% { transform: translate3d(3.2%, -4.4%, 0); }
-}
-
-@keyframes spin-slow {
-  to { transform: rotate(360deg); }
-}
-
-@keyframes wave-slide {
-  from { transform: translate3d(0, 0, 0); }
-  to { transform: translate3d(-50%, 0, 0); }
 }
 
 /* prefers-reduced-motion — это «меньше и мягче», а не «выключить всё».

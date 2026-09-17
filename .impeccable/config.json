@@ -40,15 +40,6 @@
         "reason": "Pre-existing 12px micro-step (error digest, about-page markers, orb readout). The .eyebrow class it originally covered was removed on 2026-09-16."
       },
       {
-        "rule": "codex-grid-background",
-        "value": "*",
-        "files": [
-          "src/app/globals.css"
-        ],
-        "createdAt": "2026-09-08T09:21:22.042Z",
-        "reason": "Sanctioned in DESIGN.md L156/L193: the 104px hairline field is the press registration grid, a motivated measurement surface restricted to Hero video background and Aurora (print-process surfaces only), never general ornament."
-      },
-      {
         "rule": "design-system-font",
         "value": "${family}",
         "createdAt": "2026-09-12T05:30:27.927Z"

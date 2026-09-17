@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, m } from "framer-motion";
 import { useEffect, useId, useRef, useState } from "react";
 import { localeMeta, locales, localizeHref, stripLocale, type Locale } from "@/lib/i18n";
 import { CheckIcon, ChevronDownIcon, GlobeIcon } from "../ui/Icons";
@@ -70,7 +70,7 @@ export default function LanguageSwitcher({ lang, label }: { lang: Locale; label:
 
       <AnimatePresence>
         {open ? (
-          <motion.ul
+          <m.ul
             key="languages"
             id={listId}
             initial={{ opacity: 0, y: -6, scale: 0.98 }}
@@ -105,7 +105,7 @@ export default function LanguageSwitcher({ lang, label }: { lang: Locale; label:
                 </li>
               );
             })}
-          </motion.ul>
+          </m.ul>
         ) : null}
       </AnimatePresence>
     </div>

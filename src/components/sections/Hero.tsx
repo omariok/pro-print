@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { AnimatePresence, m, useReducedMotion } from "framer-motion";
 import type { Content } from "@/lib/content";
 import { contactInfo } from "@/lib/content/contact-info";
 import { localizeHref, type Locale } from "@/lib/i18n";
@@ -10,15 +10,6 @@ import HeroOrb from "../graphics/HeroOrb";
 import { ArrowIcon, DiamondIcon, LeafIcon, ShieldIcon } from "../ui/Icons";
 
 const featureIcons = { diamond: DiamondIcon, shield: ShieldIcon, leaf: LeafIcon };
-
-const line = {
-  hidden: { opacity: 0, y: 34 },
-  shown: (i: number) => ({
-    opacity: 1,
-    y: 0,
-    transition: { delay: 0.06 + i * 0.07, duration: 0.55, ease: [0.16, 1, 0.3, 1] as const },
-  }),
-};
 
 /* Единственное движение, которое посетитель видит постоянно, пока читает
    первый экран. На 1.7с глаз дёргался к нему прямо во время чтения заголовка. */
@@ -32,8 +23,8 @@ const ROTATE_MS = 2600;
  *
  * Важно: AnimatePresence не должен стоять внутри motion-элемента с вариантами —
  * тогда дочерние элементы попадают в вариантное дерево родителя, exit не
- * отрабатывает и старые строки остаются в DOM. Здесь родитель анимируется
- * обычным объектом, вариантов нет.
+ * отрабатывает и старые строки остаются в DOM. Здесь вход родителя задан
+ * CSS-анимацией, вариантов нет.
  */
 type HeroText = Content["hero"];
 
@@ -74,7 +65,7 @@ function MaterialRotator({ hero }: { hero: HeroText }) {
           ))}
 
           <AnimatePresence initial={false}>
-            <motion.span
+            <m.span
               key={hero.materials[index]}
               initial={still ? false : { y: "-104%", opacity: 0 }}
               animate={{ y: "0%", opacity: 1 }}
@@ -90,7 +81,7 @@ function MaterialRotator({ hero }: { hero: HeroText }) {
               {hero.materialsEnd ? (
                 <span className="text-accent-strong">{hero.materialsEnd}</span>
               ) : null}
-            </motion.span>
+            </m.span>
           </AnimatePresence>
         </span>
       </span>
@@ -101,11 +92,9 @@ function MaterialRotator({ hero }: { hero: HeroText }) {
 /** Три коротких довода под кнопками: тонкая иконка над подписью в две строки. */
 function HeroFeatures({ hero, className = "" }: { hero: HeroText; className?: string }) {
   return (
-    <motion.ul
-      initial={{ opacity: 0, y: 18 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: 0.56, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-      className={`grid-cols-3 gap-x-4 sm:gap-x-10 ${className}`}
+    <ul
+      style={{ animationDelay: "560ms" }}
+      className={`animate-rise grid-cols-3 gap-x-4 sm:gap-x-10 ${className}`}
     >
       {hero.features.map(({ icon, text }) => {
         const Icon = featureIcons[icon];
@@ -118,7 +107,7 @@ function HeroFeatures({ hero, className = "" }: { hero: HeroText; className?: st
           </li>
         );
       })}
-    </motion.ul>
+    </ul>
   );
 }
 
@@ -154,38 +143,28 @@ export default function Hero({ lang, hero }: { lang: Locale; hero: HeroText }) {
         <div className="max-w-[720px] lg:max-w-[min(640px,48vw)]">
           <h1 className="display text-[clamp(42px,10.2vw,64px)] tracking-[-0.028em] text-ink sm:text-[clamp(54px,7.6vw,80px)] lg:text-[clamp(46px,4.3vw,76px)]">
             {hero.titleLines.map((text, i) => (
-              <motion.span
+              <span
                 key={text}
-                custom={i}
-                variants={line}
-                initial="hidden"
-                animate="shown"
-                className="block lg:whitespace-nowrap"
+                style={{ animationDelay: `${60 + i * 70}ms` }}
+                className="block animate-rise [--rise-from:34px] lg:whitespace-nowrap"
               >
                 {text}
-              </motion.span>
+              </span>
             ))}
           </h1>
 
-          {/* Анимация объектом, а не вариантом: иначе ротатор внутри
-              попадает в чужое вариантное дерево. */}
-          <motion.p
-            initial={{ opacity: 0, y: 18 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-            className="font-display"
-          >
+          {/* Вход первого экрана — CSS-анимация animate-rise (см. globals.css):
+              текст виден с первой отрисовки, не дожидаясь гидратации. */}
+          <p style={{ animationDelay: "300ms" }} className="animate-rise font-display">
             <MaterialRotator hero={hero} />
-          </motion.p>
+          </p>
 
-          <motion.div
-            initial={{ opacity: 0, y: 18 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.46, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+          <div
+            style={{ animationDelay: "460ms" }}
             /* На телефоне кнопки всегда столбиком: высота блока под
                подзаголовком не зависит от ширины, и шар за ним встаёт
                одинаково на любом телефоне. */
-            className="mt-9 flex flex-col items-start gap-4 sm:mt-10 sm:flex-row sm:flex-wrap sm:items-center"
+            className="animate-rise mt-9 flex flex-col items-start gap-4 sm:mt-10 sm:flex-row sm:flex-wrap sm:items-center"
           >
             <Link
               href={localizeHref(lang, "/#request")}
@@ -205,7 +184,7 @@ export default function Hero({ lang, hero }: { lang: Locale; hero: HeroText }) {
             >
               {contactInfo.phone}
             </a>
-          </motion.div>
+          </div>
 
           <HeroFeatures hero={hero} className="mt-[clamp(48px,6.5svh,76px)] hidden max-w-[540px] lg:grid" />
         </div>
@@ -218,18 +197,16 @@ export default function Hero({ lang, hero }: { lang: Locale; hero: HeroText }) {
             shell = pb-14 + половина пилюли); на планшете кнопки стоят в ряд
             и текст ниже, поэтому шар меньше и центр опущен к низу секции
             (8vw), чтобы купол начинался у ротатора, а не у заголовка. */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.94 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.2, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-          className="absolute bottom-[calc(79px-75vw)] left-[calc(100%-75vw)] -z-10 sm:bottom-[-33vw] sm:left-[calc(100%-41vw)] lg:relative lg:inset-auto lg:z-auto lg:justify-self-center"
+        <div
+          style={{ animationDelay: "200ms" }}
+          className="animate-settle absolute bottom-[calc(79px-75vw)] left-[calc(100%-75vw)] -z-10 sm:bottom-[-33vw] sm:left-[calc(100%-41vw)] lg:relative lg:inset-auto lg:z-auto lg:justify-self-center"
         >
           {/* Видна только левая половина шара — полосу красок сжимаем в неё,
               иначе там остаётся один пурпур с оранжевым. Ниже lg под Hero
               идут преимущества, поэтому тёмный низ шара растворяется в бумаге
               чуть ниже центра, а не срезается краем секции. */}
           <HeroOrb probe probeText={hero.probe} className="w-[150vw] [--orb-band-k:1.45] [--orb-band-x:-0.55] [mask-image:linear-gradient(to_bottom,#000_50%,transparent_63%)] sm:w-[82vw] sm:[mask-image:linear-gradient(to_bottom,#000_40%,rgba(0,0,0,0.55)_52%,transparent_64%)] lg:w-[var(--orb-w)] lg:[--orb-band-k:1] lg:[--orb-band-x:0] lg:[--orb-bleed-b:0.3] lg:[--orb-bleed-l:0.12] lg:[--orb-bleed-r:0.14] lg:[--orb-film:1] lg:[mask-image:none]" />
-        </motion.div>
+        </div>
       </div>
 
       {/* Ниже lg преимущества стоят отдельной строкой под shell: шар привязан

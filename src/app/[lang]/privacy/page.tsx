@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { contactInfo, getContent } from "@/lib/content";
-import { alternatesFor, fill, isLocale } from "@/lib/i18n";
+import { pageMetadata } from "@/lib/metadata";
+import { fill, isLocale } from "@/lib/i18n";
 import Reveal from "@/components/ui/Reveal";
 
 type Props = { params: Promise<{ lang: string }> };
@@ -10,11 +11,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { lang } = await params;
   if (!isLocale(lang)) return {};
   const { privacy } = getContent(lang);
-  return {
-    title: privacy.metaTitle,
-    description: privacy.metaDescription,
-    alternates: alternatesFor(lang, "/privacy"),
-  };
+  return pageMetadata(lang, "/privacy", { title: privacy.metaTitle, description: privacy.metaDescription });
 }
 
 export default async function PrivacyPage({ params }: Props) {

@@ -3,8 +3,10 @@ import { notFound } from "next/navigation";
 import { Manrope, Onest } from "next/font/google";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
+import MotionProvider from "@/components/ui/MotionProvider";
 import { getContent } from "@/lib/content";
-import { alternatesFor, isLocale, localeMeta, locales } from "@/lib/i18n";
+import { contactInfo } from "@/lib/content/contact-info";
+import { alternatesFor, isLocale, localeMeta, locales, localizeHref, siteUrl } from "@/lib/i18n";
 import "../globals.css";
 
 // Обе гарнитуры вариативные — массив weight указывать нельзя, иначе Next
@@ -34,7 +36,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { meta } = getContent(lang);
 
   return {
-    metadataBase: new URL("https://pro-print.pro"),
+    metadataBase: new URL(siteUrl),
     title: {
       default: meta.titleDefault,
       template: meta.titleTemplate,
@@ -47,6 +49,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       locale: localeMeta[lang].ogLocale,
       alternateLocale: locales.filter((l) => l !== lang).map((l) => localeMeta[l].ogLocale),
       siteName: meta.siteName,
+      url: localizeHref(lang, "/"),
       title: meta.ogTitle,
       description: meta.ogDescription,
     },
@@ -74,11 +77,28 @@ export default async function RootLayout({
   if (!isLocale(lang)) notFound();
   const t = getContent(lang);
 
+  // Карточка организации для поисковиков: только то, что уже написано на сайте.
+  const organization = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    name: t.site.name,
+    legalName: t.site.legalName,
+    url: siteUrl + localizeHref(lang, "/"),
+    logo: `${siteUrl}/apple-icon`,
+    telephone: contactInfo.phone,
+    email: contactInfo.email,
+    address: t.site.production,
+    description: t.meta.description,
+  };
+
   return (
     // suppressHydrationWarning: страховочный скрипт ниже может поставить
     // атрибут на <html> раньше гидратации, и React не должен на это ругаться.
+    // data-scroll-behavior: Next сам выключает плавную прокрутку на время
+    // перехода между страницами, но в следующих версиях — только с этим атрибутом.
     <html
       lang={localeMeta[lang].htmlLang}
+      data-scroll-behavior="smooth"
       className={`${manrope.variable} ${onest.variable}`}
       suppressHydrationWarning
     >
@@ -98,17 +118,23 @@ export default async function RootLayout({
         />
       </head>
       <body className="min-h-dvh bg-paper antialiased">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(organization).replace(/</g, "\\u003c") }}
+        />
         <a
           href="#main"
           className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-tile focus:bg-ink focus:px-5 focus:py-2.5 focus:text-sm focus:text-paper"
         >
           {t.meta.skipLink}
         </a>
-        <Header lang={lang} nav={t.nav} t={t.header} />
-        <main id="main" className="pt-[var(--header-h)]">
-          {children}
-        </main>
-        <Footer lang={lang} t={t} />
+        <MotionProvider>
+          <Header lang={lang} nav={t.nav} t={t.header} />
+          <main id="main" className="pt-[var(--header-h)]">
+            {children}
+          </main>
+          <Footer lang={lang} t={t} />
+        </MotionProvider>
       </body>
     </html>
   );

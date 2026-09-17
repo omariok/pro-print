@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, m } from "framer-motion";
 import { useEffect, useId, useRef, useState } from "react";
 import type { Content } from "@/lib/content";
 import { contactInfo } from "@/lib/content/contact-info";
@@ -117,7 +117,7 @@ export default function Header({ lang, nav, t }: Props) {
     <header className="fixed inset-x-0 top-0 z-50 pt-3 sm:pt-3.5 lg:pt-4">
       <AnimatePresence>
         {open ? (
-          <motion.div
+          <m.div
             key="backdrop"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -130,14 +130,12 @@ export default function Header({ lang, nav, t }: Props) {
       </AnimatePresence>
 
       <div className="shell-header">
-        <motion.div
-          initial={{ opacity: 0, y: -14 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
-          /* Стекло — только от lg. Ниже шапка при прокрутке едет над живым
+        <div
+          /* Вход — CSS animate-rise, чтобы шапка была в HTML видимой ещё до гидратации.
+             Стекло — только от lg. Ниже шапка при прокрутке едет над живым
              холстом шара, и backdrop-blur пересчитывался бы каждый кадр его
              анимации; на телефоне вместо размытия — почти плотная заливка. */
-          className={`flex h-[52px] items-center gap-4 rounded-card border pl-4 pr-3 transition-[background-color,border-color,box-shadow] duration-200 sm:h-[56px] sm:pl-5 lg:h-[60px] lg:backdrop-blur-2xl lg:backdrop-saturate-150 ${
+          className={`animate-rise flex h-[52px] items-center gap-4 [--rise-from:-14px] rounded-card border pl-4 pr-3 transition-[background-color,border-color,box-shadow] duration-200 sm:h-[56px] sm:pl-5 lg:h-[60px] lg:backdrop-blur-2xl lg:backdrop-saturate-150 ${
             scrolled
               ? "border-card/70 bg-card/95 shadow-[0_18px_44px_-20px_rgba(35,48,56,0.38),0_1px_0_rgba(255,255,255,0.9)_inset] lg:bg-card/80"
               : "border-card/55 bg-card/88 shadow-[0_10px_30px_-18px_rgba(35,48,56,0.24),0_1px_0_rgba(255,255,255,0.75)_inset] lg:bg-card/50"
@@ -196,13 +194,13 @@ export default function Header({ lang, nav, t }: Props) {
               {open ? <CloseIcon className="h-6 w-6" /> : <MenuIcon className="h-6 w-6" />}
             </button>
           </div>
-        </motion.div>
+        </div>
 
         {/* Мобильное меню — не полноэкранная подмена, а шторка под пилюлей:
             иначе поверх парящей шапки пришлось бы рисовать её дубликат. */}
         <AnimatePresence>
           {open ? (
-            <motion.div
+            <m.div
               key="sheet"
               id={sheetId}
               initial={{ opacity: 0, y: -10, scale: 0.985 }}
@@ -219,7 +217,7 @@ export default function Header({ lang, nav, t }: Props) {
             >
               <nav className="flex flex-col">
                 {nav.map((item, i) => (
-                  <motion.div
+                  <m.div
                     key={item.href}
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -235,7 +233,7 @@ export default function Header({ lang, nav, t }: Props) {
                     >
                       {item.label}
                     </Link>
-                  </motion.div>
+                  </m.div>
                 ))}
               </nav>
 
@@ -261,7 +259,7 @@ export default function Header({ lang, nav, t }: Props) {
                   {t.cta}
                 </Link>
               </div>
-            </motion.div>
+            </m.div>
           ) : null}
         </AnimatePresence>
       </div>

@@ -5,6 +5,9 @@
  * лежат под одним сегментом [lang].
  */
 export const locales = ["ru", "en", "zh"] as const;
+
+/** Боевой адрес сайта: из него собираются canonical, hreflang, sitemap и карточки ссылок. */
+export const siteUrl = "https://pro-print.pro";
 export type Locale = (typeof locales)[number];
 export const defaultLocale: Locale = "ru";
 

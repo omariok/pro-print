@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { motion, useReducedMotion, type Variants } from "framer-motion";
+import { m, useReducedMotion, type Variants } from "framer-motion";
 import type { Content } from "@/lib/content";
 import { CursorIcon } from "../ui/Icons";
 import type { Probe } from "./orbScene";
@@ -327,25 +327,25 @@ export default function HeroOrb({
           {/* Карточка стоит в правом верхнем углу сцены и лишь краем
               заходит на плечо сферы — матовое стекло размывает краски под
               собой, а сама сфера остаётся открытой. */}
-          <motion.div
+          <m.div
             ref={cardRef}
             variants={card}
             initial="off"
             animate={active ? "on" : "off"}
             className="absolute right-[-4%] top-[3%] w-[clamp(216px,38%,262px)] rounded-card bg-card/85 p-5 shadow-probe ring-1 ring-ink/10 lg:backdrop-blur-xl xl:p-6"
           >
-            <motion.p
+            <m.p
               ref={valueRef}
               variants={item}
               className="whitespace-nowrap font-display text-[clamp(34px,3vw,44px)] font-extrabold leading-none tracking-[-0.03em] text-ink"
             >
               {probeText?.value}
-            </motion.p>
-            <motion.p variants={item} className="mt-3 text-[15px] leading-[1.4] text-ink-soft">
+            </m.p>
+            <m.p variants={item} className="mt-3 text-[15px] leading-[1.4] text-ink-soft">
               {probeText?.text}
-            </motion.p>
+            </m.p>
 
-            <motion.div variants={item} className="mt-5 border-t border-ink/10 pt-4">
+            <m.div variants={item} className="mt-5 border-t border-ink/10 pt-4">
               {/* Один и тот же цвет дважды: при ΔE ≤ 2 глаз не отличает
                   оттиск от макета — это и показывает пара. */}
               <div className="flex h-9 gap-px overflow-hidden rounded-chip bg-card ring-1 ring-ink/10">
@@ -379,8 +379,8 @@ export default function HeroOrb({
                   </span>
                 ))}
               </p>
-            </motion.div>
-          </motion.div>
+            </m.div>
+          </m.div>
 
           {/* Пипетка — она и есть курсор над сферой: белое кольцо, внутри
               цвет, взятый из кадра прямо под ним. */}

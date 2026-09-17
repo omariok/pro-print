@@ -1,6 +1,6 @@
 # Про-Принт — сайт производства пищевых плёнок
 
-Next.js 15 (App Router) + React 19 + Tailwind CSS v4 + Framer Motion, шар в Hero — three.js. Без UI-библиотек: компоненты и декоративная графика (CMYK-волны, кольца, растр, сетка приводки) написаны вручную на SVG/CSS.
+Next.js 15 (App Router) + React 19 + Tailwind CSS v4 + Framer Motion (облегчённый `LazyMotion`), шар в Hero — three.js. Без UI-библиотек: компоненты написаны вручную.
 
 Дизайн-система целиком описана в [`DESIGN.md`](DESIGN.md) — правила цвета, типографики, форм и навигации смотрите там, этот файл только про устройство проекта.
 
@@ -29,15 +29,17 @@ src/
       [...rest]/        любой несуществующий адрес → not-found.tsx на нужном языке
       error.tsx, not-found.tsx, opengraph-image.tsx
     global-error.tsx
+    robots.ts, sitemap.ts  robots.txt и sitemap.xml со всеми страницами на трёх языках
     globals.css         дизайн-система: токены @theme, .shell, .h-section, анимации, правила для китайского
   components/
     layout/             Header (плавающая плашка, scroll-spy, мобильная шторка), LanguageSwitcher, Footer
     sections/           секции страниц
     ui/                 Button, Fold, Logo, Icons, RegisterMark, Reveal, SectionHead,
-                        RequestForm, VideoBackground
-    graphics/           HeroOrb + orbScene (three.js), CmykRings, CmykWaves, Halftone, TrayMock, Aurora
+                        RequestForm, MotionProvider (LazyMotion), DocumentTitle (заголовок вкладки 404)
+    graphics/           HeroOrb + orbScene и orbFilm (three.js) — шар и лента плёнки в Hero
   lib/
-    i18n.ts             список языков, ссылки с префиксом языка, hreflang
+    i18n.ts             список языков, адрес сайта, ссылки с префиксом языка, hreflang
+    metadata.ts         заголовок, описание, canonical и карточка ссылки внутренней страницы
     content/            весь текст сайта: ru.ts (основной, задаёт форму), en.ts, zh.ts;
                         errors.ts — экраны сбоя, contact-info.ts — телефон и почта
 public/docs/            ТУ, протокол испытаний, декларация ЕАЭС (PDF)
@@ -46,14 +48,6 @@ public/docs/            ТУ, протокол испытаний, деклар�
 ## Фотографии в «Примерах»
 
 Снимки лежат в `public/examples/` (WebP 1536×1024, ~200 КБ), пути и подписи — в `examples.items` в `src/lib/content/*.ts`. Первый снимок главный: от xl он стоит крупно слева, два других — столбиком справа. Новое фото сжимайте до WebP той же ширины (sharp уже есть в `node_modules` вместе с Next) и держите пропорцию 3:2 — под неё подобрана сетка. Пустой `src` показывает заглушку «Фотография готовится».
-
-## Видео-подложка
-
-`VideoBackground` сейчас нигде не подключён (в Hero стоит шар). Без `src` он рисует светлую подложку `Aurora`, с `src` — ролик, который начинает грузиться только когда секция въехала в экран (`preload="none"`), а при `prefers-reduced-motion` не грузится вовсе:
-
-```tsx
-<VideoBackground src="/hero.mp4" poster="/hero.jpg" grid />
-```
 
 ## Форма заявки
 

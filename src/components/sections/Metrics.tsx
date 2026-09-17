@@ -9,7 +9,7 @@ type Props = {
   title?: string;
 };
 
-export function SpecTable({ rows }: { rows: [string, string][] }) {
+function SpecTable({ rows }: { rows: [string, string][] }) {
   return (
     <dl className="border-t border-ink/14">
       {rows.map(([label, value], i) => (
