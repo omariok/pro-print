@@ -485,7 +485,7 @@ export const en: Content = {
     metaTitle: "About",
     metaDescription:
       "Pro-Print LLC — flexographic printing on food packaging films from 8 µm: stretch, PVC, POF, polyethylene and barrier films. Production facilities, supply geography and key specifications.",
-    title: "We print on thin food films where most printers say “we can’t take that on”",
+    title: "We print on thin food films where most manufacturers say “we can’t take that on”",
     lede: "Pro-Print LLC is a manufacturing company with its own 10-color flexographic press. We print on food packaging films from 8 microns thick — stretch, PVC, POF, polyethylene and multilayer barrier films — a material that is hard to run through a press without web breaks or loss of registration.",
     whatTitle: "What we do",
     what: [
