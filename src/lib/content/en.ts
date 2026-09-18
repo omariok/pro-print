@@ -240,14 +240,14 @@ export const en: Content = {
       {
         key: "tomatoes",
         src: "/examples/tomatoes.webp",
-        alt: "Tray of tomatoes wrapped in printed film with a dark green border, botanical artwork and a clear window",
-        caption: "Tomatoes: rich artwork around the edges and a clear window in the middle — the product is visible, the brand is recognizable.",
+        alt: "Tray of tomatoes wrapped in printed film with red and green artwork around the edges, leaves, icons and a clear window",
+        caption: "Tomatoes: rich red and green around the edges and a clear window in the middle — the product is visible, the brand is recognizable.",
       },
       {
         key: "mushrooms",
         src: "/examples/mushrooms.webp",
-        alt: "Tray of button mushrooms wrapped in printed film with the product name, icons, an engraved field scene and parsley",
-        caption: "Mushrooms: fine engraved lines, small type and soft color transitions stay crisp.",
+        alt: "Tray of button mushrooms wrapped in printed film with the product name, photographic mushrooms, parsley and icons",
+        caption: "Mushrooms: soft color transitions, photographic artwork and the small type of the icons stay crisp.",
       },
     ],
   },
