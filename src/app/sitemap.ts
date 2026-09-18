@@ -7,6 +7,7 @@ const pages = [
   { path: "/about", priority: 0.7 },
   { path: "/contacts", priority: 0.7 },
   { path: "/privacy", priority: 0.2 },
+  { path: "/legal", priority: 0.2 },
 ];
 
 export default function sitemap(): MetadataRoute.Sitemap {

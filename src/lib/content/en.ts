@@ -1,4 +1,5 @@
 import type { Content } from "./index";
+import type { DocBlock } from "./ru";
 
 /**
  * English version. Written for packaging buyers and technologists outside
@@ -36,6 +37,7 @@ export const en: Content = {
   site: {
     name: "Pro-Print",
     legalName: "Pro-Print LLC",
+    fullName: "Limited Liability Company “Pro-Print”",
     schedule: "Mon–Fri, 09:00–18:00 Moscow time (UTC+3)",
     production:
       "27 Leningradskaya St., bldg. 1, Tervolovo, Gatchinsky District, Leningrad Region, 188351, Russia",
@@ -468,9 +470,10 @@ export const en: Content = {
     machine: { label: "Packaging machine", placeholder: "Machine model or “hand wrapping”" },
     artwork: { label: "Artwork link", placeholder: "Cloud link or “no artwork yet”" },
     comment: { label: "Comment", placeholder: "Task, deadlines, product specifics" },
-    consentBefore:
-      "I consent to the processing of my personal data under Russian Federal Law No. 152-FZ and the ",
-    consentLink: "personal data processing policy",
+    consentBefore: "I give my ",
+    consentLink: "consent to the processing of personal data",
+    consentMiddle: " in accordance with the ",
+    consentPolicyLink: "personal data processing policy",
     consentAfter: ".",
     consentRequired: "We can’t send your request without your consent",
     next: "What happens next: a manager will contact you during business hours ({schedule}) to clarify the run size, material and colors. No artwork is needed at this stage — we quote based on your specs.",
@@ -559,35 +562,206 @@ export const en: Content = {
   privacy: {
     metaTitle: "Personal Data Processing Policy",
     metaDescription:
-      "Personal data processing policy of Pro-Print LLC in accordance with Russian Federal Law No. 152-FZ.",
+      "Pro-Print LLC policy on personal data processing: purposes, data categories, retention periods, user rights and security measures under Russian Federal Law No. 152-FZ.",
     title: "Personal Data Processing Policy",
-    lede: "This document describes what data the {legalName} website collects, why it is needed and how to have it deleted. It is provided for information purposes and is subject to review by our legal team.",
+    lede: "How {legalName} processes and protects the personal data it receives through {site}.",
+    version: "Version of 17 September 2026",
+    translationNote:
+      "This is a translation provided for convenience. The Russian version of this document prevails.",
     blocks: [
       {
         title: "1. General provisions",
-        text: "This policy sets out how {legalName} processes personal data and applies to information the operator may receive about website visitors. Processing is carried out in accordance with Russian Federal Law No. 152-FZ “On Personal Data”.",
+        paras: [
+          "This policy sets out the procedure and conditions for processing personal data at {fullName} (the Operator) and the measures taken to protect it. It is issued pursuant to Part 2 of Article 18.1 of Russian Federal Law No. 152-FZ of 27 July 2006 “On Personal Data” (the Personal Data Law) and applies to all personal data the Operator receives through {site}.",
+          "The policy is publicly available: a link to it is placed next to the request form and in the footer of every page.",
+        ],
       },
       {
-        title: "2. What data we collect",
-        text: "Through the request form, the operator receives the name, company name, phone number, email address and details of the planned order that the visitor provides voluntarily. The website does not request any other personal data.",
+        title: "2. Operator details",
+        paras: [
+          "{fullName}, INN {inn}, KPP {kpp}, OGRN {ogrn}. Registered address: office 209, 10A Oboronnaya St., Saint Petersburg, 198095, Russia. Phone: {phone}, email: {email}.",
+          "The person responsible for organizing personal data processing is the General Director, Nadezhda V. Voroshko.",
+        ],
       },
       {
-        title: "3. Purposes of processing",
-        text: "Data is processed solely to contact the person making the request, prepare a commercial offer and calculate the cost of the run. Data is not used for mailings or advertising messages.",
+        title: "3. Definitions",
+        list: [
+          "Personal data — any information relating directly or indirectly to an identified or identifiable individual (data subject).",
+          "Processing of personal data — any operation or set of operations performed on personal data, whether or not by automated means.",
+          "User — any person visiting {site}.",
+          "Cookie — a small piece of data a website stores in the user’s browser; for the purposes of this policy, browser local storage (localStorage) is treated as a cookie.",
+        ],
       },
       {
-        title: "4. Disclosure to third parties",
-        text: "The operator does not disclose personal data to third parties, except in cases expressly provided for by the legislation of the Russian Federation.",
+        title: "4. Legal grounds for processing",
+        list: [
+          "the data subject’s consent (Clause 1, Part 1, Article 6 of the Personal Data Law), given separately from other documents when submitting a request;",
+          "the need to conclude and perform a contract to which the data subject is a party (Clause 5, Part 1, Article 6 of the Personal Data Law);",
+          "the Civil Code of the Russian Federation, Federal Law No. 149-FZ of 27 July 2006 “On Information, Information Technologies and Protection of Information” and Federal Law No. 402-FZ of 6 December 2011 “On Accounting”.",
+        ],
       },
       {
-        title: "5. Retention and withdrawal of consent",
-        text: "Data is stored until the purposes of processing are achieved or until consent is withdrawn. To withdraw consent or request deletion of your data, write to {email}.",
+        title: "5. Purposes, data subjects and data categories",
+        paras: [
+          "The Operator processes only the data required for the stated purpose and does not collect excessive information.",
+        ],
+        list: [
+          "Handling requests and contacting the person who submitted them: a call or email, cost calculation and a commercial offer. Data subjects: website users, including representatives of organizations. Data: name, company name, phone number, email address, order details from the optional form fields (volume and parameters, packaging machine model, artwork link, comment), and the IP address, date and time of submission and browser details — to evidence that consent was obtained.",
+          "Concluding and performing a contract where an agreement is reached. Data subjects: client representatives. Data: the data listed above and the data needed to execute the contract.",
+          "Ensuring the website works and is secure. Data subjects: website users. Data: IP address, date and time of the request, page address, browser and device details, and the choice made in the cookie notice.",
+        ],
+        after: [
+          "The Operator does not process special categories of personal data or biometric data and makes no decisions producing legal effects for users based solely on automated processing. The website is intended for businesses and is not directed at persons under 18.",
+        ],
       },
       {
-        title: "6. Data protection",
-        text: "The operator takes the organizational and technical measures necessary to protect personal data from unauthorized access, destruction, alteration and disclosure.",
+        title: "6. Processing procedure and conditions",
+        list: [
+          "Operations: collection, recording, systematization, accumulation, storage, clarification (updating, modification), retrieval, use, transfer (provision, access), blocking, deletion and destruction.",
+          "Processing method: mixed, with and without automation, with transfer over the Internet.",
+          "Recording, systematization, accumulation, storage, clarification and retrieval of personal data of Russian citizens are carried out using databases located in the Russian Federation (Part 5, Article 18 of the Personal Data Law).",
+          "Personal data is not transferred across borders and is not made public.",
+          "The Operator entrusts processing (Part 3, Article 6 of the Personal Data Law) to TIMEWEB.CLOUD LLC (INN {timewebInn}; office 605, 7 Universitetskaya St., Innopolis, Republic of Tatarstan, 420500, Russia) for website hosting on servers in Russia, and to YANDEX LLC (INN {yandexInn}; 16 Lva Tolstogo St., Moscow, 119021, Russia) for the email service through which website requests reach the Operator. These parties are required to keep the data confidential and secure.",
+          "Data is disclosed to other parties only where required by Russian law, for example at the request of a court or competent public authorities.",
+          "The Operator and anyone given access to the data shall not disclose or distribute it without the data subject’s consent unless otherwise provided by federal law (Article 7 of the Personal Data Law).",
+        ],
       },
-    ],
+      {
+        title: "7. Retention and destruction",
+        list: [
+          "Request data is processed until the purposes are achieved, but no longer than three years from the last contact if no contract has been concluded.",
+          "If a contract is concluded — for its term and the document retention periods required by Russian law.",
+          "Once the purposes are achieved, the period expires or consent is withdrawn, the Operator stops processing and destroys the data within 30 days unless otherwise provided by contract or federal law (Parts 4 and 5, Article 21 of the Personal Data Law). If destruction within this period is not possible, the Operator blocks the data and destroys it within six months (Part 6, Article 21).",
+          "Destruction is documented in accordance with Roskomnadzor Order No. 179 of 28 October 2022.",
+        ],
+      },
+      {
+        title: "8. User rights",
+        paras: ["Users have the right to:"],
+        list: [
+          "obtain information about the processing of their personal data (Article 14 of the Personal Data Law);",
+          "demand that their data be clarified, blocked or destroyed if it is incomplete, outdated, inaccurate, unlawfully obtained or not necessary for the stated purpose;",
+          "withdraw consent to processing at any time;",
+          "appeal the Operator’s actions or omissions to Roskomnadzor (the Russian data protection authority) or in court.",
+        ],
+        after: [
+          "Requests and withdrawals of consent can be sent to {email} or by post to the Operator’s registered address. A request must contain information identifying the sender and confirming their dealings with the Operator, such as the date of the request and the phone number given in it (Part 3, Article 14). The Operator may ask for additional information to verify identity.",
+          "The Operator responds within 10 business days of receipt. This period may be extended by no more than 5 business days with a reasoned notice.",
+        ],
+      },
+      {
+        title: "9. Data protection",
+        paras: [
+          "The Operator takes the legal, organizational and technical measures required by Articles 18.1 and 19 of the Personal Data Law:",
+        ],
+        list: [
+          "appoints a person responsible for organizing data processing and adopts internal policies on data processing and protection;",
+          "grants access to data only to employees who need it for their duties and informs them of the legal requirements;",
+          "transmits data from the website over an encrypted connection (HTTPS) and restricts access to email and servers with passwords;",
+          "assesses potential harm to data subjects in accordance with Roskomnadzor Order No. 178 of 27 October 2022 and carries out internal control;",
+          "notifies Roskomnadzor of any unlawful or accidental transfer of personal data within 24 hours, and of the results of the internal investigation within 72 hours (Part 3.1, Article 21 of the Personal Data Law).",
+        ],
+      },
+      {
+        title: "10. Cookies",
+        paras: [
+          "The website stores only strictly necessary data in the browser. Analytics and advertising cookies are not used; if introduced, they will only run with the user’s permission. The list and how to change your choice are in the cookies section of the legal information page.",
+        ],
+        link: { label: "Cookies and browser storage", href: "/legal#cookies" },
+      },
+      {
+        title: "11. Final provisions",
+        paras: [
+          "The Operator may amend this policy. A new version takes effect once published on the website unless stated otherwise. The current version is always available on this page.",
+          "Questions about personal data processing: {email} or {phone}.",
+        ],
+      },
+    ] as DocBlock[],
+  },
+
+  legal: {
+    metaTitle: "Legal information",
+    metaDescription:
+      "Website owner details for pro-print.pro, consent to personal data processing and use of cookies.",
+    title: "Legal information",
+    lede: "Who owns this website, on what terms we process data from requests and what the website stores in your browser.",
+    version: "Version of 17 September 2026",
+    translationNote:
+      "This is a translation provided for convenience. The Russian version of these documents prevails.",
+    tocLabel: "On this page",
+    operator: {
+      title: "Website owner and personal data operator",
+      text: "{site} is owned by {fullName}. The company is the operator of the personal data users submit through the website.",
+      rows: [
+        ["Full name", "{fullName}"],
+        ["Short name", "{legalName}"],
+        ["INN / KPP", "{inn} / {kpp}"],
+        ["OGRN", "{ogrn}"],
+        ["Registered address", "Office 209, 10A Oboronnaya St., Saint Petersburg, 198095, Russia"],
+        [
+          "Production address",
+          "27 Leningradskaya St., bldg. 1, Tervolovo, Gatchina District, Leningrad Region, 188351, Russia",
+        ],
+        ["General Director", "Nadezhda V. Voroshko"],
+        ["Responsible for personal data processing", "General Director Nadezhda V. Voroshko"],
+        ["Phone", "{phone}"],
+        ["Email", "{email}"],
+      ] as [string, string][],
+    },
+    consent: {
+      title: "Consent to personal data processing",
+      intro:
+        "By ticking the consent box in the request form on {site} and submitting the request, I freely, of my own will and in my own interest give {fullName} (INN {inn}, OGRN {ogrn}, address: office 209, 10A Oboronnaya St., Saint Petersburg, 198095, Russia; the Operator) specific, informed, conscious and unambiguous consent to the processing of my personal data on the following terms.",
+      items: [
+        "Purpose: reviewing my request, contacting me by phone and email, calculating the cost and preparing a commercial offer and, if an agreement is reached, concluding and performing a contract.",
+        "Data: name; company name; phone number; email address; order details I enter in the form (volume and parameters, packaging machine model, artwork link, comment); the IP address, date and time of submission and browser details — to evidence that consent was obtained.",
+        "Operations: collection, recording, systematization, accumulation, storage, clarification (updating, modification), retrieval, use, transfer (provision, access) to the parties listed in item 5, blocking, deletion and destruction. Processing method: mixed, with transfer over the Internet.",
+        "The data is stored in databases located in the Russian Federation. It is not transferred across borders or made public.",
+        "Processing on the Operator’s behalf is carried out by TIMEWEB.CLOUD LLC (INN {timewebInn}; office 605, 7 Universitetskaya St., Innopolis, Republic of Tatarstan, 420500, Russia) — website hosting; and YANDEX LLC (INN {yandexInn}; 16 Lva Tolstogo St., Moscow, 119021, Russia) — the email service through which the request reaches the Operator.",
+        "Term: until the purposes of processing are achieved, but no longer than three years from the date of the request, or until consent is withdrawn. If a contract is concluded, data is processed for its term and the document retention periods required by law.",
+        "I may withdraw consent at any time by writing to {email} or to the Operator’s registered address. The Operator stops processing and destroys the data within 30 days of receiving the withdrawal, except where federal law permits processing to continue without consent.",
+        "I confirm that I have read the Personal Data Processing Policy and my rights as a data subject (Article 14 of Federal Law No. 152-FZ), and that I provide another person’s data only with their consent.",
+      ],
+      policyBefore: "Processing terms are described in detail in the ",
+      policyLink: "personal data processing policy",
+      policyAfter: ".",
+    },
+    cookies: {
+      title: "Cookies and browser storage",
+      paras: [
+        "Cookies are small pieces of data a website stores in your browser. Browser local storage (localStorage) works in a similar way.",
+        "At present the website uses only strictly necessary storage — without it, your choice in the cookie notice cannot be remembered. This data stays in your browser and is not sent to the Operator or third parties.",
+      ],
+      table: {
+        headers: ["Name", "Stored in", "Purpose", "Duration"],
+        rows: [["pp-consent", "localStorage", "Your cookie notice choice and its date", "12 months"]] as string[][],
+      },
+      after: [
+        "The website does not use analytics or advertising cookies. If the Operator adds a web analytics service, it will only run after you allow it in the cookie notice, and this section will list the services used.",
+        "Each time you visit the website, the hosting provider’s server automatically receives your IP address, the date and time of the request, the page address and browser details. This is needed to deliver pages and protect the website from attacks.",
+        "You can change your choice with the button below and delete stored data in your browser settings.",
+      ],
+      settings: "Change my choice",
+    },
+    documents: {
+      title: "Documents",
+      links: [
+        { label: "Personal data processing policy", href: "/privacy" },
+        { label: "Contacts and company details", href: "/contacts" },
+      ],
+    },
+  },
+
+  cookieBanner: {
+    title: "Cookies and personal data",
+    textBefore:
+      "This website stores only what it needs to work in your browser. Analytics will run only if you allow it. Learn more in our ",
+    legalLink: "legal information",
+    textMiddle: " and ",
+    policyLink: "privacy policy",
+    textAfter: ".",
+    accept: "Allow all",
+    necessary: "Necessary only",
   },
 
   notFound: {
@@ -614,7 +788,10 @@ export const en: Content = {
       "Pro-Print LLC. Up to 10-color flexographic printing on food packaging films: stretch, PVC, POF, polyethylene and multilayer barrier films. Our own production in the Leningrad Region, Russia.",
     contactsTitle: "Contacts",
     productionLabel: "Production:",
-    legal: { label: "Privacy policy", href: "/privacy" },
+    links: [
+      { label: "Legal information", href: "/legal" },
+      { label: "Privacy policy", href: "/privacy" },
+    ],
     note: "Product images are renderings, pending photography of our production",
   },
 };

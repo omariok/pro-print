@@ -3,7 +3,7 @@ import { ru } from "./ru";
 import { en } from "./en";
 import { zh } from "./zh";
 
-export type { FeatureIcon } from "./ru";
+export type { DocBlock, FeatureIcon } from "./ru";
 
 /** Форма словаря задана русской версией; переводы обязаны её повторять. */
 export type Content = typeof ru;

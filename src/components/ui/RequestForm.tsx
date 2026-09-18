@@ -43,6 +43,13 @@ export default function RequestForm({ lang, t, site, className = "" }: Props) {
   const [failed, setFailed] = useState(false);
   const successRef = useRef<HTMLParagraphElement>(null);
   const wasSent = useRef(false);
+  // Когда форму открыли: заявку, отправленную быстрее человека, сервер молча отбросит.
+  const startedAt = useRef(0);
+  const trap = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    startedAt.current = Date.now();
+  }, []);
 
   const {
     register,
@@ -77,14 +84,21 @@ export default function RequestForm({ lang, t, site, className = "" }: Props) {
   const onSubmit = async (values: Values) => {
     setFailed(false);
     try {
-      // Бэкенда нет: имитируем отправку и показываем состояние успеха.
-      // Когда появится /api/request, здесь будет fetch — и его ошибка
-      // (сеть, ответ не 2xx) уйдёт в catch, а не в экран «отправлено».
-      await new Promise((resolve) => setTimeout(resolve, 700));
-      if (process.env.NODE_ENV === "development") {
-        console.info("Заявка:", values);
-      }
+      // Ошибка сети или ответ не 2xx уходят в catch, а не в экран «отправлено».
+      const response = await fetch("/api/request", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ...values,
+          lang,
+          page: window.location.href,
+          website: trap.current?.value ?? "",
+          startedAt: startedAt.current,
+        }),
+      });
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
       reset();
+      startedAt.current = Date.now();
       setSent(true);
     } catch {
       setFailed(true);
@@ -130,6 +144,11 @@ export default function RequestForm({ lang, t, site, className = "" }: Props) {
           сообщается скринридеру через aria-required, а ошибки — role="alert".
           Под экраном успеха форма inert: иначе Tab уводил бы в невидимые поля. */}
       <form onSubmit={handleSubmit(onSubmit)} noValidate inert={sent}>
+        {/* Ловушка для ботов: человек это поле не видит и не заполняет. */}
+        <div aria-hidden className="absolute -left-[9999px] h-px w-px overflow-hidden">
+          <label htmlFor="rf-website">Website</label>
+          <input ref={trap} id="rf-website" name="website" type="text" tabIndex={-1} autoComplete="off" />
+        </div>
         <div className="grid gap-5 sm:grid-cols-2 sm:gap-x-6">
           <div>
             <label className={label} htmlFor="rf-name">
@@ -307,10 +326,19 @@ export default function RequestForm({ lang, t, site, className = "" }: Props) {
           <span className="text-[13.5px] leading-[1.5] text-muted">
             {t.consentBefore}
             <Link
-              href={localizeHref(lang, "/privacy")}
+              href={localizeHref(lang, "/legal#consent")}
+              target="_blank"
               className="text-[var(--accent-text)] underline underline-offset-2"
             >
               {t.consentLink}
+            </Link>
+            {t.consentMiddle}
+            <Link
+              href={localizeHref(lang, "/privacy")}
+              target="_blank"
+              className="text-[var(--accent-text)] underline underline-offset-2"
+            >
+              {t.consentPolicyLink}
             </Link>
             {t.consentAfter}
           </span>

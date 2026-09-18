@@ -4,6 +4,7 @@ import { Manrope, Onest } from "next/font/google";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import MotionProvider from "@/components/ui/MotionProvider";
+import CookieBanner from "@/components/ui/CookieBanner";
 import { getContent } from "@/lib/content";
 import { contactInfo } from "@/lib/content/contact-info";
 import { alternatesFor, isLocale, localeMeta, locales, localizeHref, siteUrl } from "@/lib/i18n";
@@ -134,6 +135,7 @@ export default async function RootLayout({
             {children}
           </main>
           <Footer lang={lang} t={t} />
+          <CookieBanner lang={lang} t={t.cookieBanner} />
         </MotionProvider>
       </body>
     </html>

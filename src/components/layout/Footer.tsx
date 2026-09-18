@@ -55,16 +55,19 @@ export default function Footer({ lang, t }: { lang: Locale; t: Content }) {
         </div>
 
         <div className="flex flex-col gap-3 border-t border-ink/10 py-6 text-[13.5px] text-muted-soft sm:flex-row sm:flex-wrap sm:items-center sm:justify-between sm:gap-x-8">
-          <div className="flex flex-col gap-2 xs:flex-row xs:items-center xs:gap-6">
+          <div className="flex flex-col gap-2 xs:flex-row xs:flex-wrap xs:items-center xs:gap-x-6">
             <p>
               © {year} {site.legalName}
             </p>
-            <Link
-              href={localizeHref(lang, footer.legal.href)}
-              className="-my-3 inline-block py-3 text-muted underline decoration-ink/20 underline-offset-4 transition-colors duration-200 hover:text-[var(--accent-text)] hover:decoration-[var(--accent-text)]"
-            >
-              {footer.legal.label}
-            </Link>
+            {footer.links.map((item) => (
+              <Link
+                key={item.href}
+                href={localizeHref(lang, item.href)}
+                className="-my-3 inline-block py-3 text-muted underline decoration-ink/20 underline-offset-4 transition-colors duration-200 hover:text-[var(--accent-text)] hover:decoration-[var(--accent-text)]"
+              >
+                {item.label}
+              </Link>
+            ))}
           </div>
           <p className="sm:text-right">{footer.note}</p>
         </div>
