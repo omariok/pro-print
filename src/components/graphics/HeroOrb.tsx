@@ -233,6 +233,8 @@ export default function HeroOrb({
         still: Boolean(still),
         onReady: () => setReady(true),
         onProbe: probe ? onProbe : undefined,
+        // Пока браузер не вернул WebGL-контекст, на месте шара — заглушка.
+        onContext: setReady,
       });
       dispose = orb?.dispose;
     });

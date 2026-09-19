@@ -388,7 +388,8 @@ export const zh: Content = {
     successTitle: "询价已发送",
     successText: "销售经理将在工作时间（{schedule}）与您联系，确认印刷参数。如需尽快沟通，请直接致电：{phone}。",
     again: "再发送一份询价",
-    optional: "选填",
+    details: "补充详情",
+    detailsHint: "选填：用量、包装机、设计稿、备注",
     name: {
       label: "姓名",
       placeholder: "怎么称呼您",

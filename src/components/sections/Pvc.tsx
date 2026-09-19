@@ -63,13 +63,11 @@ export default function Pvc({ pvc }: { pvc: Content["pvc"] }) {
 
           <dl className="grid gap-x-12 gap-y-0 border-t border-line sm:grid-cols-2 lg:gap-x-14">
             {pvc.advantages.map((item, i) => (
-              <Reveal key={item.title} delay={Math.min(0.04 * i, 0.24)}>
-                <div className="border-b border-line py-5">
-                  <dt className="font-display text-[15.5px] font-bold tracking-[-0.015em] text-ink">
-                    {item.title}
-                  </dt>
-                  <dd className="mt-2 text-[14.5px] leading-[1.55] text-muted">{item.text}</dd>
-                </div>
+              <Reveal key={item.title} delay={Math.min(0.04 * i, 0.24)} className="border-b border-line py-5">
+                <dt className="font-display text-[15.5px] font-bold tracking-[-0.015em] text-ink">
+                  {item.title}
+                </dt>
+                <dd className="mt-2 text-[14.5px] leading-[1.55] text-muted">{item.text}</dd>
               </Reveal>
             ))}
           </dl>

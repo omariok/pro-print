@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { AnimatePresence, m } from "framer-motion";
 import type { Content } from "@/lib/content";
@@ -29,7 +29,6 @@ const field =
 const ok = "border-line-input focus:border-ink";
 const bad = "border-accent focus:border-accent";
 const errorText = "mt-1.5 block text-[12.5px] text-[var(--accent-text)]";
-const optional = "ml-1.5 font-medium normal-case tracking-[0.04em] text-muted-soft";
 
 type Props = {
   lang: Locale;
@@ -41,14 +40,17 @@ type Props = {
 export default function RequestForm({ lang, t, site, className = "" }: Props) {
   const [sent, setSent] = useState(false);
   const [failed, setFailed] = useState(false);
+  const [detailsOpen, setDetailsOpen] = useState(false);
+  const detailsId = useId();
   const successRef = useRef<HTMLParagraphElement>(null);
   const wasSent = useRef(false);
   // Когда форму открыли: заявку, отправленную быстрее человека, сервер молча отбросит.
+  // performance.now() не зависит от того, верно ли выставлены часы устройства.
   const startedAt = useRef(0);
   const trap = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    startedAt.current = Date.now();
+    startedAt.current = performance.now();
   }, []);
 
   const {
@@ -93,12 +95,13 @@ export default function RequestForm({ lang, t, site, className = "" }: Props) {
           lang,
           page: window.location.href,
           website: trap.current?.value ?? "",
-          startedAt: startedAt.current,
+          elapsed: Math.round(performance.now() - startedAt.current),
         }),
       });
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       reset();
-      startedAt.current = Date.now();
+      setDetailsOpen(false);
+      startedAt.current = performance.now();
       setSent(true);
     } catch {
       setFailed(true);
@@ -156,6 +159,7 @@ export default function RequestForm({ lang, t, site, className = "" }: Props) {
             </label>
             <input
               id="rf-name"
+              maxLength={120}
               autoComplete="name"
               aria-required="true"
               type="text"
@@ -165,7 +169,9 @@ export default function RequestForm({ lang, t, site, className = "" }: Props) {
               className={`${field} ${errors.name ? bad : ok}`}
               {...register("name", {
                 required: t.name.required,
-                minLength: { value: 2, message: t.name.tooShort },
+                // Сервер обрезает пробелы по краям — проверяем так же, чтобы
+                // «  а» не проходило форму и не падало ошибкой отправки.
+                validate: (v) => v.trim().length >= 2 || t.name.tooShort,
               })}
             />
             {errors.name ? (
@@ -181,6 +187,7 @@ export default function RequestForm({ lang, t, site, className = "" }: Props) {
             </label>
             <input
               id="rf-company"
+              maxLength={200}
               autoComplete="organization"
               aria-required="true"
               type="text"
@@ -188,7 +195,10 @@ export default function RequestForm({ lang, t, site, className = "" }: Props) {
               aria-invalid={Boolean(errors.company)}
               aria-describedby={errors.company ? "rf-company-error" : undefined}
               className={`${field} ${errors.company ? bad : ok}`}
-              {...register("company", { required: t.company.required })}
+              {...register("company", {
+                required: t.company.required,
+                validate: (v) => v.trim() !== "" || t.company.required,
+              })}
             />
             {errors.company ? (
               <span id="rf-company-error" role="alert" className={errorText}>
@@ -232,6 +242,7 @@ export default function RequestForm({ lang, t, site, className = "" }: Props) {
             </label>
             <input
               id="rf-email"
+              maxLength={200}
               autoComplete="email"
               aria-required="true"
               type="email"
@@ -254,56 +265,108 @@ export default function RequestForm({ lang, t, site, className = "" }: Props) {
             ) : null}
           </div>
 
-          <div>
-            <label className={label} htmlFor="rf-volume">
-              {t.volume.label} <span className={optional}>{t.optional}</span>
-            </label>
-            <input
-              id="rf-volume"
-              type="text"
-              placeholder={t.volume.placeholder}
-              className={`${field} ${ok}`}
-              {...register("volume")}
-            />
-          </div>
+        </div>
 
-          <div>
-            <label className={label} htmlFor="rf-machine">
-              {t.machine.label} <span className={optional}>{t.optional}</span>
-            </label>
-            <input
-              id="rf-machine"
-              type="text"
-              placeholder={t.machine.placeholder}
-              className={`${field} ${ok}`}
-              {...register("machine")}
-            />
-          </div>
+        {/* Необязательные поля свёрнуты: заявке хватает четырёх полей выше,
+            подробности клиент добавит, если захочет. Поля остаются в разметке
+            (свёрнутые — inert), поэтому введённое не теряется, если блок
+            закрыть, и уходит вместе с заявкой. Раскрытие — как в FAQ и Fold. */}
+        <div className="mt-7 border-y border-line">
+          <button
+            type="button"
+            onClick={() => setDetailsOpen(!detailsOpen)}
+            aria-expanded={detailsOpen}
+            aria-controls={detailsId}
+            className="group flex w-full items-center justify-between gap-5 py-4 text-left"
+          >
+            <span className="min-w-0">
+              <span
+                className={`block font-display text-[15px] font-bold tracking-[-0.015em] transition-colors duration-200 ${
+                  detailsOpen ? "text-[var(--accent-text)]" : "text-ink group-hover:text-[var(--accent-text)]"
+                }`}
+              >
+                {t.details}
+              </span>
+              <span className="mt-1 block text-[13px] leading-[1.45] text-muted">{t.detailsHint}</span>
+            </span>
+            <span aria-hidden className="relative block h-4 w-4 shrink-0">
+              <span className="absolute left-0 top-1/2 h-[1.5px] w-4 -translate-y-1/2 bg-accent" />
+              <span
+                className={`absolute left-1/2 top-0 h-4 w-[1.5px] -translate-x-1/2 bg-accent transition-transform duration-200 ${
+                  detailsOpen ? "scale-y-0" : "scale-y-100"
+                }`}
+              />
+            </span>
+          </button>
 
-          <div className="sm:col-span-2">
-            <label className={label} htmlFor="rf-artwork">
-              {t.artwork.label} <span className={optional}>{t.optional}</span>
-            </label>
-            <input
-              id="rf-artwork"
-              type="text"
-              placeholder={t.artwork.placeholder}
-              className={`${field} ${ok}`}
-              {...register("artwork")}
-            />
-          </div>
+          <div
+            id={detailsId}
+            inert={!detailsOpen}
+            className={`grid transition-[grid-template-rows,opacity] ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none ${
+              detailsOpen
+                ? "grid-rows-[1fr] opacity-100 duration-[260ms]"
+                : "grid-rows-[0fr] opacity-0 duration-[180ms]"
+            }`}
+          >
+            <div className="min-h-0 overflow-hidden">
+              <div className="grid gap-5 pb-6 pt-1 sm:grid-cols-2 sm:gap-x-6">
+                <div>
+                  <label className={label} htmlFor="rf-volume">
+                    {t.volume.label}
+                  </label>
+                  <input
+                    id="rf-volume"
+                    type="text"
+                    maxLength={300}
+                    placeholder={t.volume.placeholder}
+                    className={`${field} ${ok}`}
+                    {...register("volume")}
+                  />
+                </div>
 
-          <div className="sm:col-span-2">
-            <label className={label} htmlFor="rf-comment">
-              {t.comment.label} <span className={optional}>{t.optional}</span>
-            </label>
-            <textarea
-              id="rf-comment"
-              rows={4}
-              placeholder={t.comment.placeholder}
-              className={`${field} ${ok} resize-y`}
-              {...register("comment")}
-            />
+                <div>
+                  <label className={label} htmlFor="rf-machine">
+                    {t.machine.label}
+                  </label>
+                  <input
+                    id="rf-machine"
+                    type="text"
+                    maxLength={300}
+                    placeholder={t.machine.placeholder}
+                    className={`${field} ${ok}`}
+                    {...register("machine")}
+                  />
+                </div>
+
+                <div className="sm:col-span-2">
+                  <label className={label} htmlFor="rf-artwork">
+                    {t.artwork.label}
+                  </label>
+                  <input
+                    id="rf-artwork"
+                    type="text"
+                    maxLength={1000}
+                    placeholder={t.artwork.placeholder}
+                    className={`${field} ${ok}`}
+                    {...register("artwork")}
+                  />
+                </div>
+
+                <div className="sm:col-span-2">
+                  <label className={label} htmlFor="rf-comment">
+                    {t.comment.label}
+                  </label>
+                  <textarea
+                    id="rf-comment"
+                    rows={4}
+                    maxLength={4000}
+                    placeholder={t.comment.placeholder}
+                    className={`${field} ${ok} resize-y`}
+                    {...register("comment")}
+                  />
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 

@@ -442,7 +442,8 @@ export const en: Content = {
     successText:
       "A sales manager will contact you during business hours ({schedule}) to clarify the run details. If it’s urgent, call us: {phone}.",
     again: "Send another request",
-    optional: "optional",
+    details: "Add details",
+    detailsHint: "Optional: volume, packaging machine, artwork, comment",
     name: {
       label: "Name",
       placeholder: "How should we address you",

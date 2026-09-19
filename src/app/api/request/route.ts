@@ -71,12 +71,20 @@ export async function POST(request: Request) {
   }
 
   // Бот заполнил скрытое поле или отправил форму быстрее человека: отвечаем «успешно» и ничего не шлём.
-  const startedAt = Number(data.startedAt);
-  if (str(data.website) || !startedAt || Date.now() - startedAt < 3000) {
+  // Время с открытия формы меряет браузер по своим часам: сверка с часами
+  // сервера отбросила бы заявку человека, у которого часы спешат.
+  const elapsed = Number(data.elapsed);
+  if (str(data.website) || !Number.isFinite(elapsed) || elapsed < 3000) {
     return NextResponse.json({ ok: true });
   }
 
-  const ip = (request.headers.get("x-forwarded-for")?.split(",")[0] || request.headers.get("x-real-ip") || "unknown").trim();
+  // X-Real-IP ставит nginx; в X-Forwarded-For первый адрес пишет сам клиент,
+  // поэтому доверяем только последнему — его добавил наш прокси.
+  const ip = (
+    request.headers.get("x-real-ip") ||
+    request.headers.get("x-forwarded-for")?.split(",").at(-1) ||
+    "unknown"
+  ).trim();
   if (limited(ip)) {
     return NextResponse.json({ ok: false, error: "rate_limited" }, { status: 429 });
   }

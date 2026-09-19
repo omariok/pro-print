@@ -8,6 +8,7 @@ import CookieBanner from "@/components/ui/CookieBanner";
 import { getContent } from "@/lib/content";
 import { contactInfo } from "@/lib/content/contact-info";
 import { alternatesFor, isLocale, localeMeta, locales, localizeHref, siteUrl } from "@/lib/i18n";
+import { setRequestLocale } from "@/lib/request-locale";
 import "../globals.css";
 
 // Обе гарнитуры вариативные — массив weight указывать нельзя, иначе Next
@@ -34,6 +35,7 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { lang } = await params;
   if (!isLocale(lang)) return {};
+  setRequestLocale(lang);
   const { meta } = getContent(lang);
 
   return {
@@ -76,6 +78,8 @@ export default async function RootLayout({
 }) {
   const { lang } = await params;
   if (!isLocale(lang)) notFound();
+  // Для страницы 404 внутри этого layout: ей Next не передаёт params.
+  setRequestLocale(lang);
   const t = getContent(lang);
 
   // Карточка организации для поисковиков: только то, что уже написано на сайте.

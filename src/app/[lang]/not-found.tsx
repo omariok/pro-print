@@ -1,26 +1,23 @@
-import type { Metadata } from "next";
+import type { Metadata, ResolvingMetadata } from "next";
 import Link from "next/link";
-import { headers } from "next/headers";
 import { contactInfo, getContent } from "@/lib/content";
-import { defaultLocale, isLocale, localizeHref, type Locale } from "@/lib/i18n";
+import { localizeHref } from "@/lib/i18n";
+import { getRequestLocale } from "@/lib/request-locale";
 import Button from "@/components/ui/Button";
 import Reveal from "@/components/ui/Reveal";
 import DocumentTitle from "@/components/ui/DocumentTitle";
 
-/** params сюда Next не передаёт — язык кладёт в заголовок middleware. */
-async function currentLocale(): Promise<Locale> {
-  const value = (await headers()).get("x-locale") ?? undefined;
-  return isLocale(value) ? value : defaultLocale;
-}
-
-export async function generateMetadata(): Promise<Metadata> {
-  const { notFound } = getContent(await currentLocale());
+/** params сюда Next не передаёт — язык оставляет layout (см. request-locale.ts). */
+export async function generateMetadata(_: unknown, parent: ResolvingMetadata): Promise<Metadata> {
+  // Метаданные layout к этому моменту посчитаны, а с ними записан и язык.
+  await parent;
+  const { notFound } = getContent(getRequestLocale());
   // alternates: null — иначе у 404 остался бы canonical главной из layout.
   return { title: notFound.metaTitle, description: notFound.metaDescription, alternates: null };
 }
 
-export default async function NotFound() {
-  const lang = await currentLocale();
+export default function NotFound() {
+  const lang = getRequestLocale();
   const { notFound: t, meta } = getContent(lang);
 
   return (

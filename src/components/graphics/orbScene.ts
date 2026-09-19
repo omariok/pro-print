@@ -273,19 +273,34 @@ type Options = {
   onReady: () => void;
   /** Вызывается каждый кадр, пока курсор над сферой, и один раз, когда он уходит. */
   onProbe?: (probe: Probe) => void;
+  /** Браузер отнял WebGL-контекст (false) или вернул его (true). */
+  onContext?: (alive: boolean) => void;
 };
 
 /** Как часто снимать цвет под курсором: readPixels останавливает конвейер GPU. */
 const SAMPLE_MS = 70;
 
-export function createOrb(host: HTMLElement, { still, onReady, onProbe }: Options) {
+/* Качество под устройство. Если средний кадр за окно дольше порога (слабый
+   GPU, режим энергосбережения), плотность пикселей снижается ступенькой:
+   плавный шар важнее резкого. Первые кадры не считаются — в них компиляция
+   шейдеров. */
+const WARMUP_FRAMES = 60;
+const WINDOW_FRAMES = 120;
+const SLOW_FRAME_MS = 28;
+const PR_STEP = 0.25;
+
+export function createOrb(host: HTMLElement, { still, onReady, onProbe, onContext }: Options) {
   let renderer: WebGLRenderer;
   try {
     renderer = new WebGLRenderer({ antialias: true, alpha: true, powerPreference: "high-performance" });
   } catch {
     return null;
   }
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  // На телефоне сцена шире экрана (150vw), а шейдер считает шум в каждом
+  // пикселе: на сенсорных экранах хватает полуторной плотности.
+  const coarse = window.matchMedia("(pointer: coarse)").matches;
+  let pixelRatio = Math.min(window.devicePixelRatio, coarse ? 1.5 : 2);
+  renderer.setPixelRatio(pixelRatio);
   renderer.setClearColor(0x000000, 0);
 
   const canvas = renderer.domElement;
@@ -293,6 +308,21 @@ export function createOrb(host: HTMLElement, { still, onReady, onProbe }: Option
   // сквозь него проходят; курсор ловят слушатели на window.
   canvas.style.cssText = "position:absolute;left:0;top:0;width:100%;height:100%;display:block;pointer-events:none";
   host.appendChild(canvas);
+
+  // Мобильный браузер может отнять контекст (память, фоновая вкладка): холст
+  // тогда пустеет. HeroOrb на это время возвращает CSS-заглушку. three.js сам
+  // восстанавливает контекст и заново загружает шейдеры и геометрию.
+  const onLost = () => onContext?.(false);
+  const onRestored = () => {
+    if (still) render();
+    onContext?.(true);
+  };
+  canvas.addEventListener("webglcontextlost", onLost);
+  canvas.addEventListener("webglcontextrestored", onRestored);
+  const unlisten = () => {
+    canvas.removeEventListener("webglcontextlost", onLost);
+    canvas.removeEventListener("webglcontextrestored", onRestored);
+  };
 
   const scene = new Scene();
   // Узкий объектив и дальняя камера: шар почти без перспективных искажений,
@@ -388,6 +418,7 @@ export function createOrb(host: HTMLElement, { still, onReady, onProbe }: Option
     return {
       dispose() {
         ro.disconnect();
+        unlisten();
         geometry.dispose();
         material.dispose();
         film.dispose();
@@ -548,9 +579,30 @@ export function createOrb(host: HTMLElement, { still, onReady, onProbe }: Option
   let running = false;
   let visible = true;
   let ready = false;
+  let warmup = WARMUP_FRAMES;
+  let slowSum = 0;
+  let slowCount = 0;
+
+  const adapt = (frameMs: number) => {
+    if (pixelRatio <= 1) return;
+    if (warmup > 0) {
+      warmup--;
+      return;
+    }
+    slowSum += frameMs;
+    if (++slowCount < WINDOW_FRAMES) return;
+    if (slowSum / slowCount > SLOW_FRAME_MS) {
+      pixelRatio = Math.max(1, pixelRatio - PR_STEP);
+      renderer.setPixelRatio(pixelRatio);
+      resize();
+    }
+    slowSum = 0;
+    slowCount = 0;
+  };
 
   const frame = (t: number) => {
     raf = requestAnimationFrame(frame);
+    adapt(t - last);
     const dt = Math.min((t - last) / 1000, 1 / 30);
     last = t;
     step(dt);
@@ -565,6 +617,10 @@ export function createOrb(host: HTMLElement, { still, onReady, onProbe }: Option
     if (running || !visible || document.hidden) return;
     running = true;
     last = performance.now();
+    // После паузы замер начинается заново: первый кадр часто с задержкой.
+    if (ready) warmup = Math.max(warmup, 10);
+    slowSum = 0;
+    slowCount = 0;
     raf = requestAnimationFrame(frame);
   };
   const stop = () => {
@@ -594,6 +650,7 @@ export function createOrb(host: HTMLElement, { still, onReady, onProbe }: Option
       stop();
       io.disconnect();
       ro.disconnect();
+      unlisten();
       document.removeEventListener("visibilitychange", onVisibility);
       window.removeEventListener("pointermove", onPointer);
       window.removeEventListener("pointerdown", onPointer);

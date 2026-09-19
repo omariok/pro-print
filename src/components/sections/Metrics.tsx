@@ -13,13 +13,15 @@ function SpecTable({ rows }: { rows: [string, string][] }) {
   return (
     <dl className="border-t border-ink/14">
       {rows.map(([label, value], i) => (
-        <Reveal key={label} delay={Math.min(i * 0.035, 0.28)}>
-          <div className="flex flex-col gap-1.5 border-b border-ink/10 py-4 sm:flex-row sm:items-baseline sm:justify-between sm:gap-8 sm:py-[18px]">
-            <dt className="text-[14.5px] leading-[1.4] text-muted">{label}</dt>
-            <dd className="font-display text-[15.5px] font-bold leading-[1.35] tracking-[-0.015em] text-ink sm:text-right sm:text-[17px]">
-              {value}
-            </dd>
-          </div>
+        <Reveal
+          key={label}
+          delay={Math.min(i * 0.035, 0.28)}
+          className="flex flex-col gap-1.5 border-b border-ink/10 py-4 sm:flex-row sm:items-baseline sm:justify-between sm:gap-8 sm:py-[18px]"
+        >
+          <dt className="text-[14.5px] leading-[1.4] text-muted">{label}</dt>
+          <dd className="font-display text-[15.5px] font-bold leading-[1.35] tracking-[-0.015em] text-ink sm:text-right sm:text-[17px]">
+            {value}
+          </dd>
         </Reveal>
       ))}
     </dl>
