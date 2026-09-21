@@ -492,7 +492,7 @@ export const zh: Content = {
       "Pro-Print 有限责任公司个人数据处理政策：处理目的、数据范围、保存期限、用户权利及依据俄罗斯联邦第 152-FZ 号法律采取的保护措施。",
     title: "个人数据处理政策",
     lede: "{legalName} 如何处理和保护通过 {site} 网站获取的个人数据。",
-    version: "2026年9月17日版",
+    version: "2026年9月21日版",
     translationNote: "本译文仅供参考，以俄文版本为准。",
     blocks: [
       {
@@ -606,7 +606,7 @@ export const zh: Content = {
     metaDescription: "pro-print.pro 网站所有者信息、个人数据处理同意书及 Cookie 使用说明。",
     title: "法律信息",
     lede: "网站归谁所有、我们依据什么条件处理询价数据，以及网站在您的浏览器中存储哪些内容。",
-    version: "2026年9月17日版",
+    version: "2026年9月21日版",
     translationNote: "本译文仅供参考，以俄文版本为准。",
     tocLabel: "本页内容",
     operator: {

@@ -559,7 +559,7 @@ export const en: Content = {
       "Pro-Print LLC policy on personal data processing: purposes, data categories, retention periods, user rights and security measures under Russian Federal Law No. 152-FZ.",
     title: "Personal Data Processing Policy",
     lede: "How {legalName} processes and protects the personal data it receives through {site}.",
-    version: "Version of 17 September 2026",
+    version: "Version of 21 September 2026",
     translationNote:
       "This is a translation provided for convenience. The Russian version of this document prevails.",
     blocks: [
@@ -679,7 +679,7 @@ export const en: Content = {
       "Website owner details for pro-print.pro, consent to personal data processing and use of cookies.",
     title: "Legal information",
     lede: "Who owns this website, on what terms we process data from requests and what the website stores in your browser.",
-    version: "Version of 17 September 2026",
+    version: "Version of 21 September 2026",
     translationNote:
       "This is a translation provided for convenience. The Russian version of these documents prevails.",
     tocLabel: "On this page",
