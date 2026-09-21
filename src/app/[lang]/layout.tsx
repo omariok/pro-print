@@ -92,7 +92,7 @@ export default async function RootLayout({
     logo: `${siteUrl}/apple-icon`,
     telephone: contactInfo.phone,
     email: contactInfo.email,
-    address: t.site.production,
+    address: t.site.office,
     description: t.meta.description,
   };
 

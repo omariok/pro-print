@@ -39,8 +39,6 @@ export const en: Content = {
     legalName: "Pro-Print LLC",
     fullName: "Limited Liability Company “Pro-Print”",
     schedule: "Mon–Fri, 09:00–18:00 Moscow time (UTC+3)",
-    production:
-      "27 Leningradskaya St., bldg. 1, Tervolovo, Gatchinsky District, Leningrad Region, 188351, Russia",
     office: "10 Oboronnaya St., letter A, office 209, St. Petersburg, 198095, Russia",
   },
 
@@ -536,13 +534,12 @@ export const en: Content = {
   contacts: {
     metaTitle: "Contacts",
     metaDescription:
-      "Phone, email and production address of Pro-Print LLC. Request a quote for printing on food-grade stretch films.",
+      "Phone, email and office address of Pro-Print LLC. Request a quote for printing on food-grade stretch films.",
     title: "Contact our sales team",
     lede: "Call us or send a request — a manager will clarify your specs and prepare a quote.",
     labels: {
       phone: "Phone",
       email: "Email",
-      production: "Production",
       office: "Office",
       schedule: "Business hours",
     },
@@ -552,10 +549,6 @@ export const en: Content = {
       ["INN (Taxpayer ID)", "7805794800"],
       ["OGRN (State Registration No.)", "1227800087239"],
       ["Legal address", "10 Oboronnaya St., letter A, office 209, St. Petersburg, 198095, Russia"],
-      [
-        "Production address",
-        "27 Leningradskaya St., bldg. 1, Tervolovo, Gatchinsky District, Leningrad Region, 188351, Russia",
-      ],
       ["General Director", "Nadezhda V. Voroshko"],
     ],
   },
@@ -699,10 +692,6 @@ export const en: Content = {
         ["INN / KPP", "{inn} / {kpp}"],
         ["OGRN", "{ogrn}"],
         ["Registered address", "Office 209, 10A Oboronnaya St., Saint Petersburg, 198095, Russia"],
-        [
-          "Production address",
-          "27 Leningradskaya St., bldg. 1, Tervolovo, Gatchina District, Leningrad Region, 188351, Russia",
-        ],
         ["General Director", "Nadezhda V. Voroshko"],
         ["Responsible for personal data processing", "General Director Nadezhda V. Voroshko"],
         ["Phone", "{phone}"],
@@ -788,7 +777,6 @@ export const en: Content = {
     about:
       "Pro-Print LLC. Up to 10-color flexographic printing on food packaging films: stretch, PVC, POF, polyethylene and multilayer barrier films. Our own production in the Leningrad Region, Russia.",
     contactsTitle: "Contacts",
-    productionLabel: "Production:",
     links: [
       { label: "Legal information", href: "/legal" },
       { label: "Privacy policy", href: "/privacy" },

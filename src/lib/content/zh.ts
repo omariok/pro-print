@@ -37,8 +37,6 @@ export const zh: Content = {
     legalName: "Pro-Print 有限责任公司",
     fullName: "Pro-Print 有限责任公司（Общество с ограниченной ответственностью «Про-Принт»）",
     schedule: "周一至周五 09:00–18:00（莫斯科时间，UTC+3）",
-    production:
-      "俄罗斯列宁格勒州加特契纳区 Tervolovo 镇 Leningradskaya 街 27 号 1 栋，邮编 188351",
     office: "俄罗斯圣彼得堡 Oboronnaya 街 10 号 A 座 209 室，邮编 198095",
   },
 
@@ -469,13 +467,12 @@ export const zh: Content = {
 
   contacts: {
     metaTitle: "联系方式",
-    metaDescription: "Pro-Print 有限责任公司的电话、邮箱和生产地址。提交询价，获取食品级拉伸膜印刷报价。",
+    metaDescription: "Pro-Print 有限责任公司的电话、邮箱和办公地址。提交询价，获取食品级拉伸膜印刷报价。",
     title: "联系销售部",
     lede: "致电或提交询价，客户经理将确认参数并为您核算价格。",
     labels: {
       phone: "电话",
       email: "电子邮箱",
-      production: "生产基地",
       office: "办公室",
       schedule: "工作时间",
     },
@@ -485,7 +482,6 @@ export const zh: Content = {
       ["纳税人识别号（INN）", "7805794800"],
       ["国家注册号（OGRN）", "1227800087239"],
       ["注册地址", "俄罗斯圣彼得堡 Oboronnaya 街 10 号 A 座 209 室，邮编 198095"],
-      ["生产地址", "俄罗斯列宁格勒州加特契纳区 Tervolovo 镇 Leningradskaya 街 27 号 1 栋，邮编 188351"],
       ["总经理", "Nadezhda V. Voroshko"],
     ],
   },
@@ -622,7 +618,6 @@ export const zh: Content = {
         ["INN / KPP", "{inn} / {kpp}"],
         ["国家注册号（OGRN）", "{ogrn}"],
         ["注册地址", "俄罗斯圣彼得堡 Oboronnaya 街 10 号 A 座 209 室，邮编 198095"],
-        ["生产地址", "俄罗斯列宁格勒州加特契纳区 Tervolovo 镇 Leningradskaya 街 27 号 1 栋，邮编 188351"],
         ["总经理", "Nadezhda V. Voroshko"],
         ["个人数据处理负责人", "总经理 Nadezhda V. Voroshko"],
         ["电话", "{phone}"],
@@ -707,7 +702,6 @@ export const zh: Content = {
     about:
       "Pro-Print 有限责任公司。在食品包装膜上进行最多 10 色柔性版印刷：拉伸膜、PVC、POF、聚乙烯及多层阻隔膜。自有生产基地位于俄罗斯列宁格勒州。",
     contactsTitle: "联系方式",
-    productionLabel: "生产基地：",
     links: [
       { label: "法律信息", href: "/legal" },
       { label: "隐私政策", href: "/privacy" },

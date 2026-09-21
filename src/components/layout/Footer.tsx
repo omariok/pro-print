@@ -46,9 +46,6 @@ export default function Footer({ lang, t }: { lang: Locale; t: Content }) {
                   {contactInfo.email}
                 </a>
               </li>
-              <li className="max-w-[34ch] text-muted">
-                {footer.productionLabel} {site.production}
-              </li>
               <li className="text-muted">{site.schedule}</li>
             </ul>
           </div>

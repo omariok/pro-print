@@ -25,7 +25,6 @@ export default async function ContactsPage({ params }: Props) {
   const details = [
     { icon: PhoneIcon, label: labels.phone, value: contactInfo.phone, href: contactInfo.phoneHref },
     { icon: MailIcon, label: labels.email, value: contactInfo.email, href: `mailto:${contactInfo.email}` },
-    { icon: PinIcon, label: labels.production, value: site.production },
     { icon: PinIcon, label: labels.office, value: site.office },
     { icon: ClockIcon, label: labels.schedule, value: site.schedule },
   ];
