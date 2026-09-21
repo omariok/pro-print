@@ -115,21 +115,17 @@ export async function POST(request: Request) {
   const now = new Date();
   const moscow = now.toLocaleString("ru-RU", { timeZone: "Europe/Moscow" });
 
+  // Необязательные пустые поля в письмо не попадают: менеджер видит только суть.
+  const filled = (Object.keys(labels) as Field[]).filter((field) => values[field]);
   const text = [
     "Новая заявка с сайта",
     "",
-    ...(Object.keys(labels) as Field[]).map((field) => `${labels[field]}: ${values[field] || "—"}`),
+    ...filled.map((field) => `${labels[field]}: ${values[field]}`),
     "",
-    "— Согласие на обработку персональных данных —",
-    "Дано: да (отмечено поле согласия в форме)",
-    `Время: ${moscow} МСК (${now.toISOString()})`,
-    `IP: ${ip}`,
-    `Браузер: ${str(request.headers.get("user-agent")).slice(0, 400) || "—"}`,
-    `Страница: ${str(data.page).slice(0, 500) || "—"}`,
-    `Язык сайта: ${lang}`,
-    `Редакция документов: ${legalInfo.version}`,
+    // Краткое доказательство согласия (ч. 3 ст. 9 152-ФЗ): когда, с какой
+    // редакцией документов и с какого адреса отмечено поле согласия.
+    `Согласие на обработку ПДн дано: ${moscow} МСК, редакция ${legalInfo.version}, IP ${ip}`,
     `Текст согласия: ${siteUrl}${prefix}/legal#consent`,
-    `Политика: ${siteUrl}${prefix}/privacy`,
   ].join("\n");
 
   const user = process.env.SMTP_USER;
