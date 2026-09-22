@@ -430,7 +430,7 @@ export const en: Content = {
       "No artwork? We’ll design and adapt it",
       "You are welcome to attend the press start",
     ],
-    detailsBefore: "{schedule}. Company details and addresses are ",
+    detailsBefore: "{schedule}. Company details and address are ",
     detailsLink: "on the Contacts page",
     detailsAfter: ".",
   },
@@ -573,7 +573,7 @@ export const en: Content = {
       {
         title: "2. Operator details",
         paras: [
-          "{fullName}, INN {inn}, KPP {kpp}, OGRN {ogrn}. Registered address: office 209, 10A Oboronnaya St., Saint Petersburg, 198095, Russia. Phone: {phone}, email: {email}.",
+          "{fullName}, INN {inn}, KPP {kpp}, OGRN {ogrn}. Registered address: 10 Oboronnaya St., letter A, office 209, St. Petersburg, 198095, Russia. Phone: {phone}, email: {email}.",
           "The person responsible for organizing personal data processing is the General Director, Nadezhda V. Voroshko.",
         ],
       },
@@ -691,7 +691,7 @@ export const en: Content = {
         ["Short name", "{legalName}"],
         ["INN / KPP", "{inn} / {kpp}"],
         ["OGRN", "{ogrn}"],
-        ["Registered address", "Office 209, 10A Oboronnaya St., Saint Petersburg, 198095, Russia"],
+        ["Registered address", "10 Oboronnaya St., letter A, office 209, St. Petersburg, 198095, Russia"],
         ["General Director", "Nadezhda V. Voroshko"],
         ["Responsible for personal data processing", "General Director Nadezhda V. Voroshko"],
         ["Phone", "{phone}"],
@@ -701,7 +701,7 @@ export const en: Content = {
     consent: {
       title: "Consent to personal data processing",
       intro:
-        "By ticking the consent box in the request form on {site} and submitting the request, I freely, of my own will and in my own interest give {fullName} (INN {inn}, OGRN {ogrn}, address: office 209, 10A Oboronnaya St., Saint Petersburg, 198095, Russia; the Operator) specific, informed, conscious and unambiguous consent to the processing of my personal data on the following terms.",
+        "By ticking the consent box in the request form on {site} and submitting the request, I freely, of my own will and in my own interest give {fullName} (INN {inn}, OGRN {ogrn}, address: 10 Oboronnaya St., letter A, office 209, St. Petersburg, 198095, Russia; the Operator) specific, informed, conscious and unambiguous consent to the processing of my personal data on the following terms.",
       items: [
         "Purpose: reviewing my request, contacting me by phone and email, calculating the cost and preparing a commercial offer and, if an agreement is reached, concluding and performing a contract.",
         "Data: name; company name; phone number; email address; order details I enter in the form (volume and parameters, packaging machine model, artwork link, comment); the IP address, date and time of submission and browser details — to evidence that consent was obtained.",

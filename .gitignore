@@ -15,3 +15,6 @@ next-env.d.ts
 # Local agent tooling state
 .freebuff/
 skills-lock.json
+
+# Личные настройки Claude Code на каждой машине свои
+.claude/settings.local.json

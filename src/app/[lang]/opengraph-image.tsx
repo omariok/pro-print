@@ -1,4 +1,5 @@
 import { ImageResponse } from "next/og";
+import { notFound } from "next/navigation";
 import { getContent } from "@/lib/content";
 import { defaultLocale, isLocale, locales } from "@/lib/i18n";
 
@@ -30,12 +31,14 @@ async function googleFont(family: string, weight: number, text?: string) {
         "User-Agent":
           "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/27.0.1453.116 Safari/537.36",
       },
+      // Без таймаута зависший CDN держал бы запрос карточки бесконечно.
+      signal: AbortSignal.timeout(5000),
     },
   ).then((r) => r.text());
 
   const url = css.match(/src: url\((.+?)\) format\('(?:woff|truetype|opentype)'\)/)?.[1];
   if (!url) throw new Error(`${family} woff url not found`);
-  return fetch(url).then((r) => r.arrayBuffer());
+  return fetch(url, { signal: AbortSignal.timeout(5000) }).then((r) => r.arrayBuffer());
 }
 
 const cells = [
@@ -53,8 +56,10 @@ export async function generateImageMetadata({ params }: { params: { lang: string
 }
 
 export default async function OpengraphImage({ params }: { params: Promise<{ lang: string }> }) {
-  const { lang: raw } = await params;
-  const lang = isLocale(raw) ? raw : defaultLocale;
+  const { lang } = await params;
+  // Карточка есть только у трёх языков: /мусор.php/opengraph-image/card не
+  // должен рисовать PNG и ходить за шрифтами в Google.
+  if (!isLocale(lang)) notFound();
   const { meta } = getContent(lang);
 
   // Сборка карточки не должна валить билд из-за шрифтового CDN: без файлов

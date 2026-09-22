@@ -86,6 +86,7 @@ export async function sendMail(config: SmtpConfig, mail: Mail): Promise<void> {
   // base64 по 76 символов: строки тела никогда не начинаются с точки.
   const body = b64(mail.text).replace(/.{1,76}/g, "$&\r\n");
 
+  let delivered = false;
   try {
     await read(220);
     await command("EHLO pro-print.pro", 250);
@@ -95,8 +96,12 @@ export async function sendMail(config: SmtpConfig, mail: Mail): Promise<void> {
     await command("DATA", 354);
     await command(`${headers.join("\r\n")}\r\n\r\n${body}.`, 250);
     socket.write("QUIT\r\n");
+    delivered = true;
   } finally {
     socket.removeAllListeners("close");
-    socket.end();
+    // После сбоя или таймаута вежливо закрывать не с кем: рвём соединение,
+    // иначе сокет висел бы открытым до таймаута сервера Яндекса.
+    if (delivered) socket.end();
+    else socket.destroy();
   }
 }

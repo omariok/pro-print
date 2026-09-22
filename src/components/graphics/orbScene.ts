@@ -288,11 +288,22 @@ const WARMUP_FRAMES = 60;
 const WINDOW_FRAMES = 120;
 const SLOW_FRAME_MS = 28;
 const PR_STEP = 0.25;
+/* Экраны 120–144 Гц просили бы тяжёлый шейдер вдвое чаще, а глазу хватает
+   60–72 кадров. Порог 10 мс пропускает каждый второй кадр на 120/144 Гц и
+   с запасом не трогает 60, 90 и 100 Гц. */
+const MIN_FRAME_MS = 10;
 
 export function createOrb(host: HTMLElement, { still, onReady, onProbe, onContext }: Options) {
   let renderer: WebGLRenderer;
   try {
-    renderer = new WebGLRenderer({ antialias: true, alpha: true, powerPreference: "high-performance" });
+    // failIfMajorPerformanceCaveat: без видеокарты (программный WebGL) шар
+    // рисовал бы процессор — тогда остаётся статичная градиентная заглушка.
+    renderer = new WebGLRenderer({
+      antialias: true,
+      alpha: true,
+      powerPreference: "high-performance",
+      failIfMajorPerformanceCaveat: true,
+    });
   } catch {
     return null;
   }
@@ -422,6 +433,7 @@ export function createOrb(host: HTMLElement, { still, onReady, onProbe, onContex
         geometry.dispose();
         material.dispose();
         film.dispose();
+        renderer.forceContextLoss();
         renderer.dispose();
         canvas.remove();
       },
@@ -602,6 +614,7 @@ export function createOrb(host: HTMLElement, { still, onReady, onProbe, onContex
 
   const frame = (t: number) => {
     raf = requestAnimationFrame(frame);
+    if (t - last < MIN_FRAME_MS) return;
     adapt(t - last);
     const dt = Math.min((t - last) / 1000, 1 / 30);
     last = t;
@@ -660,6 +673,7 @@ export function createOrb(host: HTMLElement, { still, onReady, onProbe, onContex
       geometry.dispose();
       material.dispose();
       film.dispose();
+      renderer.forceContextLoss();
       renderer.dispose();
       canvas.remove();
     },

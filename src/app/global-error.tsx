@@ -36,22 +36,9 @@ export default function GlobalError({
         }}
       >
         <main style={{ width: "100%", maxWidth: "560px", margin: "0 auto", padding: "48px 20px" }}>
-          <p
-            style={{
-              margin: 0,
-              fontSize: "11px",
-              fontWeight: 700,
-              letterSpacing: "0.22em",
-              textTransform: "uppercase",
-              color: "#b53c00",
-            }}
-          >
-            {t.siteLabel}
-          </p>
-
           <h1
             style={{
-              margin: "20px 0 0",
+              margin: 0,
               fontSize: "30px",
               fontWeight: 800,
               lineHeight: 1.1,

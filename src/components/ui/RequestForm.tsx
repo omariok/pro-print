@@ -29,6 +29,8 @@ const field =
 const ok = "border-line-input focus:border-ink";
 const bad = "border-accent focus:border-accent";
 const errorText = "mt-1.5 block text-[12.5px] text-[var(--accent-text)]";
+/** Совпадает с порогом анти-бот проверки в /api/request (3 с) плюс запас. */
+const MIN_FILL_MS = 3100;
 
 type Props = {
   lang: Locale;
@@ -86,6 +88,10 @@ export default function RequestForm({ lang, t, site, className = "" }: Props) {
   const onSubmit = async (values: Values) => {
     setFailed(false);
     try {
+      // Сервер молча отбрасывает заявки быстрее 3 секунд как ботов. Человек с
+      // автозаполнением успевает и раньше — придерживаем отправку, а не теряем её.
+      const wait = MIN_FILL_MS - (performance.now() - startedAt.current);
+      if (wait > 0) await new Promise((resolve) => setTimeout(resolve, wait));
       // Ошибка сети или ответ не 2xx уходят в catch, а не в экран «отправлено».
       const response = await fetch("/api/request", {
         method: "POST",
@@ -93,7 +99,6 @@ export default function RequestForm({ lang, t, site, className = "" }: Props) {
         body: JSON.stringify({
           ...values,
           lang,
-          page: window.location.href,
           website: trap.current?.value ?? "",
           elapsed: Math.round(performance.now() - startedAt.current),
         }),
@@ -146,7 +151,7 @@ export default function RequestForm({ lang, t, site, className = "" }: Props) {
       {/* noValidate: проверку ведёт react-hook-form, поэтому обязательность
           сообщается скринридеру через aria-required, а ошибки — role="alert".
           Под экраном успеха форма inert: иначе Tab уводил бы в невидимые поля. */}
-      <form onSubmit={handleSubmit(onSubmit)} noValidate inert={sent}>
+      <form method="post" onSubmit={handleSubmit(onSubmit)} noValidate inert={sent}>
         {/* Ловушка для ботов: человек это поле не видит и не заполняет. */}
         <div aria-hidden className="absolute -left-[9999px] h-px w-px overflow-hidden">
           <label htmlFor="rf-website">Website</label>
@@ -223,10 +228,8 @@ export default function RequestForm({ lang, t, site, className = "" }: Props) {
               className={`${field} ${errors.phone ? bad : ok}`}
               {...register("phone", {
                 required: t.phone.required,
-                pattern: {
-                  value: /^\+?[0-9\s()-]{10,20}$/,
-                  message: t.phone.invalid,
-                },
+                // Сервер проверяет номер уже без пробелов по краям — так же и здесь.
+                validate: (value) => /^\+?[0-9\s()-]{10,20}$/.test(value.trim()) || t.phone.invalid,
               })}
             />
             {errors.phone ? (

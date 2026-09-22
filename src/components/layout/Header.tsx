@@ -6,7 +6,7 @@ import { AnimatePresence, m } from "framer-motion";
 import { useEffect, useId, useRef, useState } from "react";
 import type { Content } from "@/lib/content";
 import { contactInfo } from "@/lib/content/contact-info";
-import { fill, localizeHref, type Locale } from "@/lib/i18n";
+import { defaultLocale, fill, localizeHref, type Locale } from "@/lib/i18n";
 import Logo from "../ui/Logo";
 import LanguageSwitcher from "./LanguageSwitcher";
 import { CloseIcon, MenuIcon, PhoneIcon } from "../ui/Icons";
@@ -19,7 +19,13 @@ export default function Header({ lang, nav, t }: Props) {
   const [activeId, setActiveId] = useState<string | null>(null);
   const burgerRef = useRef<HTMLButtonElement>(null);
   const sheetId = useId();
-  const pathname = usePathname();
+  // На сервере русская страница видна под внутренним адресом /ru/about, а в
+  // браузере — /about. Приводим к виду из адресной строки, иначе подсветка
+  // пункта меню расходилась бы между сервером и браузером.
+  const rawPath = usePathname();
+  const ruPrefix = `/${defaultLocale}`;
+  const pathname =
+    rawPath === ruPrefix ? "/" : rawPath.startsWith(`${ruPrefix}/`) ? rawPath.slice(ruPrefix.length) : rawPath;
   const home = localizeHref(lang, "/");
 
   // Пункт меню подсвечен, если это открытая страница или — на главной —
@@ -60,6 +66,15 @@ export default function Header({ lang, nav, t }: Props) {
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  // Кнопки «Назад» и «Вперёд» браузера тоже закрывают меню: иначе оно
+  // оставалось открытым поверх другой страницы с запертой прокруткой.
+  useEffect(() => {
+    setOpen(false);
+    const close = () => setOpen(false);
+    window.addEventListener("popstate", close);
+    return () => window.removeEventListener("popstate", close);
+  }, [pathname]);
 
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";

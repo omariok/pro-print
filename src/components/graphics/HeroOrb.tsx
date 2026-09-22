@@ -277,11 +277,13 @@ export default function HeroOrb({
 
       {/* Подпись под шаром — только там, где пипетка действительно работает
           (lg, настоящий курсор, без «уменьшения движения»). Пока идёт замер,
-          она притухает: внимание уже на карточке. */}
-      {probe && !still ? (
+          она притухает: внимание уже на карточке. «Уменьшение движения»
+          проверяет CSS, а не useReducedMotion: на сервере тот ещё не знает
+          настройку, и разметка разошлась бы с браузерной. */}
+      {probe ? (
         <div
-          className={`pointer-events-none absolute right-[-4%] top-[95%] hidden w-[15.5rem] text-right transition-opacity duration-300 ease-out lg:[@media(hover:hover)_and_(pointer:fine)]:block ${
-            active ? "opacity-35" : "opacity-100"
+          className={`pointer-events-none absolute right-[-4%] top-[95%] hidden w-[15.5rem] text-right transition-opacity duration-300 ease-out lg:[@media(hover:hover)_and_(pointer:fine)]:block motion-reduce:hidden! ${
+            !ready ? "invisible" : active ? "opacity-35" : "opacity-100"
           }`}
         >
           <p className="flex items-center justify-end gap-2 font-display text-[14.5px] font-semibold leading-none text-ink">

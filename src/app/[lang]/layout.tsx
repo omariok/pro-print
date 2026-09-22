@@ -32,9 +32,15 @@ export function generateStaticParams() {
   return locales.map((lang) => ({ lang }));
 }
 
+// Других языков нет: адрес вида /wp-login.php (точка уводит его мимо
+// переписывания в middleware) сразу получает 404, а не рендерится на сервере
+// и не оседает в кеше на диске отдельной страницей.
+export const dynamicParams = false;
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { lang } = await params;
-  if (!isLocale(lang)) return {};
+  // Без metadataBase ссылки в метатегах 404 получили бы адрес localhost.
+  if (!isLocale(lang)) return { metadataBase: new URL(siteUrl) };
   setRequestLocale(lang);
   const { meta } = getContent(lang);
 

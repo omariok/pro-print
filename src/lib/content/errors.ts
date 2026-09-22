@@ -17,7 +17,6 @@ export const errorTexts: Record<
     /** Хвост фразы с режимом работы — повторяет site.schedule из словаря. */
     manualAfter: string;
     digest: string;
-    siteLabel: string;
     siteTitle: string;
     siteLede: string;
   }
@@ -32,7 +31,6 @@ export const errorTexts: Record<
     manualEmail: ", почта ",
     manualAfter: ". Пн–Пт, 09:00–18:00 (МСК).",
     digest: "Код обращения:",
-    siteLabel: "Сбой сайта",
     siteTitle: "Сайт не загрузился",
     siteLede:
       "Ошибка на нашей стороне. Попробуйте загрузить страницу ещё раз, а если нужен расчёт прямо сейчас — позвоните, заявку примем вручную.",
@@ -47,7 +45,6 @@ export const errorTexts: Record<
     manualEmail: ", email ",
     manualAfter: ". Mon–Fri, 09:00–18:00 Moscow time (UTC+3).",
     digest: "Reference code:",
-    siteLabel: "Site error",
     siteTitle: "The site didn’t load",
     siteLede:
       "The error is on our side. Try loading the page again, and if you need a quote right now, call us — we’ll take your request by hand.",
@@ -61,7 +58,6 @@ export const errorTexts: Record<
     manualEmail: "，邮箱 ",
     manualAfter: "。工作时间：周一至周五 09:00–18:00（莫斯科时间，UTC+3）。",
     digest: "错误代码：",
-    siteLabel: "网站故障",
     siteTitle: "网站加载失败",
     siteLede: "这是我们这边的错误。请尝试重新加载页面；如急需报价，请直接致电，我们将人工受理。",
   },
