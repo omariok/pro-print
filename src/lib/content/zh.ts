@@ -180,19 +180,19 @@ export const zh: Content = {
     items: [
       {
         key: "chicken",
-        src: "/examples/chicken.webp",
+        src: "/examples/chicken-2.webp",
         alt: "包裹全彩印刷膜的鸡腿肉托盘，膜上印有品名、香草、田园风景和图标",
         caption: "鸡腿肉：整盒全彩印刷，风景、香草、图标和小字都印在同一张膜上。",
       },
       {
         key: "tomatoes",
-        src: "/examples/tomatoes.webp",
+        src: "/examples/tomatoes-2.webp",
         alt: "包裹印刷膜的番茄托盘，四周印有红绿图案、叶子和图标，中间是透明视窗",
         caption: "番茄：四周是饱满的红色和绿色，中间留出透明视窗，既能看清产品，又能认出品牌。",
       },
       {
         key: "mushrooms",
-        src: "/examples/mushrooms.webp",
+        src: "/examples/mushrooms-2.webp",
         alt: "包裹印刷膜的蘑菇托盘，膜上印有品名、蘑菇照片、欧芹和图标",
         caption: "蘑菇：柔和的色彩过渡、照片级图案和图标小字依然清晰。",
       },

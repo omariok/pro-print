@@ -233,19 +233,19 @@ export const en: Content = {
     items: [
       {
         key: "chicken",
-        src: "/examples/chicken.webp",
+        src: "/examples/chicken-2.webp",
         alt: "Tray of chicken thighs wrapped in full-color printed film with the product name, herbs, a countryside scene and icons",
         caption: "Chicken thighs: full-color print across the whole tray — landscape, herbs, icons and small type on one film.",
       },
       {
         key: "tomatoes",
-        src: "/examples/tomatoes.webp",
+        src: "/examples/tomatoes-2.webp",
         alt: "Tray of tomatoes wrapped in printed film with red and green artwork around the edges, leaves, icons and a clear window",
         caption: "Tomatoes: rich red and green around the edges and a clear window in the middle — the product is visible, the brand is recognizable.",
       },
       {
         key: "mushrooms",
-        src: "/examples/mushrooms.webp",
+        src: "/examples/mushrooms-2.webp",
         alt: "Tray of button mushrooms wrapped in printed film with the product name, photographic mushrooms, parsley and icons",
         caption: "Mushrooms: soft color transitions, photographic artwork and the small type of the icons stay crisp.",
       },

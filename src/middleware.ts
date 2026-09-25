@@ -11,6 +11,10 @@ const OG_CARD = "/opengraph-image/card";
 /** Заранее собранная 404 каждого языка — см. [lang]/[...rest]/page.tsx. */
 const NOT_FOUND = "/404";
 
+/** Файлы с расширением в корне сайта; остальные файлы живут в папках из public. */
+const ROOT_FILES = new Set(["/robots.txt", "/sitemap.xml", "/favicon.ico", "/icon.svg"]);
+const FILE_DIRS = new Set(["docs", "examples", "about"]);
+
 const notFound = () => new NextResponse(null, { status: 404 });
 
 /**
@@ -39,18 +43,19 @@ export function middleware(request: NextRequest) {
     return new NextResponse(null, { status: 404 });
   }
 
-  // Точка в первой части пути и что-то после неё (/a.php/b) — такого адреса на
-  // сайте быть не может, а Next принял бы «a.php» за язык и стал рендерить.
   const first = pathname.split("/")[1];
-  if (first.includes(".") && pathname.indexOf("/", 1) !== -1) return notFound();
 
   // Служебные адреса: только те, что реально есть. Выдуманные /api/x и
   // /_next/x иначе рендерились бы на сервере при каждом запросе.
   if (pathname.startsWith("/api/")) return API.has(pathname) ? NextResponse.next() : notFound();
   if (pathname.startsWith("/_next/")) return pathname === "/_next/image" ? NextResponse.next() : notFound();
   if (pathname === "/apple-icon") return NextResponse.next();
-  // Файлы с расширением (PDF из /docs, icon.svg, robots.txt) идут как есть.
-  if (pathname.includes(".")) return NextResponse.next();
+  // Адреса с точкой — это файлы: настоящие отдаёт Next, выдуманные (/x.php,
+  // /en/.env, /a.php/b) сразу получают 404. Иначе Next принял бы «x.php» за
+  // язык и писал бы в лог ошибку со стеком на каждый такой запрос сканера.
+  if (pathname.includes(".")) {
+    return ROOT_FILES.has(pathname) || FILE_DIRS.has(first) ? NextResponse.next() : notFound();
+  }
 
   if (first === defaultLocale) {
     // Карточка ссылки русской страницы физически лежит под /ru.
